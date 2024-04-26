@@ -1,4 +1,4 @@
-module celestialodyssey
+module celestial-odyssey
 
 go 1.20
 
