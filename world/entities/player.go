@@ -43,6 +43,8 @@ func (p *Player) Update() {
 
 func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
 	op.GeoM.Translate(p.X, p.Y)
+
 	screen.DrawImage(p.Image, op)
 }

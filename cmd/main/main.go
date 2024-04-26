@@ -9,11 +9,17 @@ import (
 )
 
 func main() {
-	game := game.NewGame()
-	ebiten.SetWindowSize(320, 200)
-	ebiten.SetWindowTitle("Celestial Odyssey")
+	g := game.NewGame()
 
-	if err := ebiten.RunGame(game); err != nil {
+	screenWidth, screenHeight := 320, 200
+	scale := 3.0
+
+	ebiten.SetWindowTitle("Celestial Odyssey")
+	ebiten.SetWindowSize(int(float64(screenWidth)*scale), int(float64(screenHeight)*scale))
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+	ebiten.SetScreenClearedEveryFrame(true)
+
+	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
 }
