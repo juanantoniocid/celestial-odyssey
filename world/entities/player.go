@@ -8,7 +8,8 @@ import (
 
 type Player struct {
 	position image.Point
-	bounds   image.Rectangle
+	hitbox   image.Rectangle
+	playArea image.Rectangle
 	speed    int
 	image    *ebiten.Image
 
@@ -16,27 +17,28 @@ type Player struct {
 	moveRight bool
 }
 
-func NewPlayer(img *ebiten.Image) *Player {
+func NewPlayer(img *ebiten.Image, playArea image.Rectangle) *Player {
 	return &Player{
-		bounds: img.Bounds(),
-		image:  img,
+		hitbox:   img.Bounds(),
+		image:    img,
+		playArea: playArea,
 	}
 }
 
-func (p *Player) Top() int {
+func (p *Player) top() int {
 	return p.position.Y
 }
 
-func (p *Player) Bottom() int {
-	return p.position.Y + p.bounds.Dy()
+func (p *Player) bottom() int {
+	return p.position.Y + p.hitbox.Dy()
 }
 
-func (p *Player) Left() int {
+func (p *Player) left() int {
 	return p.position.X
 }
 
-func (p *Player) Right() int {
-	return p.position.X + p.bounds.Dx()
+func (p *Player) right() int {
+	return p.position.X + p.hitbox.Dx()
 }
 
 func (p *Player) MoveLeft() {
@@ -49,20 +51,20 @@ func (p *Player) MoveRight() {
 	p.position.X += p.speed
 }
 
-func (p *Player) MoveToLeftBoundary(origin int) {
+func (p *Player) setPositionToLeftBoundary(origin int) {
 	p.position.X = origin
 }
 
 func (p *Player) MoveToRightBoundary(width int) {
-	p.position.X = width - p.bounds.Dx()
+	p.position.X = width - p.hitbox.Dx()
 }
 
-func (p *Player) MoveToTopBoundary(origin int) {
+func (p *Player) setPositionToTopBoundary(origin int) {
 	p.position.Y = origin
 }
 
 func (p *Player) MoveToBottomBoundary(height int) {
-	p.position.Y = height - p.bounds.Dy()
+	p.position.Y = height - p.hitbox.Dy()
 }
 
 func (p *Player) SetSpeed(speed int) {
@@ -78,6 +80,22 @@ func (p *Player) Update() {
 	if p.moveRight {
 		p.moveRight = false
 		p.position.X += p.speed
+	}
+
+	p.enforceBoundaries()
+}
+
+func (p *Player) enforceBoundaries() {
+	if p.left() < p.playArea.Min.X {
+		p.setPositionToLeftBoundary(p.playArea.Min.X)
+	} else if p.right() > p.playArea.Max.X {
+		p.MoveToRightBoundary(p.playArea.Max.X)
+	}
+
+	if p.top() < p.playArea.Min.Y {
+		p.setPositionToTopBoundary(p.playArea.Min.Y)
+	} else if p.bottom() > p.playArea.Max.Y {
+		p.MoveToBottomBoundary(p.playArea.Max.Y)
 	}
 }
 
