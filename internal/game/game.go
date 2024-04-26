@@ -1,30 +1,33 @@
 package game
 
 import (
+	"celestial-odyssey/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/world/entities"
+	"celestial-odyssey/internal/screen"
 )
 
 type Game struct {
 	// Add game state variables here
-	player *entities.Player
+	GameScreen *screen.Level1
 }
 
-func NewGame() *Game {
+func NewGame(player *entities.Player) *Game {
+	gameScreen := screen.NewGameScreen(320, 200, player)
+
 	return &Game{
-		player: entities.NewPlayer(),
+		GameScreen: gameScreen,
 	}
 }
 
 func (g *Game) Update() error {
-	g.player.Update()
+	g.GameScreen.Update()
 
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.player.Draw(screen)
+	g.GameScreen.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"celestial-odyssey/world/entities"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,7 +11,10 @@ import (
 )
 
 func main() {
-	g := game.NewGame()
+	playerImage := loadPlayerImage()
+	player := entities.NewPlayer(100, 100, 0, playerImage)
+
+	gameInstance := game.NewGame(player)
 
 	screenWidth, screenHeight := 320, 200
 	scale := 3.0
@@ -19,7 +24,16 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetScreenClearedEveryFrame(true)
 
-	if err := ebiten.RunGame(g); err != nil {
+	if err := ebiten.RunGame(gameInstance); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func loadPlayerImage() *ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile("assets/images/player.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return img
 }

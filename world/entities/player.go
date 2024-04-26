@@ -1,27 +1,21 @@
 package entities
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Player struct {
 	X, Y  float64
+	Speed float64
 	Image *ebiten.Image
 }
 
-func NewPlayer() *Player {
-	// Load your player image here
-	img, _, err := ebitenutil.NewImageFromFile("assets/images/player.png")
-	if err != nil {
-		log.Fatal(err)
-	}
+func NewPlayer(x, y, speed float64, image *ebiten.Image) *Player {
 	return &Player{
-		X:     100,
-		Y:     100,
-		Image: img,
+		X:     x,
+		Y:     y,
+		Speed: speed,
+		Image: image,
 	}
 }
 
@@ -32,12 +26,6 @@ func (p *Player) Update() {
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		p.X += 2
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		p.Y -= 2
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		p.Y += 2
 	}
 }
 
