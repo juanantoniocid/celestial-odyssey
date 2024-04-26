@@ -1,13 +1,13 @@
 package main
 
 import (
-	"celestial-odyssey/world/entities"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/game"
+	"celestial-odyssey/world/entities"
 )
 
 func main() {

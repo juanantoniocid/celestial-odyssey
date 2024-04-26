@@ -11,7 +11,7 @@ type Level1 struct {
 	Width, Height int
 }
 
-func NewGameScreen(width, height int, player *entities.Player) *Level1 {
+func NewLevel1(width, height int, player *entities.Player) *Level1 {
 	return &Level1{
 		player: player,
 		Width:  width,

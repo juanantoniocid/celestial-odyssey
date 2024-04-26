@@ -1,24 +1,25 @@
 package screen
 
 import (
-	"celestial-odyssey/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"celestial-odyssey/world/entities"
 )
 
 type Manager struct {
-	CurrentScreen *Level1
+	CurrentLevel Level
 }
 
 func NewScreenManager(width, height int, player *entities.Player) *Manager {
 	return &Manager{
-		CurrentScreen: NewGameScreen(width, height, player),
+		CurrentLevel: NewLevel1(width, height, player),
 	}
 }
 
 func (m *Manager) Update() {
-	m.CurrentScreen.Update()
+	m.CurrentLevel.Update()
 }
 
 func (m *Manager) Draw(screen *ebiten.Image) {
-	m.CurrentScreen.Draw(screen)
+	m.CurrentLevel.Draw(screen)
 }
