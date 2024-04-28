@@ -2,8 +2,6 @@ package entities
 
 import (
 	"image"
-
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Player struct {
@@ -12,18 +10,15 @@ type Player struct {
 	speed         int
 	playArea      image.Rectangle
 
-	image *ebiten.Image
-
 	moveLeft, moveRight bool
 }
 
-func NewPlayer(img *ebiten.Image, playArea image.Rectangle) *Player {
-	return &Player{
-		width:    img.Bounds().Dx(),
-		height:   img.Bounds().Dy(),
-		image:    img,
-		playArea: playArea,
-	}
+func NewPlayer() *Player {
+	return &Player{}
+}
+
+func (p *Player) Position() image.Point {
+	return p.position
 }
 
 func (p *Player) MoveLeft() {
@@ -34,16 +29,25 @@ func (p *Player) MoveRight() {
 	p.moveRight = true
 }
 
+func (p *Player) SetDimensions(width, height int) {
+	p.width = width
+	p.height = height
+}
+
+func (p *Player) SetPlayArea(playArea image.Rectangle) {
+	p.playArea = playArea
+}
+
 func (p *Player) SetSpeed(speed int) {
 	p.speed = speed
 }
 
-func (p *Player) Draw(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
-	op.GeoM.Translate(float64(p.position.X), float64(p.position.Y))
+func (p *Player) SetPositionAtBottomLeft(anchorPoint image.Point) {
+	p.position = image.Point{X: anchorPoint.X, Y: anchorPoint.Y - p.height}
+}
 
-	screen.DrawImage(p.image, op)
+func (p *Player) SetPositionAtBottomRight(anchorPoint image.Point) {
+	p.position = image.Point{X: anchorPoint.X - p.width, Y: anchorPoint.Y - p.height}
 }
 
 func (p *Player) Update() {
@@ -66,12 +70,4 @@ func (p *Player) enforceBoundaries() {
 	} else if p.position.X+p.width > p.playArea.Max.X {
 		p.position.X = p.playArea.Max.X - p.width
 	}
-}
-
-func (p *Player) SetPositionAtBottomLeft(anchorPoint image.Point) {
-	p.position = image.Point{X: anchorPoint.X, Y: anchorPoint.Y - p.height}
-}
-
-func (p *Player) SetPositionAtBottomRight(anchorPoint image.Point) {
-	p.position = image.Point{X: anchorPoint.X - p.width, Y: anchorPoint.Y - p.height}
 }

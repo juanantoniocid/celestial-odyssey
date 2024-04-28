@@ -1,14 +1,9 @@
 package game
 
 import (
-	"image"
-	"log"
-
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/world/entities"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
@@ -18,9 +13,7 @@ type Game struct {
 }
 
 func NewGame(gameWidth, gameHeight int) *Game {
-	playerImage := loadPlayerImage()
-	playArea := image.Rect(0, 0, gameWidth, gameHeight)
-	player := entities.NewPlayer(playerImage, playArea)
+	player := entities.NewPlayer()
 
 	screenManager := screen.NewScreenManager(gameWidth, gameHeight, player)
 
@@ -29,15 +22,6 @@ func NewGame(gameWidth, gameHeight int) *Game {
 		width:         gameWidth,
 		height:        gameHeight,
 	}
-}
-
-func loadPlayerImage() *ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile("assets/images/player.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return img
 }
 
 func (g *Game) Update() error {
