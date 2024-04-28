@@ -15,8 +15,8 @@ type Level1 struct {
 
 func NewLevel1(width, height int, player *entities.Player) *Level1 {
 	groundLeft := image.Point{X: 0, Y: height}
-	player.SetGroundLeft(groundLeft)
-	player.SetSpeed(1)
+	player.SetPositionAtBottomLeft(groundLeft)
+	player.SetSpeed(2)
 
 	return &Level1{
 		player: player,

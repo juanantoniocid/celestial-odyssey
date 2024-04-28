@@ -19,8 +19,8 @@ type Game struct {
 
 func NewGame(gameWidth, gameHeight int) *Game {
 	playerImage := loadPlayerImage()
-	player := entities.NewPlayer(playerImage,
-		image.Rect(0, 0, gameWidth, gameHeight))
+	playArea := image.Rect(0, 0, gameWidth, gameHeight)
+	player := entities.NewPlayer(playerImage, playArea)
 
 	screenManager := screen.NewScreenManager(gameWidth, gameHeight, player)
 

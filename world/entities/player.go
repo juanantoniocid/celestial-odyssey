@@ -7,22 +7,22 @@ import (
 )
 
 type Player struct {
-	position    image.Point
-	hitbox      image.Rectangle
-	levelBounds image.Rectangle
-	speed       int
+	position      image.Point
+	width, height int
+	speed         int
+	playArea      image.Rectangle
 
 	image *ebiten.Image
 
-	moveLeft  bool
-	moveRight bool
+	moveLeft, moveRight bool
 }
 
 func NewPlayer(img *ebiten.Image, playArea image.Rectangle) *Player {
 	return &Player{
-		hitbox:      img.Bounds(),
-		image:       img,
-		levelBounds: playArea,
+		width:    img.Bounds().Dx(),
+		height:   img.Bounds().Dy(),
+		image:    img,
+		playArea: playArea,
 	}
 }
 
@@ -61,26 +61,17 @@ func (p *Player) Update() {
 }
 
 func (p *Player) enforceBoundaries() {
-	if p.position.X < p.levelBounds.Min.X {
-		p.position.X = p.levelBounds.Min.X
-	} else if p.position.X+p.hitbox.Dx() > p.levelBounds.Max.X {
-		p.position.X = p.levelBounds.Max.X - p.hitbox.Dx()
-	}
-
-	if p.position.Y < p.levelBounds.Min.Y {
-		p.position.Y = p.levelBounds.Min.Y
-	} else if p.position.Y+p.hitbox.Dy() > p.levelBounds.Max.Y {
-		p.position.Y = p.levelBounds.Max.Y - p.hitbox.Dy()
+	if p.position.X < p.playArea.Min.X {
+		p.position.X = p.playArea.Min.X
+	} else if p.position.X+p.width > p.playArea.Max.X {
+		p.position.X = p.playArea.Max.X - p.width
 	}
 }
 
-func (p *Player) SetGroundRight(ground image.Point) {
-	p.position = ground
-	p.position.X -= p.hitbox.Dx()
-	p.position.Y -= p.hitbox.Dy()
+func (p *Player) SetPositionAtBottomLeft(anchorPoint image.Point) {
+	p.position = image.Point{X: anchorPoint.X, Y: anchorPoint.Y - p.height}
 }
 
-func (p *Player) SetGroundLeft(ground image.Point) {
-	p.position = ground
-	p.position.Y -= p.hitbox.Dy()
+func (p *Player) SetPositionAtBottomRight(anchorPoint image.Point) {
+	p.position = image.Point{X: anchorPoint.X - p.width, Y: anchorPoint.Y - p.height}
 }
