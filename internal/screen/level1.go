@@ -1,6 +1,8 @@
 package screen
 
 import (
+	"image"
+
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/world/entities"
@@ -12,8 +14,8 @@ type Level1 struct {
 }
 
 func NewLevel1(width, height int, player *entities.Player) *Level1 {
-	player.MoveToRightBoundary(width)
-	player.MoveToBottomBoundary(height)
+	groundLeft := image.Point{X: 0, Y: height}
+	player.SetGroundLeft(groundLeft)
 	player.SetSpeed(1)
 
 	return &Level1{
