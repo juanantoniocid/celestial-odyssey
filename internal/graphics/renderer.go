@@ -1,8 +1,7 @@
 package graphics
 
 import (
-	"image"
-
+	"celestial-odyssey/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -13,10 +12,16 @@ func NewRenderer() *Renderer {
 	return &Renderer{}
 }
 
-func (r *Renderer) DrawPlayer(screen, image *ebiten.Image, position image.Point) {
+func (r *Renderer) DrawPlayer(screen, playerImage *ebiten.Image, player *entities.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
-	op.GeoM.Translate(float64(position.X), float64(position.Y))
 
-	screen.DrawImage(image, op)
+	if player.Facing() == entities.Right {
+		// Flip the image horizontally when facing left
+		op.GeoM.Scale(-1, 1)
+		op.GeoM.Translate(float64(playerImage.Bounds().Dx()), 0)
+	}
+	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
+
+	screen.DrawImage(playerImage, op)
 }

@@ -59,5 +59,5 @@ func (l1 *Level1) Update() {
 }
 
 func (l1 *Level1) Draw(screen *ebiten.Image) {
-	l1.renderer.DrawPlayer(screen, l1.playerImage, l1.player.Position())
+	l1.renderer.DrawPlayer(screen, l1.playerImage, l1.player)
 }

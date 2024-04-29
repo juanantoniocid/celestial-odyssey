@@ -4,11 +4,19 @@ import (
 	"image"
 )
 
+type Direction int
+
+const (
+	Left Direction = iota
+	Right
+)
+
 type Player struct {
 	position      image.Point
 	width, height int
 	speed         int
 	playArea      image.Rectangle
+	facing        Direction
 
 	moveLeft, moveRight bool
 }
@@ -19,6 +27,10 @@ func NewPlayer() *Player {
 
 func (p *Player) Position() image.Point {
 	return p.position
+}
+
+func (p *Player) Facing() Direction {
+	return p.facing
 }
 
 func (p *Player) MoveLeft() {
@@ -54,11 +66,13 @@ func (p *Player) Update() {
 	if p.moveLeft {
 		p.moveLeft = false
 		p.position.X -= p.speed
+		p.facing = Left
 	}
 
 	if p.moveRight {
 		p.moveRight = false
 		p.position.X += p.speed
+		p.facing = Right
 	}
 
 	p.enforceBoundaries()
