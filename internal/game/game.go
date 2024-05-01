@@ -1,22 +1,21 @@
 package game
 
 import (
-	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+type ScreenManager interface {
+	Update()
+	Draw(screen *ebiten.Image)
+}
+
 type Game struct {
-	screenManager *screen.Manager
+	screenManager ScreenManager
 	width         int
 	height        int
 }
 
-func NewGame(gameWidth, gameHeight int) *Game {
-	player := entities.NewPlayer()
-
-	screenManager := screen.NewScreenManager(gameWidth, gameHeight, player)
-
+func NewGame(gameWidth, gameHeight int, screenManager ScreenManager) *Game {
 	return &Game{
 		screenManager: screenManager,
 		width:         gameWidth,
