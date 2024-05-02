@@ -3,17 +3,19 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/world/entities"
 )
 
 type Manager struct {
 	currentLevel Level
-	renderer     *graphics.Renderer
+	renderer     Renderer
 }
 
-func NewScreenManager(width, height int, player *entities.Player, playerImage *ebiten.Image) *Manager {
-	renderer := graphics.NewRenderer(playerImage)
+type Renderer interface {
+	DrawPlayer(screen *ebiten.Image, player *entities.Player)
+}
+
+func NewManager(width, height int, player *entities.Player, renderer Renderer) *Manager {
 	return &Manager{
 		currentLevel: NewLevel1(width, height, player, renderer),
 		renderer:     renderer,

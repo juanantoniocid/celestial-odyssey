@@ -5,17 +5,16 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/world/entities"
 )
 
 type Level1 struct {
 	player        *entities.Player
 	Width, Height int
-	renderer      *graphics.Renderer
+	renderer      Renderer
 }
 
-func NewLevel1(width, height int, player *entities.Player, renderer *graphics.Renderer) *Level1 {
+func NewLevel1(width, height int, player *entities.Player, renderer Renderer) *Level1 {
 	groundLeft := image.Point{X: 0, Y: height}
 
 	player.SetPlayArea(image.Rect(0, 0, width, height))

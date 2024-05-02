@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/game"
+	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/world/entities"
 )
@@ -22,7 +23,8 @@ func main() {
 	applyWindowSettings()
 
 	player, playerImage := createPlayer()
-	screenManager := screen.NewScreenManager(windowWidth, windowHeight, player, playerImage)
+	renderer := graphics.NewRenderer(playerImage)
+	screenManager := screen.NewManager(windowWidth, windowHeight, player, renderer)
 
 	gameInstance := game.NewGame(windowWidth, windowHeight, screenManager)
 	if err := ebiten.RunGame(gameInstance); err != nil {
