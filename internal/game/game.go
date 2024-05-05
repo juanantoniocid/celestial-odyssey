@@ -2,6 +2,8 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"celestial-odyssey/util"
 )
 
 type ScreenManager interface {
@@ -15,11 +17,11 @@ type Game struct {
 	height        int
 }
 
-func NewGame(gameWidth, gameHeight int, screenManager ScreenManager) *Game {
+func NewGame(dimensions util.Dimensions, screenManager ScreenManager) *Game {
 	return &Game{
 		screenManager: screenManager,
-		width:         gameWidth,
-		height:        gameHeight,
+		width:         dimensions.Width,
+		height:        dimensions.Height,
 	}
 }
 

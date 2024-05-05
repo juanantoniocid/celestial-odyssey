@@ -3,6 +3,7 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
+	"celestial-odyssey/util"
 	"celestial-odyssey/world/entities"
 )
 
@@ -15,9 +16,9 @@ type Renderer interface {
 	DrawPlayer(screen *ebiten.Image, player *entities.Player)
 }
 
-func NewManager(width, height int, player *entities.Player, renderer Renderer) *Manager {
+func NewManager(dimensions util.Dimensions, player *entities.Player, renderer Renderer) *Manager {
 	return &Manager{
-		currentLevel: NewLevel1(width, height, player, renderer),
+		currentLevel: NewLevel1(dimensions, player, renderer),
 		renderer:     renderer,
 	}
 }

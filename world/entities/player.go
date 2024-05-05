@@ -21,8 +21,11 @@ type Player struct {
 	moveLeft, moveRight bool
 }
 
-func NewPlayer() *Player {
-	return &Player{}
+func NewPlayer(width, height int) *Player {
+	return &Player{
+		width:  width,
+		height: height,
+	}
 }
 
 func (p *Player) Position() image.Point {
@@ -39,11 +42,6 @@ func (p *Player) MoveLeft() {
 
 func (p *Player) MoveRight() {
 	p.moveRight = true
-}
-
-func (p *Player) SetDimensions(width, height int) {
-	p.width = width
-	p.height = height
 }
 
 func (p *Player) SetPlayArea(playArea image.Rectangle) {

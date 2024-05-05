@@ -6,43 +6,41 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
+	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/world/entities"
 )
 
-const (
-	gameTitle    = "Celestial Odyssey"
-	windowWidth  = 320
-	windowHeight = 200
-	scale        = 3.0
-)
-
 func main() {
-	applyWindowSettings()
+	cfg := config.LoadConfig()
+	applyWindowSettings(cfg.Window)
+	g := createGame(cfg.Game)
 
-	player, playerImage := createPlayer()
-	renderer := graphics.NewRenderer(playerImage)
-	screenManager := screen.NewManager(windowWidth, windowHeight, player, renderer)
-
-	gameInstance := game.NewGame(windowWidth, windowHeight, screenManager)
-	if err := ebiten.RunGame(gameInstance); err != nil {
+	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func applyWindowSettings() {
-	ebiten.SetWindowTitle(gameTitle)
-	ebiten.SetWindowSize(int(float64(windowWidth)*scale), int(float64(windowHeight)*scale))
+func applyWindowSettings(cfg config.Window) {
+	ebiten.SetWindowTitle(cfg.Title)
+	ebiten.SetWindowSize(cfg.Dimensions.Width, cfg.Dimensions.Height)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetScreenClearedEveryFrame(true)
+	ebiten.SetScreenClearedEveryFrame(cfg.ScreenClearedEveryFrame)
+}
+
+func createGame(cfg config.Game) *game.Game {
+	player, playerImage := createPlayer()
+	renderer := graphics.NewRenderer(playerImage)
+	screenManager := screen.NewManager(cfg.Dimensions, player, renderer)
+
+	return game.NewGame(cfg.Dimensions, screenManager)
 }
 
 func createPlayer() (player *entities.Player, playerImage *ebiten.Image) {
 	playerImage = loadPlayerImage()
-	player = entities.NewPlayer()
-	player.SetDimensions(playerImage.Bounds().Dx(), playerImage.Bounds().Dy())
+	player = entities.NewPlayer(playerImage.Bounds().Dx(), playerImage.Bounds().Dy())
 
 	return player, playerImage
 }

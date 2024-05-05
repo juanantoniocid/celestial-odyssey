@@ -5,26 +5,24 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
+	"celestial-odyssey/util"
 	"celestial-odyssey/world/entities"
 )
 
 type Level1 struct {
-	player        *entities.Player
-	Width, Height int
-	renderer      Renderer
+	player   *entities.Player
+	renderer Renderer
 }
 
-func NewLevel1(width, height int, player *entities.Player, renderer Renderer) *Level1 {
-	groundLeft := image.Point{X: 0, Y: height}
+func NewLevel1(dimensions util.Dimensions, player *entities.Player, renderer Renderer) *Level1 {
+	groundLeft := image.Point{X: 0, Y: dimensions.Height}
 
-	player.SetPlayArea(image.Rect(0, 0, width, height))
+	player.SetPlayArea(image.Rect(0, 0, dimensions.Width-1, dimensions.Height-1))
 	player.SetPositionAtBottomLeft(groundLeft)
 	player.SetSpeed(2)
 
 	return &Level1{
 		player:   player,
-		Width:    width,
-		Height:   height,
 		renderer: renderer,
 	}
 }
