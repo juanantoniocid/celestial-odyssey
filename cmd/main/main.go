@@ -15,8 +15,11 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
+
 	applyWindowSettings(cfg.Window)
-	g := createGame(cfg.Game)
+
+	screenManager := createScreenManager(cfg.Screen)
+	g := createGame(screenManager)
 
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
@@ -27,15 +30,19 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowTitle(cfg.Title)
 	ebiten.SetWindowSize(cfg.Dimensions.Width, cfg.Dimensions.Height)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetScreenClearedEveryFrame(cfg.ScreenClearedEveryFrame)
 }
 
-func createGame(cfg config.Game) *game.Game {
+func createScreenManager(cfg config.Screen) *screen.Manager {
+	applyScreenSettings(cfg)
+
 	player, playerImage := createPlayer()
 	renderer := graphics.NewRenderer(playerImage)
-	screenManager := screen.NewManager(cfg.Dimensions, player, renderer)
 
-	return game.NewGame(cfg.Dimensions, screenManager)
+	return screen.NewManager(cfg, player, renderer)
+}
+
+func applyScreenSettings(cfg config.Screen) {
+	ebiten.SetScreenClearedEveryFrame(cfg.ClearedEveryFrame)
 }
 
 func createPlayer() (player *entities.Player, playerImage *ebiten.Image) {
@@ -52,4 +59,8 @@ func loadPlayerImage() *ebiten.Image {
 	}
 
 	return img
+}
+
+func createGame(screenManager game.ScreenManager) *game.Game {
+	return game.NewGame(screenManager)
 }

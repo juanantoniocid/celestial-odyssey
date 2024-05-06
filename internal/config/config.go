@@ -8,38 +8,38 @@ import (
 
 type Config struct {
 	Window Window
-	Game   Game
+	Screen Screen
 }
 
 type Window struct {
-	Title                   string
-	Dimensions              util.Dimensions
-	ResizingMode            ebiten.WindowResizingModeType
-	ScreenClearedEveryFrame bool
+	Title        string
+	Dimensions   util.Dimensions
+	ResizingMode ebiten.WindowResizingModeType
 }
 
-type Game struct {
-	Dimensions util.Dimensions
+type Screen struct {
+	ClearedEveryFrame bool
+	Dimensions        util.Dimensions
 }
 
 func LoadConfig() Config {
 	return Config{
 		Window: loadWindow(),
-		Game:   loadGame(),
+		Screen: loadScreen(),
 	}
 }
 
 func loadWindow() Window {
 	return Window{
-		Title:                   "Celestial Odyssey",
-		Dimensions:              util.Dimensions{Width: 960, Height: 720},
-		ResizingMode:            ebiten.WindowResizingModeEnabled,
-		ScreenClearedEveryFrame: true,
+		Title:        "Celestial Odyssey",
+		Dimensions:   util.Dimensions{Width: 960, Height: 720},
+		ResizingMode: ebiten.WindowResizingModeEnabled,
 	}
 }
 
-func loadGame() Game {
-	return Game{
-		Dimensions: util.Dimensions{Width: 320, Height: 240},
+func loadScreen() Screen {
+	return Screen{
+		ClearedEveryFrame: true,
+		Dimensions:        util.Dimensions{Width: 320, Height: 240},
 	}
 }

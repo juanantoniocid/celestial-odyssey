@@ -2,26 +2,21 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"celestial-odyssey/util"
 )
 
 type ScreenManager interface {
 	Update()
 	Draw(screen *ebiten.Image)
+	Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int)
 }
 
 type Game struct {
 	screenManager ScreenManager
-	width         int
-	height        int
 }
 
-func NewGame(dimensions util.Dimensions, screenManager ScreenManager) *Game {
+func NewGame(screenManager ScreenManager) *Game {
 	return &Game{
 		screenManager: screenManager,
-		width:         dimensions.Width,
-		height:        dimensions.Height,
 	}
 }
 
@@ -36,5 +31,5 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return g.width, g.height
+	return g.screenManager.Layout(outsideWidth, outsideHeight)
 }
