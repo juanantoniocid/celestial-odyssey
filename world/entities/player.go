@@ -79,7 +79,7 @@ func (p *Player) Update() {
 func (p *Player) enforceBoundaries() {
 	if p.position.X < p.playArea.Min.X {
 		p.position.X = p.playArea.Min.X
-	} else if p.position.X+p.width > p.playArea.Max.X {
-		p.position.X = p.playArea.Max.X - p.width
+	} else if p.position.X+p.width-1 > p.playArea.Max.X {
+		p.position.X = p.playArea.Max.X - p.width + 1
 	}
 }
