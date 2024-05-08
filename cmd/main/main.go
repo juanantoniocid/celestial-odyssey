@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -53,12 +54,35 @@ func createPlayer() (player *entities.Player, playerImage *ebiten.Image) {
 }
 
 func loadPlayerImage() *ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile("assets/images/player.png")
+	images, err := loadPlayerSprites()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("failed to load player sprites:", err)
+		return nil
 	}
 
-	return img
+	return images[0]
+}
+
+func loadPlayerSprites() ([]*ebiten.Image, error) {
+	img, _, err := ebitenutil.NewImageFromFile("assets/images/player.png")
+	if err != nil {
+		log.Fatal("failed to load player sprite sheet:", err)
+		return nil, err
+	}
+
+	var sprites []*ebiten.Image
+	frameWidth := 16
+	frameHeight := 32
+	numFrames := img.Bounds().Max.X / frameWidth // Assuming the sheet is a single row
+
+	// Extract each frame from the sprite sheet.
+	for i := 0; i < numFrames; i++ {
+		x := i * frameWidth
+		frame := img.SubImage(image.Rect(x, 0, x+frameWidth, frameHeight)).(*ebiten.Image)
+		sprites = append(sprites, frame)
+	}
+
+	return sprites, nil
 }
 
 func createGame(screenManager game.ScreenManager) *game.Game {
