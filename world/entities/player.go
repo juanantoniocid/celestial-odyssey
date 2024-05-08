@@ -2,6 +2,8 @@ package entities
 
 import (
 	"image"
+
+	"celestial-odyssey/util"
 )
 
 type Direction int
@@ -21,10 +23,10 @@ type Player struct {
 	moveLeft, moveRight bool
 }
 
-func NewPlayer(width, height int) *Player {
+func NewPlayer(dimensions util.Dimensions) *Player {
 	return &Player{
-		width:  width,
-		height: height,
+		width:  dimensions.Width,
+		height: dimensions.Height,
 	}
 }
 

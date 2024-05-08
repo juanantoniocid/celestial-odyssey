@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Window Window
 	Screen Screen
+	Player Player
 }
 
 type Window struct {
@@ -22,10 +23,16 @@ type Screen struct {
 	Dimensions        util.Dimensions
 }
 
+type Player struct {
+	Dimensions  util.Dimensions
+	SpritesFile string
+}
+
 func LoadConfig() Config {
 	return Config{
 		Window: loadWindow(),
 		Screen: loadScreen(),
+		Player: loadPlayer(),
 	}
 }
 
@@ -41,5 +48,12 @@ func loadScreen() Screen {
 	return Screen{
 		ClearedEveryFrame: true,
 		Dimensions:        util.Dimensions{Width: 320, Height: 240},
+	}
+}
+
+func loadPlayer() Player {
+	return Player{
+		Dimensions:  util.Dimensions{Width: 16, Height: 32},
+		SpritesFile: "assets/images/player.png",
 	}
 }

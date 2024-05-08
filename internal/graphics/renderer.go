@@ -6,13 +6,26 @@ import (
 	"celestial-odyssey/world/entities"
 )
 
+type SpriteType int
+
+const (
+	PlayerWalkingLeft1 SpriteType = iota
+	PlayerWalkingLeft2
+	PlayerWalkingLeft3
+	PlayerIdleLeft
+	PlayerIdleRight
+	PlayerWalkingRight3
+	PlayerWalkingRight2
+	PlayerWalkingRight
+)
+
 type Renderer struct {
-	playerImage *ebiten.Image
+	playerImages []*ebiten.Image
 }
 
-func NewRenderer(playerImage *ebiten.Image) *Renderer {
+func NewRenderer(playerImages []*ebiten.Image) *Renderer {
 	return &Renderer{
-		playerImage: playerImage,
+		playerImages: playerImages,
 	}
 }
 
@@ -20,12 +33,11 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
-	if player.Facing() == entities.Right {
-		// Flip the image horizontally when facing left
-		op.GeoM.Scale(-1, 1)
-		op.GeoM.Translate(float64(r.playerImage.Bounds().Dx()), 0)
+	frame := PlayerIdleRight
+	if player.Facing() == entities.Left {
+		frame = PlayerIdleLeft
 	}
 	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
 
-	screen.DrawImage(r.playerImage, op)
+	screen.DrawImage(r.playerImages[frame], op)
 }
