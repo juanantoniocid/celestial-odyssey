@@ -3,23 +3,37 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
+	"celestial-odyssey/internal/config"
+	"celestial-odyssey/util"
 	"celestial-odyssey/world/entities"
 )
 
 type Manager struct {
-	CurrentLevel Level
+	currentLevel Level
+	renderer     Renderer
+	dimensions   util.Dimensions
 }
 
-func NewScreenManager(width, height int, player *entities.Player) *Manager {
+type Renderer interface {
+	DrawPlayer(screen *ebiten.Image, player *entities.Player)
+}
+
+func NewManager(cfg config.Screen, player *entities.Player, renderer Renderer) *Manager {
 	return &Manager{
-		CurrentLevel: NewLevel1(width, height, player),
+		currentLevel: NewLevel1(cfg, player, renderer),
+		renderer:     renderer,
+		dimensions:   cfg.Dimensions,
 	}
 }
 
 func (m *Manager) Update() {
-	m.CurrentLevel.Update()
+	m.currentLevel.Update()
 }
 
 func (m *Manager) Draw(screen *ebiten.Image) {
-	m.CurrentLevel.Draw(screen)
+	m.currentLevel.Draw(screen)
+}
+
+func (m *Manager) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHeight int) {
+	return m.dimensions.Width, m.dimensions.Height
 }
