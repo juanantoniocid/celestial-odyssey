@@ -34,6 +34,27 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	op.Filter = ebiten.FilterNearest
 
 	var frame SpriteType
+	switch player.Action() {
+	case entities.Idle:
+		frame = r.getIdleSprite(player)
+	case entities.Walking:
+		frame = r.getWalkingSprite(player)
+	}
+
+	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
+	screen.DrawImage(r.playerImages[frame], op)
+}
+
+func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
+	if player.Facing() == entities.Left {
+		return PlayerIdleLeft
+	}
+	return PlayerIdleRight
+}
+
+func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
+	var frame SpriteType
+
 	switch player.Facing() {
 	case entities.Left:
 		switch player.FrameIndex() {
@@ -55,6 +76,5 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 		}
 	}
 
-	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
-	screen.DrawImage(r.playerImages[frame], op)
+	return frame
 }

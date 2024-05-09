@@ -13,12 +13,21 @@ const (
 	Right
 )
 
+type Action int
+
+const (
+	Idle Action = iota
+	Walking
+)
+
 type Player struct {
 	position      image.Point
 	width, height int
 	speed         int
 	playArea      image.Rectangle
-	facing        Direction
+
+	facing Direction
+	action Action
 
 	moveLeft, moveRight bool
 	frameIndex          int
@@ -38,6 +47,10 @@ func (p *Player) Position() image.Point {
 
 func (p *Player) Facing() Direction {
 	return p.facing
+}
+
+func (p *Player) Action() Action {
+	return p.action
 }
 
 func (p *Player) FrameIndex() int {
@@ -73,20 +86,26 @@ func (p *Player) Update() {
 		p.moveLeft = false
 		p.position.X -= p.speed
 		p.facing = Left
-		p.updateAnimation()
+		p.action = Walking
 	} else if p.moveRight {
 		p.moveRight = false
 		p.position.X += p.speed
 		p.facing = Right
-		p.updateAnimation()
+		p.action = Walking
 	} else {
-		p.frameIndex = 0
+		p.action = Idle
 	}
 
+	p.updateAnimation()
 	p.enforceBoundaries()
 }
 
 func (p *Player) updateAnimation() {
+	if p.action == Idle {
+		p.frameIndex = 0
+		return
+	}
+
 	framesToUpdate := 10
 	framesPerDirection := 3
 
