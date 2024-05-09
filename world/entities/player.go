@@ -21,6 +21,8 @@ type Player struct {
 	facing        Direction
 
 	moveLeft, moveRight bool
+	frameIndex          int
+	frameCounter        int
 }
 
 func NewPlayer(dimensions util.Dimensions) *Player {
@@ -36,6 +38,10 @@ func (p *Player) Position() image.Point {
 
 func (p *Player) Facing() Direction {
 	return p.facing
+}
+
+func (p *Player) FrameIndex() int {
+	return p.frameIndex
 }
 
 func (p *Player) MoveLeft() {
@@ -67,15 +73,28 @@ func (p *Player) Update() {
 		p.moveLeft = false
 		p.position.X -= p.speed
 		p.facing = Left
-	}
-
-	if p.moveRight {
+		p.updateAnimation()
+	} else if p.moveRight {
 		p.moveRight = false
 		p.position.X += p.speed
 		p.facing = Right
+		p.updateAnimation()
+	} else {
+		p.frameIndex = 0
 	}
 
 	p.enforceBoundaries()
+}
+
+func (p *Player) updateAnimation() {
+	framesToUpdate := 10
+	framesPerDirection := 3
+
+	p.frameCounter++
+	if p.frameCounter >= framesToUpdate {
+		p.frameCounter = 0
+		p.frameIndex = (p.frameIndex + 1) % framesPerDirection
+	}
 }
 
 func (p *Player) enforceBoundaries() {

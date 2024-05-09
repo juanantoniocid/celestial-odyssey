@@ -16,7 +16,7 @@ const (
 	PlayerIdleRight
 	PlayerWalkingRight3
 	PlayerWalkingRight2
-	PlayerWalkingRight
+	PlayerWalkingRight1
 )
 
 type Renderer struct {
@@ -33,11 +33,28 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
-	frame := PlayerIdleRight
-	if player.Facing() == entities.Left {
-		frame = PlayerIdleLeft
+	var frame SpriteType
+	switch player.Facing() {
+	case entities.Left:
+		switch player.FrameIndex() {
+		case 0:
+			frame = PlayerWalkingLeft1
+		case 1:
+			frame = PlayerWalkingLeft2
+		case 2:
+			frame = PlayerWalkingLeft3
+		}
+	default:
+		switch player.FrameIndex() {
+		case 0:
+			frame = PlayerWalkingRight1
+		case 1:
+			frame = PlayerWalkingRight2
+		case 2:
+			frame = PlayerWalkingRight3
+		}
 	}
-	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
 
+	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
 	screen.DrawImage(r.playerImages[frame], op)
 }
