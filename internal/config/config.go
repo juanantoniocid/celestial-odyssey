@@ -39,7 +39,7 @@ func LoadConfig() Config {
 func loadWindow() Window {
 	return Window{
 		Title:        "Celestial Odyssey",
-		Dimensions:   util.Dimensions{Width: 960, Height: 720},
+		Dimensions:   util.Dimensions{Width: 960, Height: 600},
 		ResizingMode: ebiten.WindowResizingModeEnabled,
 	}
 }
@@ -47,7 +47,7 @@ func loadWindow() Window {
 func loadScreen() Screen {
 	return Screen{
 		ClearedEveryFrame: true,
-		Dimensions:        util.Dimensions{Width: 320, Height: 240},
+		Dimensions:        util.Dimensions{Width: 320, Height: 200},
 	}
 }
 
