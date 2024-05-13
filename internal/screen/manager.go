@@ -20,7 +20,7 @@ type Renderer interface {
 
 func NewManager(cfg config.Screen, player *entities.Player, renderer Renderer) *Manager {
 	return &Manager{
-		currentLevel: NewLevel1(cfg, player, renderer),
+		currentLevel: NewLevel(cfg, player, renderer),
 		renderer:     renderer,
 		dimensions:   cfg.Dimensions,
 	}
