@@ -5,33 +5,47 @@ import (
 
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/util"
-	"celestial-odyssey/world/entities"
 )
 
+type Level interface {
+	Init()
+	AddScenario(scenario Scenario)
+	Update() error
+	Draw(screen *ebiten.Image)
+}
+
 type Manager struct {
-	currentLevel Level
-	renderer     Renderer
-	dimensions   util.Dimensions
+	levels       []Level
+	currentLevel int
+
+	dimensions util.Dimensions
 }
 
-type Renderer interface {
-	DrawPlayer(screen *ebiten.Image, player *entities.Player)
-}
-
-func NewManager(cfg config.Screen, player *entities.Player, renderer Renderer) *Manager {
+func NewManager(cfg config.Screen) *Manager {
 	return &Manager{
-		currentLevel: NewLevel1(cfg, player, renderer),
-		renderer:     renderer,
+		levels:       make([]Level, 0),
+		currentLevel: 0,
 		dimensions:   cfg.Dimensions,
 	}
 }
 
-func (m *Manager) Update() {
-	m.currentLevel.Update()
+func (m *Manager) Init() {
+	currentLevel := m.levels[m.currentLevel]
+	currentLevel.Init()
+}
+
+func (m *Manager) AddLevel(level Level) {
+	m.levels = append(m.levels, level)
+}
+
+func (m *Manager) Update() error {
+	currentLevel := m.levels[m.currentLevel]
+	return currentLevel.Update()
 }
 
 func (m *Manager) Draw(screen *ebiten.Image) {
-	m.currentLevel.Draw(screen)
+	currentLevel := m.levels[m.currentLevel]
+	currentLevel.Draw(screen)
 }
 
 func (m *Manager) Layout(_outsideWidth, _outsideHeight int) (screenWidth, screenHeight int) {

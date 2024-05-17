@@ -1,9 +1,16 @@
 package config
 
 import (
+	"image"
+
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/util"
+)
+
+const (
+	screenWidth  = 320
+	screenHeight = 200
 )
 
 type Config struct {
@@ -25,6 +32,8 @@ type Screen struct {
 
 type Player struct {
 	Dimensions  util.Dimensions
+	Speed       int
+	PlayArea    image.Rectangle
 	SpritesFile string
 }
 
@@ -39,7 +48,7 @@ func LoadConfig() Config {
 func loadWindow() Window {
 	return Window{
 		Title:        "Celestial Odyssey",
-		Dimensions:   util.Dimensions{Width: 960, Height: 720},
+		Dimensions:   util.Dimensions{Width: 960, Height: 600},
 		ResizingMode: ebiten.WindowResizingModeEnabled,
 	}
 }
@@ -47,13 +56,18 @@ func loadWindow() Window {
 func loadScreen() Screen {
 	return Screen{
 		ClearedEveryFrame: true,
-		Dimensions:        util.Dimensions{Width: 320, Height: 240},
+		Dimensions:        util.Dimensions{Width: screenWidth, Height: screenHeight},
 	}
 }
 
 func loadPlayer() Player {
 	return Player{
-		Dimensions:  util.Dimensions{Width: 16, Height: 32},
+		Dimensions: util.Dimensions{Width: 16, Height: 32},
+		Speed:      2,
+		PlayArea: image.Rectangle{
+			Min: image.Point{X: 0, Y: 0},
+			Max: image.Point{X: screenWidth - 1, Y: screenHeight - 1},
+		},
 		SpritesFile: "assets/images/player.png",
 	}
 }

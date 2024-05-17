@@ -5,7 +5,8 @@ import (
 )
 
 type ScreenManager interface {
-	Update()
+	Init()
+	Update() error
 	Draw(screen *ebiten.Image)
 	Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int)
 }
@@ -20,10 +21,12 @@ func NewGame(screenManager ScreenManager) *Game {
 	}
 }
 
-func (g *Game) Update() error {
-	g.screenManager.Update()
+func (g *Game) Init() {
+	g.screenManager.Init()
+}
 
-	return nil
+func (g *Game) Update() error {
+	return g.screenManager.Update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {

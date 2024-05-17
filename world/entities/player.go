@@ -3,7 +3,7 @@ package entities
 import (
 	"image"
 
-	"celestial-odyssey/util"
+	"celestial-odyssey/internal/config"
 )
 
 type Direction int
@@ -34,15 +34,30 @@ type Player struct {
 	frameCounter        int
 }
 
-func NewPlayer(dimensions util.Dimensions) *Player {
+func NewPlayer(cfg config.Player) *Player {
 	return &Player{
-		width:  dimensions.Width,
-		height: dimensions.Height,
+		position: image.Point{X: 0, Y: 0},
+		width:    cfg.Dimensions.Width,
+		height:   cfg.Dimensions.Height,
+		speed:    cfg.Speed,
+		playArea: cfg.PlayArea,
+
+		facing: Right,
+		action: Idle,
+
+		moveLeft:     false,
+		moveRight:    false,
+		frameIndex:   0,
+		frameCounter: 0,
 	}
 }
 
 func (p *Player) Position() image.Point {
 	return p.position
+}
+
+func (p *Player) Width() int {
+	return p.width
 }
 
 func (p *Player) Facing() Direction {
