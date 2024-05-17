@@ -1,75 +1,58 @@
 package screen
 
 import (
-	"image"
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-
-	"celestial-odyssey/internal/config"
-	"celestial-odyssey/world/entities"
 )
 
 type Level interface {
-	Update()
+	Update() error
 	Draw(screen *ebiten.Image)
+	AddScenario(scenario Scenario)
+	Init()
 }
 
 type LevelImpl struct {
-	player   *entities.Player
-	scenario *ebiten.Image
-	renderer Renderer
+	scenarios       []Scenario
+	currentScenario int
 }
 
-func NewLevel(cfg config.Screen, player *entities.Player, renderer Renderer) *LevelImpl {
-	levelWidth := cfg.Dimensions.Width
-	levelHeight := cfg.Dimensions.Height
-	groundLeft := image.Point{X: 0, Y: levelHeight - 1}
-
-	player.SetPlayArea(image.Rect(0, 0, levelWidth-1, levelHeight-1))
-	player.SetPositionAtBottomLeft(groundLeft)
-	player.SetSpeed(2)
-
-	background := loadBackgroundImage("assets/images/landing-site.png")
-
+func NewLevel() *LevelImpl {
 	return &LevelImpl{
-		player:   player,
-		scenario: background,
-		renderer: renderer,
+		scenarios:       make([]Scenario, 0),
+		currentScenario: 0,
 	}
 }
 
-func loadBackgroundImage(file string) *ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile(file)
+func (l *LevelImpl) AddScenario(scenario Scenario) {
+	l.scenarios = append(l.scenarios, scenario)
+}
+
+func (l *LevelImpl) Init() {
+	currentScenario := l.scenarios[l.currentScenario]
+	currentScenario.SetPlayerPositionAtLeft()
+}
+
+func (l *LevelImpl) Update() error {
+	currentScenario := l.scenarios[l.currentScenario]
+	err := currentScenario.Update()
 	if err != nil {
-		log.Fatal("failed to load scenario image:", err)
-		return nil
+		return err
 	}
 
-	return img
-}
-
-func (l1 *LevelImpl) Update() {
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		l1.player.MoveLeft()
+	if currentScenario.ShouldTransitionRight() && l.currentScenario < len(l.scenarios)-1 {
+		l.currentScenario++
+		nextScenario := l.scenarios[l.currentScenario]
+		nextScenario.SetPlayerPositionAtLeft()
+	} else if currentScenario.ShouldTransitionLeft() && l.currentScenario > 0 {
+		l.currentScenario--
+		prevScenario := l.scenarios[l.currentScenario]
+		prevScenario.SetPlayerPositionAtRight()
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		l1.player.MoveRight()
-	}
-
-	l1.player.Update()
+	return nil
 }
 
-func (l1 *LevelImpl) Draw(screen *ebiten.Image) {
-	l1.drawScenario(screen)
-	l1.renderer.DrawPlayer(screen, l1.player)
-}
-
-func (l1 *LevelImpl) drawScenario(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
-
-	screen.DrawImage(l1.scenario, op)
+func (l *LevelImpl) Draw(screen *ebiten.Image) {
+	currentScenario := l.scenarios[l.currentScenario]
+	currentScenario.Draw(screen)
 }

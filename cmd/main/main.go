@@ -21,7 +21,10 @@ func main() {
 	applyWindowSettings(cfg.Window)
 
 	player, playerImages := createPlayer(cfg.Player)
-	screenManager := createScreenManager(cfg.Screen, player, playerImages)
+
+	levels := createLevel(cfg.Screen, player, graphics.NewRenderer(playerImages))
+
+	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 	g := createGame(screenManager)
 
 	if err := ebiten.RunGame(g); err != nil {
@@ -36,7 +39,7 @@ func applyWindowSettings(cfg config.Window) {
 }
 
 func createPlayer(cfg config.Player) (player *entities.Player, playerImages []*ebiten.Image) {
-	player = entities.NewPlayer(cfg.Dimensions)
+	player = entities.NewPlayer(cfg)
 	playerImages = loadPlayerImages(cfg.SpritesFile, cfg.Dimensions)
 
 	return player, playerImages
@@ -63,11 +66,42 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	return images
 }
 
-func createScreenManager(cfg config.Screen, player *entities.Player, playerImages []*ebiten.Image) *screen.Manager {
-	applyScreenSettings(cfg)
-	renderer := graphics.NewRenderer(playerImages)
+func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.Renderer) screen.Level {
+	level := screen.NewLevel()
 
-	return screen.NewManager(cfg, player, renderer)
+	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")
+	if err != nil {
+		log.Fatal("failed to load landing site background:", err)
+	}
+	sandDunesBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/sand_dunes.png")
+	if err != nil {
+		log.Fatal("failed to load sand dunes background:", err)
+	}
+	ruinedTempleBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/ruined_temple.png")
+	if err != nil {
+		log.Fatal("failed to load ruined temple background:", err)
+	}
+
+	landingSite := screen.NewScenario(player, landingSiteBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
+
+	level.AddScenario(landingSite)
+	level.AddScenario(sandDunes)
+	level.AddScenario(ruinedTemple)
+
+	return level
+}
+
+func createScreenManager(cfg config.Screen, levels []screen.Level) *screen.Manager {
+	applyScreenSettings(cfg)
+	manager := screen.NewManager(cfg)
+
+	for _, level := range levels {
+		manager.AddLevel(level)
+	}
+
+	return manager
 }
 
 func applyScreenSettings(cfg config.Screen) {
@@ -75,5 +109,8 @@ func applyScreenSettings(cfg config.Screen) {
 }
 
 func createGame(screenManager game.ScreenManager) *game.Game {
-	return game.NewGame(screenManager)
+	g := game.NewGame(screenManager)
+	g.Init()
+
+	return g
 }

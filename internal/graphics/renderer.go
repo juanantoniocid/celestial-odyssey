@@ -78,3 +78,10 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 
 	return frame
 }
+
+func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+
+	screen.DrawImage(background, op)
+}
