@@ -1,22 +1,18 @@
 package screen
 
 import (
-	"celestial-odyssey/internal/graphics"
-	"github.com/hajimehoshi/ebiten/v2"
 	"image"
 
+	"github.com/hajimehoshi/ebiten/v2"
+
+	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/world/entities"
 )
 
-type Scenario interface {
-	Update() error
-	Draw(screen *ebiten.Image)
-
-	ShouldTransitionRight() bool
-	ShouldTransitionLeft() bool
-	SetPlayerPositionAtLeft()
-	SetPlayerPositionAtRight()
-}
+const (
+	sideMargin   = 8
+	bottomMargin = 5
+)
 
 type ScenarioImpl struct {
 	player     *entities.Player
@@ -65,9 +61,9 @@ func (s *ScenarioImpl) ShouldTransitionLeft() bool {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
-	s.player.SetPositionAtBottomLeft(image.Point{X: 0, Y: s.height})
+	s.player.SetPositionAtBottomLeft(image.Point{X: 0 + sideMargin, Y: s.height - bottomMargin})
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionAtBottomRight(image.Point{X: s.width, Y: s.height})
+	s.player.SetPositionAtBottomRight(image.Point{X: s.width - sideMargin, Y: s.height - bottomMargin})
 }

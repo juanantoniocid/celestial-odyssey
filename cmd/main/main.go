@@ -25,6 +25,7 @@ func main() {
 	levels := createLevel(cfg.Screen, player, graphics.NewRenderer(playerImages))
 
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
+
 	g := createGame(screenManager)
 
 	if err := ebiten.RunGame(g); err != nil {

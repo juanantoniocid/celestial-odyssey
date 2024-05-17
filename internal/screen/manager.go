@@ -1,11 +1,18 @@
 package screen
 
 import (
-	"celestial-odyssey/util"
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/config"
+	"celestial-odyssey/util"
 )
+
+type Level interface {
+	Init()
+	AddScenario(scenario Scenario)
+	Update() error
+	Draw(screen *ebiten.Image)
+}
 
 type Manager struct {
 	levels       []Level

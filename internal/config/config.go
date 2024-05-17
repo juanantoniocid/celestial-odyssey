@@ -1,10 +1,16 @@
 package config
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"image"
 
+	"github.com/hajimehoshi/ebiten/v2"
+
 	"celestial-odyssey/util"
+)
+
+const (
+	screenWidth  = 320
+	screenHeight = 200
 )
 
 type Config struct {
@@ -50,15 +56,18 @@ func loadWindow() Window {
 func loadScreen() Screen {
 	return Screen{
 		ClearedEveryFrame: true,
-		Dimensions:        util.Dimensions{Width: 320, Height: 200},
+		Dimensions:        util.Dimensions{Width: screenWidth, Height: screenHeight},
 	}
 }
 
 func loadPlayer() Player {
 	return Player{
-		Dimensions:  util.Dimensions{Width: 16, Height: 32},
-		Speed:       2,
-		PlayArea:    image.Rectangle{Min: image.Point{X: 0, Y: 0}, Max: image.Point{X: 320 - 1, Y: 200 - 1}},
+		Dimensions: util.Dimensions{Width: 16, Height: 32},
+		Speed:      2,
+		PlayArea: image.Rectangle{
+			Min: image.Point{X: 0, Y: 0},
+			Max: image.Point{X: screenWidth - 1, Y: screenHeight - 1},
+		},
 		SpritesFile: "assets/images/player.png",
 	}
 }

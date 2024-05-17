@@ -4,11 +4,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Level interface {
+type Scenario interface {
 	Update() error
 	Draw(screen *ebiten.Image)
-	AddScenario(scenario Scenario)
-	Init()
+
+	ShouldTransitionRight() bool
+	ShouldTransitionLeft() bool
+	SetPlayerPositionAtLeft()
+	SetPlayerPositionAtRight()
 }
 
 type LevelImpl struct {
