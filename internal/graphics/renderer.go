@@ -9,7 +9,8 @@ import (
 type SpriteType int
 
 const (
-	PlayerWalkingLeft1 SpriteType = iota
+	PlayerJumpingLeft SpriteType = iota
+	PlayerWalkingLeft1
 	PlayerWalkingLeft2
 	PlayerWalkingLeft3
 	PlayerIdleLeft
@@ -17,6 +18,7 @@ const (
 	PlayerWalkingRight3
 	PlayerWalkingRight2
 	PlayerWalkingRight1
+	PlayerJumpingRight
 )
 
 type Renderer struct {
@@ -37,6 +39,8 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	switch player.Action() {
 	case entities.Idle:
 		frame = r.getIdleSprite(player)
+	case entities.Jumping:
+		frame = r.getJumpingSprite(player)
 	case entities.Walking:
 		frame = r.getWalkingSprite(player)
 	}
@@ -77,6 +81,13 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	}
 
 	return frame
+}
+
+func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
+	if player.Facing() == entities.Left {
+		return PlayerJumpingLeft
+	}
+	return PlayerJumpingRight
 }
 
 func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {

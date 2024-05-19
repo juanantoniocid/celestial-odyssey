@@ -18,6 +18,7 @@ type Action int
 const (
 	Idle Action = iota
 	Walking
+	Jumping
 )
 
 type Player struct {
@@ -29,9 +30,13 @@ type Player struct {
 	facing Direction
 	action Action
 
-	moveLeft, moveRight bool
-	frameIndex          int
-	frameCounter        int
+	moveLeft, moveRight, isJumping bool
+	frameIndex                     int
+	frameCounter                   int
+
+	initialJumpVelocity float64
+	velocityY           float64
+	gravity             float64
 }
 
 func NewPlayer(cfg config.Player) *Player {
@@ -47,8 +52,13 @@ func NewPlayer(cfg config.Player) *Player {
 
 		moveLeft:     false,
 		moveRight:    false,
+		isJumping:    false,
 		frameIndex:   0,
 		frameCounter: 0,
+
+		initialJumpVelocity: cfg.InitialJumpVelocity,
+		velocityY:           0,
+		gravity:             cfg.Gravity,
 	}
 }
 
@@ -80,6 +90,14 @@ func (p *Player) MoveRight() {
 	p.moveRight = true
 }
 
+func (p *Player) Jump() {
+	if !p.isJumping {
+		p.isJumping = true
+		p.velocityY = p.initialJumpVelocity
+		p.action = Jumping
+	}
+}
+
 func (p *Player) SetPlayArea(playArea image.Rectangle) {
 	p.playArea = playArea
 }
@@ -107,12 +125,29 @@ func (p *Player) Update() {
 		p.position.X += p.speed
 		p.facing = Right
 		p.action = Walking
+	} else if p.isJumping {
+		p.action = Jumping
 	} else {
 		p.action = Idle
 	}
 
+	p.applyGravity()
 	p.updateAnimation()
 	p.enforceBoundaries()
+}
+
+func (p *Player) applyGravity() {
+	if p.isJumping {
+		p.velocityY += p.gravity
+		p.position.Y += int(p.velocityY)
+
+		// Check if player has landed
+		if p.position.Y >= p.playArea.Max.Y-p.height {
+			p.position.Y = p.playArea.Max.Y - p.height
+			p.isJumping = false
+			p.velocityY = 0
+		}
+	}
 }
 
 func (p *Player) updateAnimation() {
@@ -136,5 +171,13 @@ func (p *Player) enforceBoundaries() {
 		p.position.X = p.playArea.Min.X
 	} else if p.position.X+p.width-1 > p.playArea.Max.X {
 		p.position.X = p.playArea.Max.X - p.width + 1
+	}
+
+	if p.position.Y < p.playArea.Min.Y {
+		p.position.Y = p.playArea.Min.Y
+	} else if p.position.Y > p.playArea.Max.Y-p.height {
+		p.position.Y = p.playArea.Max.Y - p.height
+		p.isJumping = false
+		p.velocityY = 0
 	}
 }
