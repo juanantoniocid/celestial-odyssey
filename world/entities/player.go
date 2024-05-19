@@ -6,10 +6,10 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
-type Direction int
+type HorizontalDirection int
 
 const (
-	Left Direction = iota
+	Left HorizontalDirection = iota
 	Right
 )
 
@@ -21,44 +21,52 @@ const (
 	Jumping
 )
 
+const (
+	framesPerAnimationFrame = 10
+	totalWalkingFrames      = 3
+)
+
 type Player struct {
-	position      image.Point
-	width, height int
-	speed         int
-	playArea      image.Rectangle
+	playArea image.Rectangle
+	position image.Point
+	width    int
+	height   int
 
-	facing Direction
-	action Action
+	direction   HorizontalDirection
+	action      Action
+	movingLeft  bool
+	movingRight bool
+	isJumping   bool
 
-	moveLeft, moveRight, isJumping bool
-	frameIndex                     int
-	frameCounter                   int
+	speed        int
+	velocityY    float64
+	jumpVelocity float64
+	gravity      float64
 
-	initialJumpVelocity float64
-	velocityY           float64
-	gravity             float64
+	frameIndex   int
+	frameCounter int
 }
 
 func NewPlayer(cfg config.Player) *Player {
 	return &Player{
-		position: image.Point{X: 0, Y: 0},
+		playArea: cfg.PlayArea,
+		position: image.Point{X: 0, Y: cfg.PlayArea.Max.Y - cfg.Dimensions.Height},
 		width:    cfg.Dimensions.Width,
 		height:   cfg.Dimensions.Height,
-		speed:    cfg.Speed,
-		playArea: cfg.PlayArea,
 
-		facing: Right,
-		action: Idle,
+		direction:   Right,
+		action:      Idle,
+		movingLeft:  false,
+		movingRight: false,
+		isJumping:   false,
 
-		moveLeft:     false,
-		moveRight:    false,
-		isJumping:    false,
+		speed:        cfg.Speed,
+		velocityY:    0,
+		jumpVelocity: cfg.JumpVelocity,
+		gravity:      cfg.Gravity,
+
 		frameIndex:   0,
 		frameCounter: 0,
-
-		initialJumpVelocity: cfg.InitialJumpVelocity,
-		velocityY:           0,
-		gravity:             cfg.Gravity,
 	}
 }
 
@@ -70,8 +78,8 @@ func (p *Player) Width() int {
 	return p.width
 }
 
-func (p *Player) Facing() Direction {
-	return p.facing
+func (p *Player) Direction() HorizontalDirection {
+	return p.direction
 }
 
 func (p *Player) Action() Action {
@@ -83,60 +91,57 @@ func (p *Player) FrameIndex() int {
 }
 
 func (p *Player) MoveLeft() {
-	p.moveLeft = true
+	p.movingLeft = true
 }
 
 func (p *Player) MoveRight() {
-	p.moveRight = true
+	p.movingRight = true
 }
 
 func (p *Player) Jump() {
 	if !p.isJumping {
 		p.isJumping = true
-		p.velocityY = p.initialJumpVelocity
+		p.velocityY = p.jumpVelocity
 		p.action = Jumping
 	}
 }
 
-func (p *Player) SetPlayArea(playArea image.Rectangle) {
-	p.playArea = playArea
+func (p *Player) SetPositionAtBottomLeft(pointX int) {
+	p.position.X = pointX
 }
 
-func (p *Player) SetSpeed(speed int) {
-	p.speed = speed
-}
-
-func (p *Player) SetPositionAtBottomLeft(anchorPoint image.Point) {
-	p.position = image.Point{X: anchorPoint.X, Y: anchorPoint.Y - p.height}
-}
-
-func (p *Player) SetPositionAtBottomRight(anchorPoint image.Point) {
-	p.position = image.Point{X: anchorPoint.X - p.width, Y: anchorPoint.Y - p.height}
+func (p *Player) SetPositionAtBottomRight(pointX int) {
+	p.position.X = pointX - p.width
 }
 
 func (p *Player) Update() {
-	if p.moveLeft {
-		p.moveLeft = false
-		p.position.X -= p.speed
-		p.facing = Left
-		p.action = Walking
-	} else if p.moveRight {
-		p.moveRight = false
-		p.position.X += p.speed
-		p.facing = Right
-		p.action = Walking
-	} else if p.isJumping {
-		p.action = Jumping
-	} else {
-		p.action = Idle
-	}
-
-	p.applyGravity()
+	p.handleMovement()
+	p.updateVerticalPosition()
 	p.updateAnimation()
 	p.enforceBoundaries()
 }
 
-func (p *Player) applyGravity() {
+func (p *Player) handleMovement() {
+	p.action = Idle
+
+	if p.movingLeft {
+		p.movingLeft = false
+		p.position.X -= p.speed
+		p.direction = Left
+		p.action = Walking
+	} else if p.movingRight {
+		p.movingRight = false
+		p.position.X += p.speed
+		p.direction = Right
+		p.action = Walking
+	}
+
+	if p.isJumping {
+		p.action = Jumping
+	}
+}
+
+func (p *Player) updateVerticalPosition() {
 	if p.isJumping {
 		p.velocityY += p.gravity
 		p.position.Y += int(p.velocityY)
@@ -151,18 +156,20 @@ func (p *Player) applyGravity() {
 }
 
 func (p *Player) updateAnimation() {
-	if p.action == Idle {
+	switch p.action {
+	case Idle, Jumping:
 		p.frameIndex = 0
-		return
-	}
-
-	framesToUpdate := 10
-	framesPerDirection := 3
-
-	p.frameCounter++
-	if p.frameCounter >= framesToUpdate {
 		p.frameCounter = 0
-		p.frameIndex = (p.frameIndex + 1) % framesPerDirection
+	case Walking:
+		p.updateWalkingAnimation()
+	}
+}
+
+func (p *Player) updateWalkingAnimation() {
+	p.frameCounter++
+	if p.frameCounter >= framesPerAnimationFrame {
+		p.frameCounter = 0
+		p.frameIndex = (p.frameIndex + 1) % totalWalkingFrames
 	}
 }
 
