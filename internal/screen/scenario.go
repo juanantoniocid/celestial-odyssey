@@ -1,8 +1,6 @@
 package screen
 
 import (
-	"image"
-
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/graphics"
@@ -10,8 +8,7 @@ import (
 )
 
 const (
-	sideMargin   = 8
-	bottomMargin = 5
+	sideMargin = 8
 )
 
 type ScenarioImpl struct {
@@ -42,6 +39,10 @@ func (s *ScenarioImpl) Update() error {
 		s.player.MoveRight()
 	}
 
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		s.player.Jump()
+	}
+
 	s.player.Update()
 
 	return nil
@@ -61,9 +62,9 @@ func (s *ScenarioImpl) ShouldTransitionLeft() bool {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
-	s.player.SetPositionAtBottomLeft(image.Point{X: 0 + sideMargin, Y: s.height - bottomMargin})
+	s.player.SetPositionAtBottomLeft(sideMargin)
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionAtBottomRight(image.Point{X: s.width - sideMargin, Y: s.height - bottomMargin})
+	s.player.SetPositionAtBottomRight(s.width - sideMargin)
 }
