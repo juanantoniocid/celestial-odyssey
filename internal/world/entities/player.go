@@ -6,21 +6,6 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
-type HorizontalDirection int
-
-const (
-	Left HorizontalDirection = iota
-	Right
-)
-
-type Action int
-
-const (
-	Idle Action = iota
-	Walking
-	Jumping
-)
-
 const (
 	framesPerAnimationFrame = 10
 	totalWalkingFrames      = 3
