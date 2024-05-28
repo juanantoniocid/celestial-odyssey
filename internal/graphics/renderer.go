@@ -37,11 +37,11 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities2.Player) {
 
 	var frame SpriteType
 	switch player.Action() {
-	case entities2.Idle:
+	case entities2.ActionIdle:
 		frame = r.getIdleSprite(player)
-	case entities2.Jumping:
+	case entities2.ActionJumping:
 		frame = r.getJumpingSprite(player)
-	case entities2.Walking:
+	case entities2.ActionWalking:
 		frame = r.getWalkingSprite(player)
 	}
 
@@ -50,7 +50,7 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities2.Player) {
 }
 
 func (r *Renderer) getIdleSprite(player *entities2.Player) SpriteType {
-	if player.Direction() == entities2.Left {
+	if player.Direction() == entities2.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
@@ -60,7 +60,7 @@ func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
 	var frame SpriteType
 
 	switch player.Direction() {
-	case entities2.Left:
+	case entities2.DirectionLeft:
 		switch player.FrameIndex() {
 		case 0:
 			frame = PlayerWalkingLeft1
@@ -84,7 +84,7 @@ func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
 }
 
 func (r *Renderer) getJumpingSprite(player *entities2.Player) SpriteType {
-	if player.Direction() == entities2.Left {
+	if player.Direction() == entities2.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight

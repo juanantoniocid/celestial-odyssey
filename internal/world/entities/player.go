@@ -18,7 +18,7 @@ type Player struct {
 	height   int
 
 	direction   HorizontalDirection
-	action      Action
+	action      CharacterAction
 	movingLeft  bool
 	movingRight bool
 	isJumping   bool
@@ -39,8 +39,8 @@ func NewPlayer(cfg config.Player) *Player {
 		width:    cfg.Dimensions.Width,
 		height:   cfg.Dimensions.Height,
 
-		direction:   Right,
-		action:      Idle,
+		direction:   DirectionRight,
+		action:      ActionIdle,
 		movingLeft:  false,
 		movingRight: false,
 		isJumping:   false,
@@ -75,7 +75,7 @@ func (p *Player) Direction() HorizontalDirection {
 	return p.direction
 }
 
-func (p *Player) Action() Action {
+func (p *Player) Action() CharacterAction {
 	return p.action
 }
 
@@ -95,20 +95,20 @@ func (p *Player) Jump() {
 	if !p.isJumping {
 		p.isJumping = true
 		p.VelocityY = p.jumpVelocity
-		p.action = Jumping
+		p.action = ActionJumping
 	}
 }
 
 func (p *Player) Land() {
 	p.isJumping = false
 	p.VelocityY = 0
-	p.action = Idle
+	p.action = ActionIdle
 }
 
 func (p *Player) Stop() {
 	p.movingLeft = false
 	p.movingRight = false
-	p.action = Idle
+	p.action = ActionIdle
 }
 
 func (p *Player) SetPositionX(x int) {
@@ -134,22 +134,22 @@ func (p *Player) Update() {
 }
 
 func (p *Player) updateHorizontalMovement() {
-	p.action = Idle
+	p.action = ActionIdle
 
 	if p.movingLeft {
 		p.movingLeft = false
 		p.position.X -= p.speed
-		p.direction = Left
-		p.action = Walking
+		p.direction = DirectionLeft
+		p.action = ActionWalking
 	} else if p.movingRight {
 		p.movingRight = false
 		p.position.X += p.speed
-		p.direction = Right
-		p.action = Walking
+		p.direction = DirectionRight
+		p.action = ActionWalking
 	}
 
 	if p.isJumping {
-		p.action = Jumping
+		p.action = ActionJumping
 	}
 }
 
@@ -169,10 +169,10 @@ func (p *Player) updateVerticalPosition() {
 
 func (p *Player) updateAnimation() {
 	switch p.action {
-	case Idle, Jumping:
+	case ActionIdle, ActionJumping:
 		p.frameIndex = 0
 		p.frameCounter = 0
-	case Walking:
+	case ActionWalking:
 		p.updateWalkingAnimation()
 	}
 }

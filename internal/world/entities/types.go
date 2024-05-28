@@ -5,16 +5,16 @@ import "image"
 type HorizontalDirection int
 
 const (
-	Left HorizontalDirection = iota
-	Right
+	DirectionLeft HorizontalDirection = iota
+	DirectionRight
 )
 
-type Action int
+type CharacterAction int
 
 const (
-	Idle Action = iota
-	Walking
-	Jumping
+	ActionIdle CharacterAction = iota
+	ActionWalking
+	ActionJumping
 )
 
 type Collidable interface {
