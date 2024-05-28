@@ -1,9 +1,16 @@
 package graphics
 
 import (
-	entities2 "celestial-odyssey/internal/world/entities"
-	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
+
+	"celestial-odyssey/internal/world/entities"
+)
+
+const (
+	framesPerAnimationFrame = 10
+	totalWalkingFrames      = 3
 )
 
 type SpriteType int
@@ -31,17 +38,17 @@ func NewRenderer(playerImages []*ebiten.Image) *Renderer {
 	}
 }
 
-func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities2.Player) {
+func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
 	var frame SpriteType
 	switch player.Action() {
-	case entities2.ActionIdle:
+	case entities.ActionIdle:
 		frame = r.getIdleSprite(player)
-	case entities2.ActionJumping:
+	case entities.ActionJumping:
 		frame = r.getJumpingSprite(player)
-	case entities2.ActionWalking:
+	case entities.ActionWalking:
 		frame = r.getWalkingSprite(player)
 	}
 
@@ -49,19 +56,20 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities2.Player) {
 	screen.DrawImage(r.playerImages[frame], op)
 }
 
-func (r *Renderer) getIdleSprite(player *entities2.Player) SpriteType {
-	if player.Direction() == entities2.DirectionLeft {
+func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
+	if player.Direction() == entities.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	var frame SpriteType
+	frameIndex := player.StateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
 	switch player.Direction() {
-	case entities2.DirectionLeft:
-		switch player.FrameIndex() {
+	case entities.DirectionLeft:
+		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingLeft1
 		case 1:
@@ -69,8 +77,8 @@ func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
 		case 2:
 			frame = PlayerWalkingLeft3
 		}
-	default:
-		switch player.FrameIndex() {
+	case entities.DirectionRight:
+		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingRight1
 		case 1:
@@ -83,8 +91,8 @@ func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entities2.Player) SpriteType {
-	if player.Direction() == entities2.DirectionLeft {
+func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
+	if player.Direction() == entities.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
@@ -97,7 +105,7 @@ func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image
 	screen.DrawImage(background, op)
 }
 
-func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities2.Collidable) {
+func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 

@@ -6,11 +6,6 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
-const (
-	framesPerAnimationFrame = 10
-	totalWalkingFrames      = 3
-)
-
 type Player struct {
 	playArea image.Rectangle
 	position image.Point
@@ -19,6 +14,7 @@ type Player struct {
 
 	direction   HorizontalDirection
 	action      CharacterAction
+	prevAction  CharacterAction
 	movingLeft  bool
 	movingRight bool
 	isJumping   bool
@@ -28,8 +24,7 @@ type Player struct {
 	jumpVelocity float64
 	gravity      float64
 
-	frameIndex   int
-	frameCounter int
+	stateDuration int
 }
 
 func NewPlayer(cfg config.Player) *Player {
@@ -50,8 +45,7 @@ func NewPlayer(cfg config.Player) *Player {
 		jumpVelocity: cfg.JumpVelocity,
 		gravity:      cfg.Gravity,
 
-		frameIndex:   0,
-		frameCounter: 0,
+		stateDuration: 0,
 	}
 }
 
@@ -77,10 +71,6 @@ func (p *Player) Direction() HorizontalDirection {
 
 func (p *Player) Action() CharacterAction {
 	return p.action
-}
-
-func (p *Player) FrameIndex() int {
-	return p.frameIndex
 }
 
 func (p *Player) MoveLeft() {
@@ -119,13 +109,17 @@ func (p *Player) SetPositionY(y int) {
 	p.position.Y = y
 }
 
-func (p *Player) Update() {
-	p.updateHorizontalMovement()
-	p.updateVerticalPosition()
-	p.updateAnimation()
+func (p *Player) StateDuration() int {
+	return p.stateDuration
 }
 
-func (p *Player) updateHorizontalMovement() {
+func (p *Player) Update() {
+	p.updateHorizontalPosition()
+	p.updateVerticalPosition()
+	p.updateStateDuration()
+}
+
+func (p *Player) updateHorizontalPosition() {
 	p.action = ActionIdle
 
 	if p.movingLeft {
@@ -139,18 +133,14 @@ func (p *Player) updateHorizontalMovement() {
 		p.direction = DirectionRight
 		p.action = ActionWalking
 	}
-
-	if p.isJumping {
-		p.action = ActionJumping
-	}
 }
 
 func (p *Player) updateVerticalPosition() {
 	if p.isJumping {
+		p.action = ActionJumping
 		p.velocityY += p.gravity
 		p.position.Y += int(p.velocityY)
 
-		// Check if player has landed
 		if p.position.Y >= p.playArea.Max.Y-p.height {
 			p.position.Y = p.playArea.Max.Y - p.height
 			p.isJumping = false
@@ -159,20 +149,12 @@ func (p *Player) updateVerticalPosition() {
 	}
 }
 
-func (p *Player) updateAnimation() {
-	switch p.action {
-	case ActionIdle, ActionJumping:
-		p.frameIndex = 0
-		p.frameCounter = 0
-	case ActionWalking:
-		p.updateWalkingAnimation()
+func (p *Player) updateStateDuration() {
+	if p.action == p.prevAction {
+		p.stateDuration++
+		return
 	}
-}
 
-func (p *Player) updateWalkingAnimation() {
-	p.frameCounter++
-	if p.frameCounter >= framesPerAnimationFrame {
-		p.frameCounter = 0
-		p.frameIndex = (p.frameIndex + 1) % totalWalkingFrames
-	}
+	p.prevAction = p.action
+	p.stateDuration = 0
 }
