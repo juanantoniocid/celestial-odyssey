@@ -1,6 +1,8 @@
 package main
 
 import (
+	"celestial-odyssey/internal/util"
+	entities2 "celestial-odyssey/internal/world/entities"
 	"image"
 	"log"
 
@@ -11,8 +13,6 @@ import (
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/util"
-	"celestial-odyssey/world/entities"
 )
 
 func main() {
@@ -39,8 +39,8 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entities.Player, playerImages []*ebiten.Image) {
-	player = entities.NewPlayer(cfg)
+func createPlayer(cfg config.Player) (player *entities2.Player, playerImages []*ebiten.Image) {
+	player = entities2.NewPlayer(cfg)
 	playerImages = loadPlayerImages(cfg.SpritesFile, cfg.Dimensions)
 
 	return player, playerImages
@@ -67,7 +67,7 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	return images
 }
 
-func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.Renderer) screen.Level {
+func createLevel(cfg config.Screen, player *entities2.Player, renderer *graphics.Renderer) screen.Level {
 	level := screen.NewLevel()
 
 	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")
@@ -87,7 +87,7 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.
 	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
 	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
-	landingSite.AddCollidable(entities.NewBox(image.Point{X: 100, Y: 150}, 50, 50))
+	landingSite.AddCollidable(entities2.NewBox(image.Point{X: 100, Y: 150}, 50, 50))
 
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)

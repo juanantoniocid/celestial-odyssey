@@ -1,11 +1,10 @@
 package config
 
 import (
+	"celestial-odyssey/internal/util"
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"celestial-odyssey/util"
 )
 
 const (

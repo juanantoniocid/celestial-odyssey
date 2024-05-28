@@ -1,10 +1,9 @@
 package graphics
 
 import (
+	entities2 "celestial-odyssey/internal/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
-
-	"celestial-odyssey/world/entities"
 )
 
 type SpriteType int
@@ -32,17 +31,17 @@ func NewRenderer(playerImages []*ebiten.Image) *Renderer {
 	}
 }
 
-func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
+func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities2.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
 	var frame SpriteType
 	switch player.Action() {
-	case entities.Idle:
+	case entities2.Idle:
 		frame = r.getIdleSprite(player)
-	case entities.Jumping:
+	case entities2.Jumping:
 		frame = r.getJumpingSprite(player)
-	case entities.Walking:
+	case entities2.Walking:
 		frame = r.getWalkingSprite(player)
 	}
 
@@ -50,18 +49,18 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	screen.DrawImage(r.playerImages[frame], op)
 }
 
-func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.Left {
+func (r *Renderer) getIdleSprite(player *entities2.Player) SpriteType {
+	if player.Direction() == entities2.Left {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
 	var frame SpriteType
 
 	switch player.Direction() {
-	case entities.Left:
+	case entities2.Left:
 		switch player.FrameIndex() {
 		case 0:
 			frame = PlayerWalkingLeft1
@@ -84,8 +83,8 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.Left {
+func (r *Renderer) getJumpingSprite(player *entities2.Player) SpriteType {
+	if player.Direction() == entities2.Left {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
@@ -98,7 +97,7 @@ func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image
 	screen.DrawImage(background, op)
 }
 
-func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
+func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities2.Collidable) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 

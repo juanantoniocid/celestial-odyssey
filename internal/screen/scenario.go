@@ -1,10 +1,10 @@
 package screen
 
 import (
+	entities2 "celestial-odyssey/internal/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/graphics"
-	"celestial-odyssey/world/entities"
 )
 
 const (
@@ -12,28 +12,28 @@ const (
 )
 
 type ScenarioImpl struct {
-	player     *entities.Player
+	player     *entities2.Player
 	background *ebiten.Image
 	renderer   *graphics.Renderer
 
 	width  int
 	height int
 
-	collidables []entities.Collidable
+	collidables []entities2.Collidable
 }
 
-func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
+func NewScenario(player *entities2.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:      player,
 		background:  background,
 		renderer:    renderer,
 		width:       width,
 		height:      height,
-		collidables: make([]entities.Collidable, 0),
+		collidables: make([]entities2.Collidable, 0),
 	}
 }
 
-func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
+func (s *ScenarioImpl) AddCollidable(c entities2.Collidable) {
 	s.collidables = append(s.collidables, c)
 }
 
@@ -64,7 +64,7 @@ func (s *ScenarioImpl) checkCollisions() {
 	}
 }
 
-func (s *ScenarioImpl) handleCollision(c entities.Collidable) {
+func (s *ScenarioImpl) handleCollision(c entities2.Collidable) {
 	playerBounds := s.player.Bounds()
 	collidableBounds := c.Bounds()
 
