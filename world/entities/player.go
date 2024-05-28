@@ -39,7 +39,7 @@ type Player struct {
 	isJumping   bool
 
 	speed        int
-	velocityY    float64
+	VelocityY    float64
 	jumpVelocity float64
 	gravity      float64
 
@@ -61,7 +61,7 @@ func NewPlayer(cfg config.Player) *Player {
 		isJumping:   false,
 
 		speed:        cfg.Speed,
-		velocityY:    0,
+		VelocityY:    0,
 		jumpVelocity: cfg.JumpVelocity,
 		gravity:      cfg.Gravity,
 
@@ -70,12 +70,20 @@ func NewPlayer(cfg config.Player) *Player {
 	}
 }
 
+func (p *Player) Bounds() image.Rectangle {
+	return image.Rect(p.position.X, p.position.Y, p.position.X+p.width, p.position.Y+p.height)
+}
+
 func (p *Player) Position() image.Point {
 	return p.position
 }
 
 func (p *Player) Width() int {
 	return p.width
+}
+
+func (p *Player) Height() int {
+	return p.height
 }
 
 func (p *Player) Direction() HorizontalDirection {
@@ -101,9 +109,29 @@ func (p *Player) MoveRight() {
 func (p *Player) Jump() {
 	if !p.isJumping {
 		p.isJumping = true
-		p.velocityY = p.jumpVelocity
+		p.VelocityY = p.jumpVelocity
 		p.action = Jumping
 	}
+}
+
+func (p *Player) Land() {
+	p.isJumping = false
+	p.VelocityY = 0
+	p.action = Idle
+}
+
+func (p *Player) Stop() {
+	p.movingLeft = false
+	p.movingRight = false
+	p.action = Idle
+}
+
+func (p *Player) SetPositionX(x int) {
+	p.position.X = x
+}
+
+func (p *Player) SetPositionY(y int) {
+	p.position.Y = y
 }
 
 func (p *Player) SetPositionAtBottomLeft(pointX int) {
@@ -143,14 +171,14 @@ func (p *Player) handleMovement() {
 
 func (p *Player) updateVerticalPosition() {
 	if p.isJumping {
-		p.velocityY += p.gravity
-		p.position.Y += int(p.velocityY)
+		p.VelocityY += p.gravity
+		p.position.Y += int(p.VelocityY)
 
 		// Check if player has landed
 		if p.position.Y >= p.playArea.Max.Y-p.height {
 			p.position.Y = p.playArea.Max.Y - p.height
 			p.isJumping = false
-			p.velocityY = 0
+			p.VelocityY = 0
 		}
 	}
 }
@@ -185,6 +213,6 @@ func (p *Player) enforceBoundaries() {
 	} else if p.position.Y > p.playArea.Max.Y-p.height {
 		p.position.Y = p.playArea.Max.Y - p.height
 		p.isJumping = false
-		p.velocityY = 0
+		p.VelocityY = 0
 	}
 }

@@ -18,16 +18,23 @@ type ScenarioImpl struct {
 
 	width  int
 	height int
+
+	collidables []entities.Collidable
 }
 
 func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:     player,
-		background: background,
-		renderer:   renderer,
-		width:      width,
-		height:     height,
+		player:      player,
+		background:  background,
+		renderer:    renderer,
+		width:       width,
+		height:      height,
+		collidables: make([]entities.Collidable, 0),
 	}
+}
+
+func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
+	s.collidables = append(s.collidables, c)
 }
 
 func (s *ScenarioImpl) Update() error {
@@ -44,13 +51,62 @@ func (s *ScenarioImpl) Update() error {
 	}
 
 	s.player.Update()
+	s.checkCollisions()
 
 	return nil
+}
+
+func (s *ScenarioImpl) checkCollisions() {
+	for _, c := range s.collidables {
+		if s.player.Bounds().Overlaps(c.Bounds()) {
+			s.handleCollision(c)
+		}
+	}
+}
+
+func (s *ScenarioImpl) handleCollision(c entities.Collidable) {
+	playerBounds := s.player.Bounds()
+	collidableBounds := c.Bounds()
+
+	// Check for vertical collisions first (jumping and landing)
+	if playerBounds.Min.Y < collidableBounds.Max.Y && playerBounds.Max.Y > collidableBounds.Min.Y {
+		// Landing on top of the box
+		if s.player.Position().Y < collidableBounds.Min.Y && playerBounds.Max.Y > collidableBounds.Min.Y {
+			s.player.SetPositionY(collidableBounds.Min.Y - s.player.Height())
+			s.player.Land()
+			return
+		}
+		// Hitting the bottom of the box
+		if s.player.Position().Y > collidableBounds.Max.Y && playerBounds.Min.Y < collidableBounds.Max.Y {
+			s.player.SetPositionY(collidableBounds.Max.Y)
+			s.player.VelocityY = 0
+			return
+		}
+	}
+
+	// Check for horizontal collisions (moving left and right)
+	if playerBounds.Min.X < collidableBounds.Max.X && playerBounds.Max.X > collidableBounds.Min.X {
+		// Hitting the right side of the box
+		if s.player.Position().X < collidableBounds.Min.X && playerBounds.Max.X > collidableBounds.Min.X {
+			s.player.SetPositionX(collidableBounds.Min.X - s.player.Width())
+			s.player.Stop()
+			return
+		}
+		// Hitting the left side of the box
+		if s.player.Position().X > collidableBounds.Max.X && playerBounds.Min.X < collidableBounds.Max.X {
+			s.player.SetPositionX(collidableBounds.Max.X)
+			s.player.Stop()
+			return
+		}
+	}
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
 	s.renderer.DrawBackground(screen, s.background)
 	s.renderer.DrawPlayer(screen, s.player)
+	for _, c := range s.collidables {
+		s.renderer.DrawCollidable(screen, c)
+	}
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {

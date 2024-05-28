@@ -2,6 +2,7 @@ package graphics
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"image/color"
 
 	"celestial-odyssey/world/entities"
 )
@@ -95,4 +96,18 @@ func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image
 	op.Filter = ebiten.FilterNearest
 
 	screen.DrawImage(background, op)
+}
+
+func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+
+	bounds := collidable.Bounds()
+	op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
+
+	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
+	brown := color.RGBA{R: 139, G: 69, B: 19, A: 255}
+	img.Fill(brown)
+
+	screen.DrawImage(img, op)
 }

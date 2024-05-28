@@ -87,6 +87,8 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.
 	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
 	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
+	landingSite.AddCollidable(entities.NewBox(image.Point{X: 100, Y: 150}, 50, 50))
+
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)
 	level.AddScenario(ruinedTemple)
