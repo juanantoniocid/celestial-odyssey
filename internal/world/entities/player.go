@@ -24,7 +24,7 @@ type Player struct {
 	isJumping   bool
 
 	speed        int
-	VelocityY    float64
+	velocityY    float64
 	jumpVelocity float64
 	gravity      float64
 
@@ -46,7 +46,7 @@ func NewPlayer(cfg config.Player) *Player {
 		isJumping:   false,
 
 		speed:        cfg.Speed,
-		VelocityY:    0,
+		velocityY:    0,
 		jumpVelocity: cfg.JumpVelocity,
 		gravity:      cfg.Gravity,
 
@@ -94,14 +94,14 @@ func (p *Player) MoveRight() {
 func (p *Player) Jump() {
 	if !p.isJumping {
 		p.isJumping = true
-		p.VelocityY = p.jumpVelocity
+		p.velocityY = p.jumpVelocity
 		p.action = ActionJumping
 	}
 }
 
 func (p *Player) Land() {
 	p.isJumping = false
-	p.VelocityY = 0
+	p.velocityY = 0
 	p.action = ActionIdle
 }
 
@@ -117,14 +117,6 @@ func (p *Player) SetPositionX(x int) {
 
 func (p *Player) SetPositionY(y int) {
 	p.position.Y = y
-}
-
-func (p *Player) SetPositionAtBottomLeft(pointX int) {
-	p.position.X = pointX
-}
-
-func (p *Player) SetPositionAtBottomRight(pointX int) {
-	p.position.X = pointX - p.width
 }
 
 func (p *Player) Update() {
@@ -155,14 +147,14 @@ func (p *Player) updateHorizontalMovement() {
 
 func (p *Player) updateVerticalPosition() {
 	if p.isJumping {
-		p.VelocityY += p.gravity
-		p.position.Y += int(p.VelocityY)
+		p.velocityY += p.gravity
+		p.position.Y += int(p.velocityY)
 
 		// Check if player has landed
 		if p.position.Y >= p.playArea.Max.Y-p.height {
 			p.position.Y = p.playArea.Max.Y - p.height
 			p.isJumping = false
-			p.VelocityY = 0
+			p.velocityY = 0
 		}
 	}
 }

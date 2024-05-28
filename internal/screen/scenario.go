@@ -80,7 +80,7 @@ func (s *ScenarioImpl) handleCollision(c entities.Collidable) {
 		// Hitting the bottom of the box
 		if s.player.Position().Y > collidableBounds.Max.Y && playerBounds.Min.Y < collidableBounds.Max.Y {
 			s.player.SetPositionY(collidableBounds.Max.Y)
-			s.player.VelocityY = 0
+			s.player.Land()
 			return
 		}
 	}
@@ -133,9 +133,9 @@ func (s *ScenarioImpl) ShouldTransitionLeft() bool {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
-	s.player.SetPositionAtBottomLeft(sideMargin)
+	s.player.SetPositionX(sideMargin)
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionAtBottomRight(s.width - sideMargin)
+	s.player.SetPositionX(s.width - sideMargin - s.player.Width())
 }
