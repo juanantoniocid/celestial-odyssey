@@ -1,10 +1,10 @@
 package screen
 
 import (
-	entities2 "celestial-odyssey/internal/world/entities"
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/graphics"
+	"celestial-odyssey/internal/world/entities"
 )
 
 const (
@@ -12,28 +12,28 @@ const (
 )
 
 type ScenarioImpl struct {
-	player     *entities2.Player
+	player     *entities.Player
 	background *ebiten.Image
 	renderer   *graphics.Renderer
 
 	width  int
 	height int
 
-	collidables []entities2.Collidable
+	collidables []entities.Collidable
 }
 
-func NewScenario(player *entities2.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
+func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:      player,
 		background:  background,
 		renderer:    renderer,
 		width:       width,
 		height:      height,
-		collidables: make([]entities2.Collidable, 0),
+		collidables: make([]entities.Collidable, 0),
 	}
 }
 
-func (s *ScenarioImpl) AddCollidable(c entities2.Collidable) {
+func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
 	s.collidables = append(s.collidables, c)
 }
 
@@ -52,6 +52,7 @@ func (s *ScenarioImpl) Update() error {
 
 	s.player.Update()
 	s.checkCollisions()
+	s.enforceBoundaries()
 
 	return nil
 }
@@ -64,7 +65,7 @@ func (s *ScenarioImpl) checkCollisions() {
 	}
 }
 
-func (s *ScenarioImpl) handleCollision(c entities2.Collidable) {
+func (s *ScenarioImpl) handleCollision(c entities.Collidable) {
 	playerBounds := s.player.Bounds()
 	collidableBounds := c.Bounds()
 
@@ -98,6 +99,20 @@ func (s *ScenarioImpl) handleCollision(c entities2.Collidable) {
 			s.player.Stop()
 			return
 		}
+	}
+}
+
+func (s *ScenarioImpl) enforceBoundaries() {
+	if s.player.Position().X < 0 {
+		s.player.SetPositionX(0)
+	} else if s.player.Position().X+s.player.Width() > s.width {
+		s.player.SetPositionX(s.width - s.player.Width())
+	}
+
+	if s.player.Position().Y < 0 {
+		s.player.SetPositionY(0)
+	} else if s.player.Position().Y+s.player.Height() > s.height {
+		s.player.SetPositionY(s.height - s.player.Height())
 	}
 }
 

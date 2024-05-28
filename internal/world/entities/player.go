@@ -143,13 +143,12 @@ func (p *Player) SetPositionAtBottomRight(pointX int) {
 }
 
 func (p *Player) Update() {
-	p.handleMovement()
+	p.updateHorizontalMovement()
 	p.updateVerticalPosition()
 	p.updateAnimation()
-	p.enforceBoundaries()
 }
 
-func (p *Player) handleMovement() {
+func (p *Player) updateHorizontalMovement() {
 	p.action = Idle
 
 	if p.movingLeft {
@@ -198,21 +197,5 @@ func (p *Player) updateWalkingAnimation() {
 	if p.frameCounter >= framesPerAnimationFrame {
 		p.frameCounter = 0
 		p.frameIndex = (p.frameIndex + 1) % totalWalkingFrames
-	}
-}
-
-func (p *Player) enforceBoundaries() {
-	if p.position.X < p.playArea.Min.X {
-		p.position.X = p.playArea.Min.X
-	} else if p.position.X+p.width-1 > p.playArea.Max.X {
-		p.position.X = p.playArea.Max.X - p.width + 1
-	}
-
-	if p.position.Y < p.playArea.Min.Y {
-		p.position.Y = p.playArea.Min.Y
-	} else if p.position.Y > p.playArea.Max.Y-p.height {
-		p.position.Y = p.playArea.Max.Y - p.height
-		p.isJumping = false
-		p.VelocityY = 0
 	}
 }
