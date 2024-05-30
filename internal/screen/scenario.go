@@ -52,6 +52,7 @@ func (s *ScenarioImpl) Update() error {
 
 	s.player.Update()
 	s.checkCollisions()
+	s.checkIfPlayerIsOnPlatform()
 	s.enforceBoundaries()
 
 	return nil
@@ -118,6 +119,34 @@ func (s *ScenarioImpl) enforceBoundaries() {
 	}
 }
 
+func (s *ScenarioImpl) checkIfPlayerIsOnPlatform() {
+	playerBounds := s.player.Bounds()
+	isOnPlatform := false
+
+	// Check if the player is on any platform
+	for _, c := range s.collidables {
+		collidableBounds := c.Bounds()
+
+		// Check if the player is on top of the box
+		if playerBounds.Max.Y == collidableBounds.Min.Y &&
+			playerBounds.Min.X < collidableBounds.Max.X &&
+			playerBounds.Max.X > collidableBounds.Min.X {
+			isOnPlatform = true
+			break
+		}
+	}
+
+	// Check if the player is on the ground
+	if playerBounds.Max.Y >= s.height {
+		isOnPlatform = true
+	}
+
+	// If the player is not on any platform and not jumping, apply gravity
+	if !isOnPlatform && !s.player.IsJumping() {
+		s.player.Fall()
+	}
+}
+
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
 	s.renderer.DrawBackground(screen, s.background)
 	s.renderer.DrawPlayer(screen, s.player)
@@ -136,10 +165,8 @@ func (s *ScenarioImpl) ShouldTransitionLeft() bool {
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
 	s.player.SetPositionX(sideMargin)
-	s.player.SetPositionY(s.height - s.player.Height())
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
 	s.player.SetPositionX(s.width - sideMargin - s.player.Width())
-	s.player.SetPositionY(s.height - s.player.Height())
 }

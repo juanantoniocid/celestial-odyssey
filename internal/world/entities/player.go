@@ -98,6 +98,16 @@ func (p *Player) Stop() {
 	p.action = ActionIdle
 }
 
+func (p *Player) IsJumping() bool {
+	return p.isJumping
+}
+
+func (p *Player) Fall() {
+	p.isJumping = true
+	p.velocityY = 0
+	p.action = ActionJumping
+}
+
 func (p *Player) SetPositionX(x int) {
 	p.position.X = x
 }
