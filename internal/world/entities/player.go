@@ -7,7 +7,6 @@ import (
 )
 
 type Player struct {
-	playArea image.Rectangle
 	position image.Point
 	width    int
 	height   int
@@ -29,10 +28,8 @@ type Player struct {
 
 func NewPlayer(cfg config.Player) *Player {
 	return &Player{
-		playArea: cfg.PlayArea,
-		position: image.Point{X: 0, Y: cfg.PlayArea.Max.Y - cfg.Dimensions.Height},
-		width:    cfg.Dimensions.Width,
-		height:   cfg.Dimensions.Height,
+		width:  cfg.Dimensions.Width,
+		height: cfg.Dimensions.Height,
 
 		direction:   DirectionRight,
 		action:      ActionIdle,
@@ -140,12 +137,6 @@ func (p *Player) updateVerticalPosition() {
 		p.action = ActionJumping
 		p.velocityY += p.gravity
 		p.position.Y += int(p.velocityY)
-
-		if p.position.Y >= p.playArea.Max.Y-p.height {
-			p.position.Y = p.playArea.Max.Y - p.height
-			p.isJumping = false
-			p.velocityY = 0
-		}
 	}
 }
 

@@ -114,6 +114,7 @@ func (s *ScenarioImpl) enforceBoundaries() {
 		s.player.SetPositionY(0)
 	} else if s.player.Position().Y+s.player.Height() > s.height {
 		s.player.SetPositionY(s.height - s.player.Height())
+		s.player.Land()
 	}
 }
 
@@ -135,8 +136,10 @@ func (s *ScenarioImpl) ShouldTransitionLeft() bool {
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
 	s.player.SetPositionX(sideMargin)
+	s.player.SetPositionY(s.height - s.player.Height())
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
 	s.player.SetPositionX(s.width - sideMargin - s.player.Width())
+	s.player.SetPositionY(s.height - s.player.Height())
 }

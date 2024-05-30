@@ -2,7 +2,6 @@ package config
 
 import (
 	"celestial-odyssey/internal/util"
-	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -34,7 +33,6 @@ type Player struct {
 	Speed        int
 	JumpVelocity float64
 	Gravity      float64
-	PlayArea     image.Rectangle
 	SpritesFile  string
 }
 
@@ -67,10 +65,6 @@ func loadPlayer() Player {
 		Speed:        2,
 		JumpVelocity: -10,
 		Gravity:      0.5,
-		PlayArea: image.Rectangle{
-			Min: image.Point{X: 0, Y: 0},
-			Max: image.Point{X: screenWidth - 1, Y: screenHeight - 1},
-		},
-		SpritesFile: "assets/images/player.png",
+		SpritesFile:  "assets/images/player.png",
 	}
 }
