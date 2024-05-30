@@ -12,14 +12,14 @@ const (
 )
 
 type ScenarioImpl struct {
-	player     *entities.Player
+	player      *entities.Player
+	collidables []entities.Collidable
+
 	background *ebiten.Image
 	renderer   *graphics.Renderer
 
 	width  int
 	height int
-
-	collidables []entities.Collidable
 }
 
 func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
@@ -85,16 +85,17 @@ func (s *ScenarioImpl) handleCollision(c entities.Collidable) {
 		}
 	}
 
-	// Check for horizontal collisions (moving left and right)
+	// Horizontal collision
 	if playerBounds.Min.X < collidableBounds.Max.X && playerBounds.Max.X > collidableBounds.Min.X {
 		// Hitting the right side of the box
-		if s.player.Position().X < collidableBounds.Min.X && playerBounds.Max.X > collidableBounds.Min.X {
+		if playerBounds.Min.X < collidableBounds.Min.X && playerBounds.Max.X > collidableBounds.Min.X {
 			s.player.SetPositionX(collidableBounds.Min.X - s.player.Width())
 			s.player.Stop()
 			return
 		}
+
 		// Hitting the left side of the box
-		if s.player.Position().X > collidableBounds.Max.X && playerBounds.Min.X < collidableBounds.Max.X {
+		if playerBounds.Min.X < collidableBounds.Max.X && playerBounds.Max.X > collidableBounds.Max.X {
 			s.player.SetPositionX(collidableBounds.Max.X)
 			s.player.Stop()
 			return
