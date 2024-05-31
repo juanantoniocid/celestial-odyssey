@@ -3,18 +3,11 @@ package entities
 import "image"
 
 type Box struct {
-	position      image.Point
-	width, height int
+	image.Rectangle
 }
 
-func NewBox(position image.Point, width, height int) *Box {
+func NewBox(rectangle image.Rectangle) *Box {
 	return &Box{
-		position: position,
-		width:    width,
-		height:   height,
+		Rectangle: rectangle,
 	}
-}
-
-func (b *Box) Bounds() image.Rectangle {
-	return image.Rect(b.position.X, b.position.Y, b.position.X+b.width, b.position.Y+b.height)
 }
