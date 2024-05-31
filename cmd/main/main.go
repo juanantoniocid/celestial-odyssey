@@ -1,6 +1,7 @@
 package main
 
 import (
+	"celestial-odyssey/internal/input"
 	"image"
 	"log"
 
@@ -83,11 +84,13 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.
 		log.Fatal("failed to load ruined temple background:", err)
 	}
 
-	landingSite := screen.NewScenario(player, landingSiteBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	inputHandler := input.NewKeyboardHandler()
 
-	landingSite.AddCollidable(entities.NewBox(image.Rect(100, 50, 200, 200)))
+	landingSite := screen.NewScenario(player, landingSiteBg, renderer, inputHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, inputHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, inputHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+
+	landingSite.AddCollidable(entities.NewBox(image.Rect(100, 100, 200, 200)))
 
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)

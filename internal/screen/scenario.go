@@ -11,25 +11,31 @@ const (
 	sideMargin = 8
 )
 
+type InputHandler interface {
+	Update(player *entities.Player)
+}
+
 type ScenarioImpl struct {
 	player      *entities.Player
 	collidables []entities.Collidable
 
-	background *ebiten.Image
-	renderer   *graphics.Renderer
+	background   *ebiten.Image
+	renderer     *graphics.Renderer
+	inputHandler InputHandler
 
 	width  int
 	height int
 }
 
-func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
+func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, inputHandler InputHandler, width, height int) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:      player,
-		background:  background,
-		renderer:    renderer,
-		width:       width,
-		height:      height,
-		collidables: make([]entities.Collidable, 0),
+		player:       player,
+		background:   background,
+		renderer:     renderer,
+		inputHandler: inputHandler,
+		width:        width,
+		height:       height,
+		collidables:  make([]entities.Collidable, 0),
 	}
 }
 
@@ -38,19 +44,7 @@ func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
 }
 
 func (s *ScenarioImpl) Update() error {
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		s.player.MoveLeft()
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		s.player.MoveRight()
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		s.player.Jump()
-	}
-
-	s.player.Update()
+	s.inputHandler.Update(s.player)
 	s.checkCollisions()
 	s.checkIfPlayerIsOnPlatform()
 	s.enforceBoundaries()
