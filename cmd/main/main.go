@@ -1,7 +1,6 @@
 package main
 
 import (
-	"celestial-odyssey/internal/physics"
 	"image"
 	"log"
 
@@ -12,6 +11,7 @@ import (
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
+	"celestial-odyssey/internal/physics"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/util"
 	"celestial-odyssey/internal/world/entities"
