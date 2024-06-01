@@ -6,24 +6,26 @@ import (
 	"celestial-odyssey/internal/world/entities"
 )
 
-type KeyboardHandler struct{}
-
-func NewKeyboardHandler() *KeyboardHandler {
-	return &KeyboardHandler{}
+type KeyboardHandler struct {
+	player *entities.Player
 }
 
-func (ih *KeyboardHandler) Update(player *entities.Player) {
+func NewKeyboardHandler(player *entities.Player) *KeyboardHandler {
+	return &KeyboardHandler{
+		player: player,
+	}
+}
+
+func (kh *KeyboardHandler) UpdatePlayer() {
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		player.MoveLeft()
+		kh.player.MoveLeft()
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		player.MoveRight()
+		kh.player.MoveRight()
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		player.Jump()
+		kh.player.Jump()
 	}
-
-	player.Tick()
 }

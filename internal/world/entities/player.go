@@ -143,8 +143,8 @@ func (p *Player) Fall() {
 
 // State
 
-// Tick updates the player character's state.
-func (p *Player) Tick() {
+// Update updates the player character's state.
+func (p *Player) Update() {
 	p.currentAction = ActionIdle
 	p.updateHorizontalPosition()
 	p.updateVerticalPosition()

@@ -3,7 +3,6 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/world/entities"
 )
 
@@ -12,7 +11,13 @@ const (
 )
 
 type InputHandler interface {
-	Update(player *entities.Player)
+	UpdatePlayer()
+}
+
+type Renderer interface {
+	DrawBackground(screen *ebiten.Image, background *ebiten.Image)
+	DrawPlayer(screen *ebiten.Image, player *entities.Player)
+	DrawCollidable(screen *ebiten.Image, collidable entities.Collidable)
 }
 
 type ScenarioImpl struct {
@@ -20,14 +25,14 @@ type ScenarioImpl struct {
 	collidables []entities.Collidable
 
 	background   *ebiten.Image
-	renderer     *graphics.Renderer
+	renderer     Renderer
 	inputHandler InputHandler
 
 	width  int
 	height int
 }
 
-func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, inputHandler InputHandler, width, height int) *ScenarioImpl {
+func NewScenario(player *entities.Player, background *ebiten.Image, renderer Renderer, inputHandler InputHandler, width int, height int) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:       player,
 		background:   background,
@@ -44,7 +49,9 @@ func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
 }
 
 func (s *ScenarioImpl) Update() error {
-	s.inputHandler.Update(s.player)
+	s.inputHandler.UpdatePlayer()
+	s.player.Update()
+
 	s.checkCollisions()
 	s.checkIfPlayerIsOnPlatform()
 	s.enforceBoundaries()

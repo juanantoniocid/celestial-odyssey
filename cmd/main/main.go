@@ -1,7 +1,6 @@
 package main
 
 import (
-	"celestial-odyssey/internal/input"
 	"image"
 	"log"
 
@@ -11,6 +10,7 @@ import (
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
+	"celestial-odyssey/internal/input"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/util"
 	"celestial-odyssey/internal/world/entities"
@@ -18,19 +18,16 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-
 	applyWindowSettings(cfg.Window)
 
 	player, playerImages := createPlayer(cfg.Player)
+	renderer := graphics.NewRenderer(playerImages)
+	inputHandler := input.NewKeyboardHandler(player)
 
-	inputHandler := input.NewKeyboardHandler()
-
-	levels := createLevel(cfg.Screen, player, graphics.NewRenderer(playerImages), inputHandler)
-
+	levels := createLevel(cfg.Screen, player, renderer, inputHandler)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
-
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
@@ -70,7 +67,7 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	return images
 }
 
-func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.Renderer, inputHandler screen.InputHandler) screen.Level {
+func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler) screen.Level {
 	level := screen.NewLevel()
 
 	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")

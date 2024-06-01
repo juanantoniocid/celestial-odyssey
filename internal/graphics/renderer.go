@@ -28,17 +28,17 @@ const (
 	PlayerJumpingRight
 )
 
-type Renderer struct {
+type RendererImpl struct {
 	playerImages []*ebiten.Image
 }
 
-func NewRenderer(playerImages []*ebiten.Image) *Renderer {
-	return &Renderer{
+func NewRenderer(playerImages []*ebiten.Image) *RendererImpl {
+	return &RendererImpl{
 		playerImages: playerImages,
 	}
 }
 
-func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
+func (r *RendererImpl) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
@@ -56,14 +56,14 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	screen.DrawImage(r.playerImages[frame], op)
 }
 
-func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
+func (r *RendererImpl) getIdleSprite(player *entities.Player) SpriteType {
 	if player.Direction() == entities.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
+func (r *RendererImpl) getWalkingSprite(player *entities.Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
@@ -91,21 +91,21 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
+func (r *RendererImpl) getJumpingSprite(player *entities.Player) SpriteType {
 	if player.Direction() == entities.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
 }
 
-func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
+func (r *RendererImpl) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
 	screen.DrawImage(background, op)
 }
 
-func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
+func (r *RendererImpl) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
