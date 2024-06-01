@@ -6,156 +6,189 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
+// Player represents the player character in the game.
 type Player struct {
+	// Position and dimensions
 	position image.Point
 	width    int
 	height   int
 
-	direction   HorizontalDirection
-	action      CharacterAction
-	prevAction  CharacterAction
-	movingLeft  bool
-	movingRight bool
-	isJumping   bool
+	// Movement and actions
+	direction     HorizontalDirection
+	currentAction CharacterAction
+	prevAction    CharacterAction
+	isMovingLeft  bool
+	isMovingRight bool
+	isJumping     bool
 
-	speed        int
-	velocityY    float64
-	jumpVelocity float64
-	gravity      float64
+	// Physics
+	walkingVelocity     int
+	verticalVelocity    float64
+	initialJumpVelocity float64
+	gravity             float64
 
-	stateDuration int
+	// State
+	currentStateDuration int
 }
 
+// NewPlayer creates a new player character with the given configuration.
 func NewPlayer(cfg config.Player) *Player {
 	return &Player{
 		width:  cfg.Dimensions.Width,
 		height: cfg.Dimensions.Height,
 
-		direction:   DirectionRight,
-		action:      ActionIdle,
-		movingLeft:  false,
-		movingRight: false,
-		isJumping:   false,
+		direction:     DirectionRight,
+		currentAction: ActionIdle,
+		isMovingLeft:  false,
+		isMovingRight: false,
+		isJumping:     false,
 
-		speed:        cfg.Speed,
-		velocityY:    0,
-		jumpVelocity: cfg.JumpVelocity,
-		gravity:      cfg.Gravity,
+		walkingVelocity:     cfg.WalkingVelocity,
+		verticalVelocity:    0,
+		initialJumpVelocity: cfg.InitialJumpVelocity,
+		gravity:             cfg.Gravity,
 
-		stateDuration: 0,
+		currentStateDuration: 0,
 	}
 }
 
-func (p *Player) Bounds() image.Rectangle {
-	return image.Rect(p.position.X, p.position.Y, p.position.X+p.width, p.position.Y+p.height)
-}
+// Position and dimensions
 
+// Position returns the current position of the player character.
 func (p *Player) Position() image.Point {
 	return p.position
 }
 
-func (p *Player) Width() int {
-	return p.width
-}
-
-func (p *Player) Height() int {
-	return p.height
-}
-
-func (p *Player) Direction() HorizontalDirection {
-	return p.direction
-}
-
-func (p *Player) Action() CharacterAction {
-	return p.action
-}
-
-func (p *Player) MoveLeft() {
-	p.movingLeft = true
-}
-
-func (p *Player) MoveRight() {
-	p.movingRight = true
-}
-
-func (p *Player) Jump() {
-	if !p.isJumping {
-		p.isJumping = true
-		p.velocityY = p.jumpVelocity
-		p.action = ActionJumping
-	}
-}
-
-func (p *Player) Land() {
-	p.isJumping = false
-	p.velocityY = 0
-	p.action = ActionIdle
-}
-
-func (p *Player) Stop() {
-	p.movingLeft = false
-	p.movingRight = false
-	p.action = ActionIdle
-}
-
-func (p *Player) IsJumping() bool {
-	return p.isJumping
-}
-
-func (p *Player) Fall() {
-	p.isJumping = true
-	p.velocityY = 0
-	p.action = ActionJumping
-}
-
+// SetPositionX sets the x-coordinate of the player character.
 func (p *Player) SetPositionX(x int) {
 	p.position.X = x
 }
 
+// SetPositionY sets the y-coordinate of the player character.
 func (p *Player) SetPositionY(y int) {
 	p.position.Y = y
 }
 
-func (p *Player) StateDuration() int {
-	return p.stateDuration
+// Width returns the width of the player character.
+func (p *Player) Width() int {
+	return p.width
 }
 
-func (p *Player) Update() {
+// Height returns the height of the player character.
+func (p *Player) Height() int {
+	return p.height
+}
+
+// Bounds returns the bounding box of the player character.
+func (p *Player) Bounds() image.Rectangle {
+	return image.Rect(p.position.X, p.position.Y, p.position.X+p.width, p.position.Y+p.height)
+}
+
+// Movement and actions
+
+// Direction returns the current direction of the player character.
+func (p *Player) Direction() HorizontalDirection {
+	return p.direction
+}
+
+// Action returns the current currentAction of the player character.
+func (p *Player) Action() CharacterAction {
+	return p.currentAction
+}
+
+// MoveLeft moves the player character to the left.
+func (p *Player) MoveLeft() {
+	p.isMovingLeft = true
+}
+
+// MoveRight moves the player character to the right.
+func (p *Player) MoveRight() {
+	p.isMovingRight = true
+}
+
+// Jump makes the player character jump.
+func (p *Player) Jump() {
+	if !p.isJumping {
+		p.isJumping = true
+		p.verticalVelocity = p.initialJumpVelocity
+		p.currentAction = ActionJumping
+	}
+}
+
+// IsJumping returns true if the player character is currently jumping.
+func (p *Player) IsJumping() bool {
+	return p.isJumping
+}
+
+// Land makes the player character land on the ground.
+func (p *Player) Land() {
+	p.isJumping = false
+	p.verticalVelocity = 0
+	p.currentAction = ActionIdle
+}
+
+// Stop stops the player character from moving.
+func (p *Player) Stop() {
+	p.isMovingLeft = false
+	p.isMovingRight = false
+	p.currentAction = ActionIdle
+}
+
+// Fall makes the player character fall down.
+func (p *Player) Fall() {
+	p.isJumping = true
+	p.verticalVelocity = 0
+	p.currentAction = ActionJumping
+}
+
+// State
+
+// Tick updates the player character's state.
+func (p *Player) Tick() {
+	p.currentAction = ActionIdle
 	p.updateHorizontalPosition()
 	p.updateVerticalPosition()
-	p.updateStateDuration()
+	p.updateCurrentStateDuration()
 }
 
-func (p *Player) updateHorizontalPosition() {
-	p.action = ActionIdle
-
-	if p.movingLeft {
-		p.movingLeft = false
-		p.position.X -= p.speed
-		p.direction = DirectionLeft
-		p.action = ActionWalking
-	} else if p.movingRight {
-		p.movingRight = false
-		p.position.X += p.speed
-		p.direction = DirectionRight
-		p.action = ActionWalking
-	}
+// CurrentStateDuration returns the duration of the current state.
+func (p *Player) CurrentStateDuration() int {
+	return p.currentStateDuration
 }
 
-func (p *Player) updateVerticalPosition() {
-	if p.isJumping {
-		p.action = ActionJumping
-		p.velocityY += p.gravity
-		p.position.Y += int(p.velocityY)
-	}
-}
-
-func (p *Player) updateStateDuration() {
-	if p.action == p.prevAction {
-		p.stateDuration++
+// updateCurrentStateDuration updates the duration of the current state.
+func (p *Player) updateCurrentStateDuration() {
+	if p.currentAction == p.prevAction {
+		p.currentStateDuration++
 		return
 	}
 
-	p.prevAction = p.action
-	p.stateDuration = 0
+	p.prevAction = p.currentAction
+	p.currentStateDuration = 0
+}
+
+// Physics
+
+// updateHorizontalPosition updates the player character's horizontal position.
+func (p *Player) updateHorizontalPosition() {
+	if p.isMovingLeft {
+		p.isMovingLeft = false
+		p.position.X -= p.walkingVelocity
+		p.direction = DirectionLeft
+		p.currentAction = ActionWalking
+	} else if p.isMovingRight {
+		p.isMovingRight = false
+		p.position.X += p.walkingVelocity
+		p.direction = DirectionRight
+		p.currentAction = ActionWalking
+	}
+}
+
+// updateVerticalPosition updates the player character's vertical position.
+func (p *Player) updateVerticalPosition() {
+	if p.isJumping {
+		p.currentAction = ActionJumping
+		p.verticalVelocity += p.gravity
+		p.position.Y += int(p.verticalVelocity)
+	}
 }

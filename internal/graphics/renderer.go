@@ -65,7 +65,7 @@ func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
 
 func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	var frame SpriteType
-	frameIndex := player.StateDuration() / framesPerAnimationFrame % totalWalkingFrames
+	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
 	switch player.Direction() {
 	case entities.DirectionLeft:

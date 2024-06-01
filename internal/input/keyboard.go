@@ -25,5 +25,5 @@ func (ih *KeyboardHandler) Update(player *entities.Player) {
 		player.Jump()
 	}
 
-	player.Update()
+	player.Tick()
 }
