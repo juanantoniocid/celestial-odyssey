@@ -42,18 +42,23 @@ func (r *RendererImpl) DrawPlayer(screen *ebiten.Image, player *entities.Player)
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
-	var frame SpriteType
-	switch player.Action() {
-	case entities.ActionIdle:
-		frame = r.getIdleSprite(player)
-	case entities.ActionJumping:
-		frame = r.getJumpingSprite(player)
-	case entities.ActionWalking:
-		frame = r.getWalkingSprite(player)
-	}
+	sprite := r.getSprite(player)
 
 	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
-	screen.DrawImage(r.playerImages[frame], op)
+	screen.DrawImage(r.playerImages[sprite], op)
+}
+
+func (r *RendererImpl) getSprite(player *entities.Player) SpriteType {
+	switch player.Action() {
+	case entities.ActionIdle:
+		return r.getIdleSprite(player)
+	case entities.ActionJumping:
+		return r.getJumpingSprite(player)
+	case entities.ActionWalking:
+		return r.getWalkingSprite(player)
+	}
+
+	return PlayerIdleRight
 }
 
 func (r *RendererImpl) getIdleSprite(player *entities.Player) SpriteType {
