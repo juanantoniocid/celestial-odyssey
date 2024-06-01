@@ -23,7 +23,9 @@ func main() {
 
 	player, playerImages := createPlayer(cfg.Player)
 
-	levels := createLevel(cfg.Screen, player, graphics.NewRenderer(playerImages))
+	inputHandler := input.NewKeyboardHandler()
+
+	levels := createLevel(cfg.Screen, player, graphics.NewRenderer(playerImages), inputHandler)
 
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
@@ -68,7 +70,7 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	return images
 }
 
-func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.Renderer) screen.Level {
+func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.Renderer, inputHandler screen.InputHandler) screen.Level {
 	level := screen.NewLevel()
 
 	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")
@@ -83,8 +85,6 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.
 	if err != nil {
 		log.Fatal("failed to load ruined temple background:", err)
 	}
-
-	inputHandler := input.NewKeyboardHandler()
 
 	landingSite := screen.NewScenario(player, landingSiteBg, renderer, inputHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, inputHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
