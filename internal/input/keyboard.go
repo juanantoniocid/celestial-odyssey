@@ -1,31 +1,26 @@
 package input
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-
 	"celestial-odyssey/internal/world/entities"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type KeyboardHandler struct {
-	player *entities.Player
+type KeyboardHandler struct{}
+
+func NewKeyboardHandler() *KeyboardHandler {
+	return &KeyboardHandler{}
 }
 
-func NewKeyboardHandler(player *entities.Player) *KeyboardHandler {
-	return &KeyboardHandler{
-		player: player,
-	}
-}
-
-func (kh *KeyboardHandler) UpdatePlayer() {
+func (kh *KeyboardHandler) UpdatePlayer(player *entities.Player) {
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		kh.player.MoveLeft()
+		player.MoveLeft()
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		kh.player.MoveRight()
+		player.MoveRight()
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		kh.player.Jump()
+		player.Jump()
 	}
 }
