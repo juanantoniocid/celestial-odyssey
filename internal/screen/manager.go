@@ -7,13 +7,6 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
-type Level interface {
-	Init()
-	AddScenario(scenario Scenario)
-	Update() error
-	Draw(screen *ebiten.Image)
-}
-
 type Manager struct {
 	levels       []Level
 	currentLevel int

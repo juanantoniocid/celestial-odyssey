@@ -44,7 +44,7 @@ func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
 
-	s.physicsHandler.Update(s.player, s.collidables, s.width, s.height)
+	s.physicsHandler.ApplyPhysics(s.player, s.collidables, s.width, s.height)
 
 	return nil
 }

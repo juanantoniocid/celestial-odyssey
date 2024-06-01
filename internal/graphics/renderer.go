@@ -28,17 +28,20 @@ const (
 	PlayerJumpingRight
 )
 
-type RendererImpl struct {
+// Renderer is responsible for drawing the game entities on the screen.
+type Renderer struct {
 	playerImages []*ebiten.Image
 }
 
-func NewRenderer(playerImages []*ebiten.Image) *RendererImpl {
-	return &RendererImpl{
+// NewRenderer creates a new Renderer instance.
+func NewRenderer(playerImages []*ebiten.Image) *Renderer {
+	return &Renderer{
 		playerImages: playerImages,
 	}
 }
 
-func (r *RendererImpl) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
+// DrawPlayer draws the player on the screen.
+func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
@@ -48,7 +51,7 @@ func (r *RendererImpl) DrawPlayer(screen *ebiten.Image, player *entities.Player)
 	screen.DrawImage(r.playerImages[sprite], op)
 }
 
-func (r *RendererImpl) getSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getSprite(player *entities.Player) SpriteType {
 	switch player.Action() {
 	case entities.ActionIdle:
 		return r.getIdleSprite(player)
@@ -61,14 +64,14 @@ func (r *RendererImpl) getSprite(player *entities.Player) SpriteType {
 	return PlayerIdleRight
 }
 
-func (r *RendererImpl) getIdleSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
 	if player.Direction() == entities.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *RendererImpl) getWalkingSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
@@ -96,21 +99,23 @@ func (r *RendererImpl) getWalkingSprite(player *entities.Player) SpriteType {
 	return frame
 }
 
-func (r *RendererImpl) getJumpingSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
 	if player.Direction() == entities.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
 }
 
-func (r *RendererImpl) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
+// DrawBackground draws the background on the screen.
+func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
 	screen.DrawImage(background, op)
 }
 
-func (r *RendererImpl) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
+// DrawCollidable draws a collidable entity on the screen.
+func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
