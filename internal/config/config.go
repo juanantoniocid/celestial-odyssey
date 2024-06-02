@@ -1,11 +1,9 @@
 package config
 
 import (
-	"image"
+	"celestial-odyssey/internal/util"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"celestial-odyssey/util"
 )
 
 const (
@@ -31,12 +29,11 @@ type Screen struct {
 }
 
 type Player struct {
-	Dimensions   util.Dimensions
-	Speed        int
-	JumpVelocity float64
-	Gravity      float64
-	PlayArea     image.Rectangle
-	SpritesFile  string
+	Dimensions          util.Dimensions
+	WalkingVelocity     int
+	InitialJumpVelocity float64
+	Gravity             float64
+	SpritesFile         string
 }
 
 func LoadConfig() Config {
@@ -64,14 +61,10 @@ func loadScreen() Screen {
 
 func loadPlayer() Player {
 	return Player{
-		Dimensions:   util.Dimensions{Width: 16, Height: 32},
-		Speed:        2,
-		JumpVelocity: -10,
-		Gravity:      0.5,
-		PlayArea: image.Rectangle{
-			Min: image.Point{X: 0, Y: 0},
-			Max: image.Point{X: screenWidth - 1, Y: screenHeight - 1},
-		},
-		SpritesFile: "assets/images/player.png",
+		Dimensions:          util.Dimensions{Width: 16, Height: 32},
+		WalkingVelocity:     2,
+		InitialJumpVelocity: -10,
+		Gravity:             0.5,
+		SpritesFile:         "assets/images/player.png",
 	}
 }

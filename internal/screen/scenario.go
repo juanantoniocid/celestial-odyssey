@@ -3,8 +3,7 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/graphics"
-	"celestial-odyssey/world/entities"
+	"celestial-odyssey/internal/world/entities"
 )
 
 const (
@@ -12,38 +11,40 @@ const (
 )
 
 type ScenarioImpl struct {
-	player     *entities.Player
-	background *ebiten.Image
-	renderer   *graphics.Renderer
+	player      *entities.Player
+	collidables []entities.Collidable
+
+	background     *ebiten.Image
+	renderer       Renderer
+	inputHandler   InputHandler
+	physicsHandler PhysicsHandler
 
 	width  int
 	height int
 }
 
-func NewScenario(player *entities.Player, background *ebiten.Image, renderer *graphics.Renderer, width, height int) *ScenarioImpl {
+func NewScenario(player *entities.Player, background *ebiten.Image, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:     player,
-		background: background,
-		renderer:   renderer,
-		width:      width,
-		height:     height,
+		player:         player,
+		background:     background,
+		renderer:       renderer,
+		inputHandler:   inputHandler,
+		physicsHandler: physicsHandler,
+		width:          width,
+		height:         height,
+		collidables:    make([]entities.Collidable, 0),
 	}
 }
 
+func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
+	s.collidables = append(s.collidables, c)
+}
+
 func (s *ScenarioImpl) Update() error {
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		s.player.MoveLeft()
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		s.player.MoveRight()
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		s.player.Jump()
-	}
-
+	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
+
+	s.physicsHandler.ApplyPhysics(s.player, s.collidables, s.width, s.height)
 
 	return nil
 }
@@ -51,6 +52,9 @@ func (s *ScenarioImpl) Update() error {
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
 	s.renderer.DrawBackground(screen, s.background)
 	s.renderer.DrawPlayer(screen, s.player)
+	for _, c := range s.collidables {
+		s.renderer.DrawCollidable(screen, c)
+	}
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
@@ -62,9 +66,9 @@ func (s *ScenarioImpl) ShouldTransitionLeft() bool {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
-	s.player.SetPositionAtBottomLeft(sideMargin)
+	s.player.SetPositionX(sideMargin)
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionAtBottomRight(s.width - sideMargin)
+	s.player.SetPositionX(s.width - sideMargin - s.player.Width())
 }

@@ -10,24 +10,26 @@ import (
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
+	"celestial-odyssey/internal/input"
+	"celestial-odyssey/internal/physics"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/util"
-	"celestial-odyssey/world/entities"
+	"celestial-odyssey/internal/util"
+	"celestial-odyssey/internal/world/entities"
 )
 
 func main() {
 	cfg := config.LoadConfig()
-
 	applyWindowSettings(cfg.Window)
 
 	player, playerImages := createPlayer(cfg.Player)
+	renderer := graphics.NewRenderer(playerImages)
+	inputHandler := input.NewKeyboardHandler()
+	physicsHandler := physics.NewPhysicsHandler()
 
-	levels := createLevel(cfg.Screen, player, graphics.NewRenderer(playerImages))
-
+	levels := createLevel(cfg.Screen, player, renderer, inputHandler, physicsHandler)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
-
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +69,7 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	return images
 }
 
-func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.Renderer) screen.Level {
+func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
 	level := screen.NewLevel()
 
 	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")
@@ -83,9 +85,11 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer *graphics.
 		log.Fatal("failed to load ruined temple background:", err)
 	}
 
-	landingSite := screen.NewScenario(player, landingSiteBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	landingSite := screen.NewScenario(player, landingSiteBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+
+	landingSite.AddCollidable(entities.NewBox(image.Rect(100, 100, 200, 200)))
 
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)

@@ -4,16 +4,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Scenario interface {
-	Update() error
-	Draw(screen *ebiten.Image)
-
-	ShouldTransitionRight() bool
-	ShouldTransitionLeft() bool
-	SetPlayerPositionAtLeft()
-	SetPlayerPositionAtRight()
-}
-
 type LevelImpl struct {
 	scenarios       []Scenario
 	currentScenario int
