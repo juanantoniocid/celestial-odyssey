@@ -30,25 +30,32 @@ const (
 
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer struct {
-	playerImages []*ebiten.Image
+	playerImages    []*ebiten.Image
+	backgroundImage *ebiten.Image
+
+	op *ebiten.DrawImageOptions
 }
 
 // NewRenderer creates a new Renderer instance.
-func NewRenderer(playerImages []*ebiten.Image) *Renderer {
+func NewRenderer(playerImages []*ebiten.Image, backgroundImage *ebiten.Image) *Renderer {
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+
 	return &Renderer{
-		playerImages: playerImages,
+		playerImages:    playerImages,
+		backgroundImage: backgroundImage,
+
+		op: op,
 	}
 }
 
 // DrawPlayer draws the player on the screen.
 func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
-
+	r.op.GeoM.Reset()
 	sprite := r.getSprite(player)
 
-	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
-	screen.DrawImage(r.playerImages[sprite], op)
+	r.op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
+	screen.DrawImage(r.playerImages[sprite], r.op)
 }
 
 func (r *Renderer) getSprite(player *entities.Player) SpriteType {
@@ -107,24 +114,21 @@ func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
 }
 
 // DrawBackground draws the background on the screen.
-func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
-
-	screen.DrawImage(background, op)
+func (r *Renderer) DrawBackground(screen *ebiten.Image) {
+	r.op.GeoM.Reset()
+	screen.DrawImage(r.backgroundImage, r.op)
 }
 
 // DrawCollidable draws a collidable entity on the screen.
 func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
+	r.op.GeoM.Reset()
 
 	bounds := collidable.Bounds()
-	op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
+	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
 	brown := color.RGBA{R: 139, G: 69, B: 19, A: 255}
 	img.Fill(brown)
 
-	screen.DrawImage(img, op)
+	screen.DrawImage(img, r.op)
 }

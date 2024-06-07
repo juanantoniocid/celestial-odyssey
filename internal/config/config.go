@@ -1,9 +1,11 @@
 package config
 
 import (
-	"celestial-odyssey/internal/util"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"celestial-odyssey/internal/util"
 )
 
 const (
@@ -26,6 +28,7 @@ type Window struct {
 type Screen struct {
 	ClearedEveryFrame bool
 	Dimensions        util.Dimensions
+	BackgroundColor   color.RGBA
 }
 
 type Player struct {
@@ -56,6 +59,7 @@ func loadScreen() Screen {
 	return Screen{
 		ClearedEveryFrame: true,
 		Dimensions:        util.Dimensions{Width: screenWidth, Height: screenHeight},
+		BackgroundColor:   color.RGBA{R: 24, G: 8, B: 50, A: 1},
 	}
 }
 

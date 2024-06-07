@@ -22,7 +22,7 @@ func main() {
 	applyWindowSettings(cfg.Window)
 
 	player, playerImages := createPlayer(cfg.Player)
-	renderer := graphics.NewRenderer(playerImages)
+	renderer := createRenderer(cfg.Screen, playerImages)
 	inputHandler := input.NewKeyboardHandler()
 	physicsHandler := physics.NewPhysicsHandler()
 
@@ -46,6 +46,20 @@ func createPlayer(cfg config.Player) (player *entities.Player, playerImages []*e
 	playerImages = loadPlayerImages(cfg.SpritesFile, cfg.Dimensions)
 
 	return player, playerImages
+}
+
+func createRenderer(cfg config.Screen, playerImages []*ebiten.Image) *graphics.Renderer {
+	backgroundImage := createBackgroundImage(cfg)
+	renderer := graphics.NewRenderer(playerImages, backgroundImage)
+
+	return renderer
+}
+
+func createBackgroundImage(cfg config.Screen) *ebiten.Image {
+	background := ebiten.NewImage(cfg.Dimensions.Width, cfg.Dimensions.Height)
+	background.Fill(cfg.BackgroundColor)
+
+	return background
 }
 
 func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
@@ -72,22 +86,9 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
 	level := screen.NewLevel()
 
-	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")
-	if err != nil {
-		log.Fatal("failed to load landing site background:", err)
-	}
-	sandDunesBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/sand_dunes.png")
-	if err != nil {
-		log.Fatal("failed to load sand dunes background:", err)
-	}
-	ruinedTempleBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/ruined_temple.png")
-	if err != nil {
-		log.Fatal("failed to load ruined temple background:", err)
-	}
-
-	landingSite := screen.NewScenario(player, landingSiteBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	landingSite := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	sandDunes := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	ruinedTemple := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
 	landingSite.AddCollidable(entities.NewBox(image.Rect(100, 100, 200, 200)))
 
