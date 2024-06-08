@@ -56,7 +56,7 @@ type InputHandler interface {
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer interface {
 	// DrawBackground draws the background on the screen.
-	DrawBackground(screen *ebiten.Image)
+	DrawBackground(screen *ebiten.Image, width, height int)
 
 	// DrawPlayer draws the player on the screen.
 	DrawPlayer(screen *ebiten.Image, player *entities.Player)

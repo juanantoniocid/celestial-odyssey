@@ -22,7 +22,7 @@ func main() {
 	applyWindowSettings(cfg.Window)
 
 	player, playerImages := createPlayer(cfg.Player)
-	renderer := createRenderer(cfg.Screen, playerImages)
+	renderer := createRenderer(cfg.Screen, cfg.Ground, playerImages)
 	inputHandler := input.NewKeyboardHandler()
 	physicsHandler := physics.NewPhysicsHandler()
 
@@ -48,20 +48,6 @@ func createPlayer(cfg config.Player) (player *entities.Player, playerImages []*e
 	return player, playerImages
 }
 
-func createRenderer(cfg config.Screen, playerImages []*ebiten.Image) *graphics.Renderer {
-	backgroundImage := createBackgroundImage(cfg)
-	renderer := graphics.NewRenderer(playerImages, backgroundImage)
-
-	return renderer
-}
-
-func createBackgroundImage(cfg config.Screen) *ebiten.Image {
-	background := ebiten.NewImage(cfg.Dimensions.Width, cfg.Dimensions.Height)
-	background.Fill(cfg.BackgroundColor)
-
-	return background
-}
-
 func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	img, _, err := ebitenutil.NewImageFromFile(file)
 	if err != nil {
@@ -81,6 +67,12 @@ func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
 	}
 
 	return images
+}
+
+func createRenderer(cfgScreen config.Screen, cfgGround config.Ground, playerImages []*ebiten.Image) *graphics.Renderer {
+	renderer := graphics.NewRenderer(playerImages, cfgScreen, cfgGround)
+
+	return renderer
 }
 
 func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {

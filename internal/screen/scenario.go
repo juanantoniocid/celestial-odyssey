@@ -48,7 +48,7 @@ func (s *ScenarioImpl) Update() error {
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.DrawBackground(screen)
+	s.renderer.DrawBackground(screen, s.width, s.height)
 	s.renderer.DrawPlayer(screen, s.player)
 	for _, c := range s.collidables {
 		s.renderer.DrawCollidable(screen, c)

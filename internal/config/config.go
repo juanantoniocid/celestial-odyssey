@@ -17,6 +17,7 @@ type Config struct {
 	Window Window
 	Screen Screen
 	Player Player
+	Ground Ground
 }
 
 type Window struct {
@@ -31,6 +32,11 @@ type Screen struct {
 	BackgroundColor   color.RGBA
 }
 
+type Ground struct {
+	Dimensions util.Dimensions
+	File       string
+}
+
 type Player struct {
 	Dimensions          util.Dimensions
 	WalkingVelocity     int
@@ -43,6 +49,7 @@ func LoadConfig() Config {
 	return Config{
 		Window: loadWindow(),
 		Screen: loadScreen(),
+		Ground: loadGround(),
 		Player: loadPlayer(),
 	}
 }
@@ -60,6 +67,13 @@ func loadScreen() Screen {
 		ClearedEveryFrame: true,
 		Dimensions:        util.Dimensions{Width: screenWidth, Height: screenHeight},
 		BackgroundColor:   color.RGBA{R: 24, G: 8, B: 50, A: 1},
+	}
+}
+
+func loadGround() Ground {
+	return Ground{
+		Dimensions: util.Dimensions{Width: 40, Height: 28},
+		File:       "assets/images/ground.png",
 	}
 }
 

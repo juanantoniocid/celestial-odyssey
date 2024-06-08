@@ -2,9 +2,13 @@ package graphics
 
 import (
 	"image/color"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
+	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/util"
 	"celestial-odyssey/internal/world/entities"
 )
 
@@ -30,23 +34,44 @@ const (
 
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer struct {
-	playerImages    []*ebiten.Image
-	backgroundImage *ebiten.Image
+	playerImages     []*ebiten.Image
+	backgroundImage  *ebiten.Image
+	groundImage      *ebiten.Image
+	groundDimensions util.Dimensions
 
 	op *ebiten.DrawImageOptions
 }
 
 // NewRenderer creates a new Renderer instance.
-func NewRenderer(playerImages []*ebiten.Image, backgroundImage *ebiten.Image) *Renderer {
+func NewRenderer(playerImages []*ebiten.Image, cfgScreen config.Screen, cfgGround config.Ground) *Renderer {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
 	return &Renderer{
-		playerImages:    playerImages,
-		backgroundImage: backgroundImage,
+		playerImages:     playerImages,
+		backgroundImage:  createBackgroundImage(cfgScreen),
+		groundImage:      createGroundImage(cfgGround.File),
+		groundDimensions: cfgGround.Dimensions,
 
 		op: op,
 	}
+}
+
+func createGroundImage(file string) *ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile(file)
+	if err != nil {
+		log.Fatal("failed to load ground image:", err)
+		return nil
+	}
+
+	return img
+}
+
+func createBackgroundImage(cfg config.Screen) *ebiten.Image {
+	background := ebiten.NewImage(cfg.Dimensions.Width, cfg.Dimensions.Height)
+	background.Fill(cfg.BackgroundColor)
+
+	return background
 }
 
 // DrawPlayer draws the player on the screen.
@@ -114,9 +139,16 @@ func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
 }
 
 // DrawBackground draws the background on the screen.
-func (r *Renderer) DrawBackground(screen *ebiten.Image) {
+func (r *Renderer) DrawBackground(screen *ebiten.Image, screenWidth, screenHeight int) {
 	r.op.GeoM.Reset()
 	screen.DrawImage(r.backgroundImage, r.op)
+
+	// Repeat the ground image to fill the screen.
+	for x := 0; x < screenWidth; x += r.groundDimensions.Width {
+		r.op.GeoM.Reset()
+		r.op.GeoM.Translate(float64(x), float64(screenHeight-r.groundDimensions.Height))
+		screen.DrawImage(r.groundImage, r.op)
+	}
 }
 
 // DrawCollidable draws a collidable entity on the screen.
