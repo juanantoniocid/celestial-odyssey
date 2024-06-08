@@ -169,11 +169,20 @@ func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
 func (r *Renderer) DrawBackground(screen *ebiten.Image, screenWidth, screenHeight int) {
 	r.op.GeoM.Reset()
 	screen.DrawImage(r.backgroundImage, r.op)
+}
 
-	// Repeat the ground image to fill the screen.
-	for x := 0; x < screenWidth; x += r.groundDimensions.Dx() {
+func (r *Renderer) DrawGround(screen *ebiten.Image, ground []*entities.Ground) {
+	for _, g := range ground {
+		r.drawGround(screen, g)
+	}
+}
+
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Ground) {
+	bounds := ground.Bounds()
+
+	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
 		r.op.GeoM.Reset()
-		r.op.GeoM.Translate(float64(x), float64(screenHeight-r.groundDimensions.Dy()))
+		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
 		screen.DrawImage(r.groundImage, r.op)
 	}
 }

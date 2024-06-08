@@ -12,6 +12,7 @@ const (
 
 type ScenarioImpl struct {
 	player      *entities.Player
+	ground      []*entities.Ground
 	collidables []entities.Collidable
 
 	renderer       Renderer
@@ -30,8 +31,14 @@ func NewScenario(player *entities.Player, renderer Renderer, inputHandler InputH
 		physicsHandler: physicsHandler,
 		width:          width,
 		height:         height,
-		collidables:    make([]entities.Collidable, 0),
+
+		ground:      make([]*entities.Ground, 0),
+		collidables: make([]entities.Collidable, 0),
 	}
+}
+
+func (s *ScenarioImpl) AddGround(g *entities.Ground) {
+	s.ground = append(s.ground, g)
 }
 
 func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
@@ -50,6 +57,7 @@ func (s *ScenarioImpl) Update() error {
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
 	s.renderer.DrawBackground(screen, s.width, s.height)
 	s.renderer.DrawPlayer(screen, s.player)
+	s.renderer.DrawGround(screen, s.ground)
 	for _, c := range s.collidables {
 		s.renderer.DrawCollidable(screen, c)
 	}

@@ -61,6 +61,9 @@ type Renderer interface {
 	// DrawPlayer draws the player on the screen.
 	DrawPlayer(screen *ebiten.Image, player *entities.Player)
 
+	// DrawGround draws the ground on the screen.
+	DrawGround(screen *ebiten.Image, ground []*entities.Ground)
+
 	// DrawCollidable draws the collidable entity on the screen.
 	DrawCollidable(screen *ebiten.Image, collidable entities.Collidable)
 }
