@@ -1,6 +1,7 @@
 package graphics
 
 import (
+	"image"
 	"image/color"
 	"log"
 
@@ -8,12 +9,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/util"
 	"celestial-odyssey/internal/world/entities"
 )
 
 const (
 	framesPerAnimationFrame = 10
+	imagesInSpriteSheet     = 10
 	totalWalkingFrames      = 3
 )
 
@@ -37,24 +38,48 @@ type Renderer struct {
 	playerImages     []*ebiten.Image
 	backgroundImage  *ebiten.Image
 	groundImage      *ebiten.Image
-	groundDimensions util.Dimensions
+	groundDimensions image.Rectangle
 
 	op *ebiten.DrawImageOptions
 }
 
 // NewRenderer creates a new Renderer instance.
-func NewRenderer(playerImages []*ebiten.Image, cfgScreen config.Screen, cfgGround config.Ground) *Renderer {
+func NewRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *Renderer {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
+
+	playerImages := createPlayerImages(cfgPlayer)
+	groundImage := createGroundImage(cfgGround.File)
 
 	return &Renderer{
 		playerImages:     playerImages,
 		backgroundImage:  createBackgroundImage(cfgScreen),
-		groundImage:      createGroundImage(cfgGround.File),
-		groundDimensions: cfgGround.Dimensions,
+		groundImage:      groundImage,
+		groundDimensions: groundImage.Bounds(),
 
 		op: op,
 	}
+}
+
+func createPlayerImages(cfg config.Player) []*ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile(cfg.SpriteSheet)
+	if err != nil {
+		log.Fatal("failed to load player sprite sheet:", err)
+		return nil
+	}
+
+	var images []*ebiten.Image
+	frameWidth := img.Bounds().Max.X / imagesInSpriteSheet
+	frameHeight := img.Bounds().Max.Y
+	numFrames := img.Bounds().Max.X / frameWidth
+
+	for i := 0; i < numFrames; i++ {
+		x := i * frameWidth
+		frame := img.SubImage(image.Rect(x, 0, x+frameWidth, frameHeight)).(*ebiten.Image)
+		images = append(images, frame)
+	}
+
+	return images
 }
 
 func createGroundImage(file string) *ebiten.Image {
@@ -83,17 +108,19 @@ func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
 	screen.DrawImage(r.playerImages[sprite], r.op)
 }
 
-func (r *Renderer) getSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getSprite(player *entities.Player) (spriteType SpriteType) {
 	switch player.Action() {
 	case entities.ActionIdle:
-		return r.getIdleSprite(player)
+		spriteType = r.getIdleSprite(player)
 	case entities.ActionJumping:
-		return r.getJumpingSprite(player)
+		spriteType = r.getJumpingSprite(player)
 	case entities.ActionWalking:
-		return r.getWalkingSprite(player)
+		spriteType = r.getWalkingSprite(player)
+	default:
+		spriteType = PlayerIdleRight
 	}
 
-	return PlayerIdleRight
+	return spriteType
 }
 
 func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
@@ -144,9 +171,9 @@ func (r *Renderer) DrawBackground(screen *ebiten.Image, screenWidth, screenHeigh
 	screen.DrawImage(r.backgroundImage, r.op)
 
 	// Repeat the ground image to fill the screen.
-	for x := 0; x < screenWidth; x += r.groundDimensions.Width {
+	for x := 0; x < screenWidth; x += r.groundDimensions.Dx() {
 		r.op.GeoM.Reset()
-		r.op.GeoM.Translate(float64(x), float64(screenHeight-r.groundDimensions.Height))
+		r.op.GeoM.Translate(float64(x), float64(screenHeight-r.groundDimensions.Dy()))
 		screen.DrawImage(r.groundImage, r.op)
 	}
 }

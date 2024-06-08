@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/game"
@@ -13,7 +12,6 @@ import (
 	"celestial-odyssey/internal/input"
 	"celestial-odyssey/internal/physics"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/internal/util"
 	"celestial-odyssey/internal/world/entities"
 )
 
@@ -21,8 +19,8 @@ func main() {
 	cfg := config.LoadConfig()
 	applyWindowSettings(cfg.Window)
 
-	player, playerImages := createPlayer(cfg.Player)
-	renderer := createRenderer(cfg.Screen, cfg.Ground, playerImages)
+	player := createPlayer(cfg.Player)
+	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
 	inputHandler := input.NewKeyboardHandler()
 	physicsHandler := physics.NewPhysicsHandler()
 
@@ -41,36 +39,14 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entities.Player, playerImages []*ebiten.Image) {
+func createPlayer(cfg config.Player) (player *entities.Player) {
 	player = entities.NewPlayer(cfg)
-	playerImages = loadPlayerImages(cfg.SpritesFile, cfg.Dimensions)
 
-	return player, playerImages
+	return player
 }
 
-func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile(file)
-	if err != nil {
-		log.Fatal("failed to load player sprite sheet:", err)
-		return nil
-	}
-
-	var images []*ebiten.Image
-	frameWidth := dimensions.Width
-	frameHeight := dimensions.Height
-	numFrames := img.Bounds().Max.X / frameWidth
-
-	for i := 0; i < numFrames; i++ {
-		x := i * frameWidth
-		frame := img.SubImage(image.Rect(x, 0, x+frameWidth, frameHeight)).(*ebiten.Image)
-		images = append(images, frame)
-	}
-
-	return images
-}
-
-func createRenderer(cfgScreen config.Screen, cfgGround config.Ground, playerImages []*ebiten.Image) *graphics.Renderer {
-	renderer := graphics.NewRenderer(playerImages, cfgScreen, cfgGround)
+func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *graphics.Renderer {
+	renderer := graphics.NewRenderer(cfgPlayer, cfgScreen, cfgGround)
 
 	return renderer
 }

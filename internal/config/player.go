@@ -7,7 +7,7 @@ type Player struct {
 	WalkingVelocity     int
 	InitialJumpVelocity float64
 	Gravity             float64
-	SpritesFile         string
+	SpriteSheet         string
 }
 
 func setupPlayer() Player {
@@ -16,6 +16,6 @@ func setupPlayer() Player {
 		WalkingVelocity:     2,
 		InitialJumpVelocity: -10,
 		Gravity:             0.5,
-		SpritesFile:         "assets/images/player.png",
+		SpriteSheet:         "assets/images/player.png",
 	}
 }
