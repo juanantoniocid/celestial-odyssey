@@ -11,16 +11,12 @@ const (
 )
 
 type ScenarioImpl struct {
-	player      *entities.Player
-	ground      []*entities.Ground
-	collidables []entities.Collidable
+	player *entities.Player
+	world  *entities.World
 
 	renderer       Renderer
 	inputHandler   InputHandler
 	physicsHandler PhysicsHandler
-
-	width  int
-	height int
 }
 
 func NewScenario(player *entities.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
@@ -29,42 +25,32 @@ func NewScenario(player *entities.Player, renderer Renderer, inputHandler InputH
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
-		width:          width,
-		height:         height,
-
-		ground:      make([]*entities.Ground, 0),
-		collidables: make([]entities.Collidable, 0),
+		world:          entities.NewWorld(player, width, height),
 	}
 }
 
-func (s *ScenarioImpl) AddGround(g *entities.Ground) {
-	s.ground = append(s.ground, g)
+func (s *ScenarioImpl) AddBox(b *entities.Box) {
+	s.world.AddBox(b)
 }
 
-func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
-	s.collidables = append(s.collidables, c)
+func (s *ScenarioImpl) AddGround(g *entities.Ground) {
+	s.world.AddGround(g)
 }
 
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-
-	s.physicsHandler.ApplyPhysics(s.player, s.collidables, s.width, s.height)
+	s.physicsHandler.ApplyPhysics(s.world)
 
 	return nil
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.DrawBackground(screen, s.width, s.height)
-	s.renderer.DrawPlayer(screen, s.player)
-	s.renderer.DrawGround(screen, s.ground)
-	for _, c := range s.collidables {
-		s.renderer.DrawCollidable(screen, c)
-	}
+	s.renderer.Draw(screen, s.world)
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
-	return s.player.Position().X+s.player.Width() >= s.width
+	return s.player.Position().X+s.player.Width() >= s.world.GetWidth()
 }
 
 func (s *ScenarioImpl) ShouldTransitionLeft() bool {
@@ -76,5 +62,5 @@ func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionX(s.width - sideMargin - s.player.Width())
+	s.player.SetPositionX(s.world.GetWidth() - sideMargin - s.player.Width())
 }

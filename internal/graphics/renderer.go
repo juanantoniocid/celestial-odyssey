@@ -99,8 +99,14 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-// DrawPlayer draws the player on the screen.
-func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
+func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World) {
+	r.drawBackground(screen, 320, 200)
+	r.drawBoxes(screen, world.GetBoxes())
+	r.drawPlayer(screen, world.GetPlayer())
+	r.drawGrounds(screen, world.GetGrounds())
+}
+
+func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities.Player) {
 	r.op.GeoM.Reset()
 	sprite := r.getSprite(player)
 
@@ -165,13 +171,12 @@ func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
 	return PlayerJumpingRight
 }
 
-// DrawBackground draws the background on the screen.
-func (r *Renderer) DrawBackground(screen *ebiten.Image, screenWidth, screenHeight int) {
+func (r *Renderer) drawBackground(screen *ebiten.Image, screenWidth, screenHeight int) {
 	r.op.GeoM.Reset()
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) DrawGround(screen *ebiten.Image, ground []*entities.Ground) {
+func (r *Renderer) drawGrounds(screen *ebiten.Image, ground []*entities.Ground) {
 	for _, g := range ground {
 		r.drawGround(screen, g)
 	}
@@ -187,11 +192,16 @@ func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Ground) {
 	}
 }
 
-// DrawCollidable draws a collidable entity on the screen.
-func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
+func (r *Renderer) drawBoxes(screen *ebiten.Image, boxes []*entities.Box) {
+	for _, b := range boxes {
+		r.drawBox(screen, b)
+	}
+}
+
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Box) {
 	r.op.GeoM.Reset()
 
-	bounds := collidable.Bounds()
+	bounds := box.Bounds()
 	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())

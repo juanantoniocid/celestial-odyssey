@@ -10,11 +10,11 @@ func NewPhysicsHandler() *PhysicsHandler {
 	return &PhysicsHandler{}
 }
 
-// ApplyPhysics applies physics to the player and collidables.
-func (h *PhysicsHandler) ApplyPhysics(player *entities.Player, collidables []entities.Collidable, width, height int) {
-	h.checkCollisions(player, collidables)
-	h.checkIfPlayerIsOnPlatform(player, collidables, height)
-	h.enforceBoundaries(player, width, height)
+// ApplyPhysics applies physics to the world entities.
+func (h *PhysicsHandler) ApplyPhysics(world *entities.World) {
+	h.checkCollisions(world.GetPlayer(), world.GetCollidables())
+	h.checkIfPlayerIsOnPlatform(world.GetPlayer(), world.GetCollidables(), world.GetHeight())
+	h.enforceBoundaries(world.GetPlayer(), world.GetWidth(), world.GetHeight())
 }
 
 func (h *PhysicsHandler) checkCollisions(player *entities.Player, collidables []entities.Collidable) {
