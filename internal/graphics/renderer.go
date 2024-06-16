@@ -100,7 +100,7 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 }
 
 func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World) {
-	r.drawBackground(screen, 320, 200)
+	r.drawBackground(screen)
 	r.drawBoxes(screen, world.GetBoxes())
 	r.drawPlayer(screen, world.GetPlayer())
 	r.drawGrounds(screen, world.GetGrounds())
@@ -171,7 +171,7 @@ func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
 	return PlayerJumpingRight
 }
 
-func (r *Renderer) drawBackground(screen *ebiten.Image, screenWidth, screenHeight int) {
+func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	r.op.GeoM.Reset()
 	screen.DrawImage(r.backgroundImage, r.op)
 }
