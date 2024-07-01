@@ -1,6 +1,9 @@
 package physics
 
-import "celestial-odyssey/internal/world/entities"
+import (
+	"celestial-odyssey/internal/world/entities"
+	"log"
+)
 
 // PhysicsHandler is responsible for applying physics to the game entities.
 type PhysicsHandler struct{}
@@ -26,40 +29,55 @@ func (h *PhysicsHandler) checkCollisions(player *entities.Player, collidables []
 }
 
 func (h *PhysicsHandler) handleCollision(player *entities.Player, c entities.Collidable) {
+	handleVerticalCollision(player, c)
+	handleHorizontalCollision(player, c)
+
+}
+
+func handleVerticalCollision(player *entities.Player, c entities.Collidable) {
+
 	playerBounds := player.Bounds()
 	collidableBounds := c.Bounds()
 
-	// Check for vertical collisions first (jumping and landing)
-	if playerBounds.Min.Y < collidableBounds.Max.Y && playerBounds.Max.Y > collidableBounds.Min.Y {
-		// Landing on top of the box
-		if player.Position().Y < collidableBounds.Min.Y && playerBounds.Max.Y > collidableBounds.Min.Y {
-			player.SetPositionY(collidableBounds.Min.Y - player.Height())
-			player.Land()
-			return
-		}
-		// Hitting the bottom of the box
-		if player.Position().Y > collidableBounds.Max.Y && playerBounds.Min.Y < collidableBounds.Max.Y {
-			player.SetPositionY(collidableBounds.Max.Y)
-			player.Land()
-			return
-		}
+	// Landing on top of the box
+	if player.VerticalVelocity() > 0 &&
+		player.Position().Y < collidableBounds.Min.Y &&
+		playerBounds.Max.Y > collidableBounds.Min.Y {
+		player.SetPositionY(collidableBounds.Min.Y - player.Height())
+		player.Land()
+		return
 	}
 
-	// Horizontal collision
-	if playerBounds.Min.X < collidableBounds.Max.X && playerBounds.Max.X > collidableBounds.Min.X {
-		// Hitting the right side of the box
-		if playerBounds.Min.X < collidableBounds.Min.X && playerBounds.Max.X > collidableBounds.Min.X {
-			player.SetPositionX(collidableBounds.Min.X - player.Width())
-			player.Stop()
-			return
-		}
+	// Hitting the bottom of the box
+	if player.VerticalVelocity() < 0 &&
+		player.Position().Y > collidableBounds.Max.Y &&
+		playerBounds.Min.Y < collidableBounds.Max.Y {
+		player.SetPositionY(collidableBounds.Max.Y)
+		player.Land()
+	}
+}
 
-		// Hitting the left side of the box
-		if playerBounds.Min.X < collidableBounds.Max.X && playerBounds.Max.X > collidableBounds.Max.X {
-			player.SetPositionX(collidableBounds.Max.X)
-			player.Stop()
-			return
-		}
+func handleHorizontalCollision(player *entities.Player, c entities.Collidable) {
+	playerBounds := player.Bounds()
+	collidableBounds := c.Bounds()
+
+	log.Println(player.HorizontalVelocity())
+
+	// Hitting the right side of the box
+	if player.HorizontalVelocity() > 0 &&
+		playerBounds.Min.X < collidableBounds.Min.X &&
+		playerBounds.Max.X > collidableBounds.Min.X {
+		player.SetPositionX(collidableBounds.Min.X - player.Width())
+		player.Stop()
+		return
+	}
+
+	// Hitting the left side of the box
+	if player.HorizontalVelocity() < 0 &&
+		playerBounds.Min.X < collidableBounds.Max.X &&
+		playerBounds.Max.X > collidableBounds.Max.X {
+		player.SetPositionX(collidableBounds.Max.X)
+		player.Stop()
 	}
 }
 
