@@ -29,39 +29,54 @@ func (h *PhysicsHandler) checkCollisions(player *entities.Player, collidables []
 }
 
 func (h *PhysicsHandler) handleCollision(player *entities.Player, c entities.Collidable) {
-	handleVerticalCollision(player, c)
-	handleHorizontalCollision(player, c)
+	collision := player.Bounds().Intersect(c.Bounds())
 
+	if collision.Dx() < collision.Dy() {
+		handleHorizontalCollision(player, c)
+		handleVerticalCollision(player, c)
+	} else {
+		handleVerticalCollision(player, c)
+		handleHorizontalCollision(player, c)
+	}
 }
 
 func handleVerticalCollision(player *entities.Player, c entities.Collidable) {
+	if !player.Bounds().Overlaps(c.Bounds()) {
+		return
+	}
 
 	playerBounds := player.Bounds()
 	collidableBounds := c.Bounds()
 
 	// Landing on top of the box
 	if player.VerticalVelocity() > 0 &&
-		player.Position().Y < collidableBounds.Min.Y &&
+		playerBounds.Min.Y < collidableBounds.Min.Y &&
 		playerBounds.Max.Y > collidableBounds.Min.Y {
+		log.Println("Landing on top of the box")
+		log.Println(playerBounds.Min.Y, collidableBounds.Min.Y, collidableBounds.Max.Y)
 		player.SetPositionY(collidableBounds.Min.Y - player.Height())
 		player.Land()
 		return
 	}
 
 	// Hitting the bottom of the box
-	if player.VerticalVelocity() < 0 &&
-		player.Position().Y > collidableBounds.Max.Y &&
-		playerBounds.Min.Y < collidableBounds.Max.Y {
-		player.SetPositionY(collidableBounds.Max.Y)
-		player.Land()
+	if player.VerticalVelocity() < 0 {
+		if playerBounds.Min.Y > collidableBounds.Min.Y &&
+			playerBounds.Min.Y < collidableBounds.Max.Y {
+			log.Println("Hitting the bottom of the box")
+			player.SetPositionY(collidableBounds.Max.Y)
+			player.Land()
+		}
 	}
 }
 
 func handleHorizontalCollision(player *entities.Player, c entities.Collidable) {
+	if !player.Bounds().Overlaps(c.Bounds()) {
+		return
+	}
+
 	playerBounds := player.Bounds()
 	collidableBounds := c.Bounds()
-
-	log.Println(player.HorizontalVelocity())
 
 	// Hitting the right side of the box
 	if player.HorizontalVelocity() > 0 &&
@@ -69,6 +84,7 @@ func handleHorizontalCollision(player *entities.Player, c entities.Collidable) {
 		playerBounds.Max.X > collidableBounds.Min.X {
 		player.SetPositionX(collidableBounds.Min.X - player.Width())
 		player.Stop()
+		log.Println("Hitting the right side of the box")
 		return
 	}
 
@@ -78,6 +94,7 @@ func handleHorizontalCollision(player *entities.Player, c entities.Collidable) {
 		playerBounds.Max.X > collidableBounds.Max.X {
 		player.SetPositionX(collidableBounds.Max.X)
 		player.Stop()
+		log.Println("Hitting the left side of the box")
 	}
 }
 
