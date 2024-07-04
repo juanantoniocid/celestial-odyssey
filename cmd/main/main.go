@@ -1,13 +1,13 @@
 package main
 
 import (
-	entities2 "celestial-odyssey/internal/entities"
 	"image"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/entities"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
@@ -39,8 +39,8 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entities2.Player) {
-	player = entities2.NewPlayer(cfg)
+func createPlayer(cfg config.Player) (player *entities.Player) {
+	player = entities.NewPlayer(cfg)
 
 	return player
 }
@@ -51,17 +51,17 @@ func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround 
 	return renderer
 }
 
-func createLevel(cfg config.Screen, player *entities2.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
+func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
 	level := screen.NewLevel()
 
 	landingSite := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 	sandDunes := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 	ruinedTemple := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
-	landingSite.AddBox(entities2.NewBox(image.Rect(100, 150, 200, 200)))
-	landingSite.AddBox(entities2.NewBox(image.Rect(120, 50, 200, 100)))
+	landingSite.AddBox(entities.NewBox(image.Rect(100, 150, 200, 200)))
+	landingSite.AddBox(entities.NewBox(image.Rect(120, 50, 200, 100)))
 
-	landingSite.AddGround(entities2.NewGround(image.Rect(0, 172, 320, 200)))
+	landingSite.AddGround(entities.NewGround(image.Rect(0, 172, 320, 200)))
 
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)
