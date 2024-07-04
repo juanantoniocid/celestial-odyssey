@@ -1,9 +1,8 @@
 package input
 
 import (
+	"celestial-odyssey/internal/entities"
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"celestial-odyssey/internal/world/entities"
 )
 
 // KeyboardHandler is responsible for handling keyboard input.

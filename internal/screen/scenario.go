@@ -1,9 +1,8 @@
 package screen
 
 import (
+	entities2 "celestial-odyssey/internal/entities"
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"celestial-odyssey/internal/world/entities"
 )
 
 const (
@@ -11,29 +10,29 @@ const (
 )
 
 type ScenarioImpl struct {
-	player *entities.Player
-	world  *entities.World
+	player *entities2.Player
+	world  *entities2.World
 
 	renderer       Renderer
 	inputHandler   InputHandler
 	physicsHandler PhysicsHandler
 }
 
-func NewScenario(player *entities.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
+func NewScenario(player *entities2.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:         player,
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
-		world:          entities.NewWorld(player, width, height),
+		world:          entities2.NewWorld(player, width, height),
 	}
 }
 
-func (s *ScenarioImpl) AddBox(b *entities.Box) {
+func (s *ScenarioImpl) AddBox(b *entities2.Box) {
 	s.world.AddBox(b)
 }
 
-func (s *ScenarioImpl) AddGround(g *entities.Ground) {
+func (s *ScenarioImpl) AddGround(g *entities2.Ground) {
 	s.world.AddGround(g)
 }
 

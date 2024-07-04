@@ -1,6 +1,7 @@
 package graphics
 
 import (
+	entities2 "celestial-odyssey/internal/entities"
 	"image"
 	"image/color"
 	"log"
@@ -9,7 +10,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/world/entities"
 )
 
 const (
@@ -99,14 +99,14 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World) {
+func (r *Renderer) Draw(screen *ebiten.Image, world *entities2.World) {
 	r.drawBackground(screen)
 	r.drawBoxes(screen, world.GetBoxes())
 	r.drawPlayer(screen, world.GetPlayer())
 	r.drawGrounds(screen, world.GetGrounds())
 }
 
-func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities.Player) {
+func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities2.Player) {
 	r.op.GeoM.Reset()
 	sprite := r.getSprite(player)
 
@@ -114,13 +114,13 @@ func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities.Player) {
 	screen.DrawImage(r.playerImages[sprite], r.op)
 }
 
-func (r *Renderer) getSprite(player *entities.Player) (spriteType SpriteType) {
+func (r *Renderer) getSprite(player *entities2.Player) (spriteType SpriteType) {
 	switch player.Action() {
-	case entities.ActionIdle:
+	case entities2.ActionIdle:
 		spriteType = r.getIdleSprite(player)
-	case entities.ActionJumping:
+	case entities2.ActionJumping:
 		spriteType = r.getJumpingSprite(player)
-	case entities.ActionWalking:
+	case entities2.ActionWalking:
 		spriteType = r.getWalkingSprite(player)
 	default:
 		spriteType = PlayerIdleRight
@@ -129,19 +129,19 @@ func (r *Renderer) getSprite(player *entities.Player) (spriteType SpriteType) {
 	return spriteType
 }
 
-func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.DirectionLeft {
+func (r *Renderer) getIdleSprite(player *entities2.Player) SpriteType {
+	if player.Direction() == entities2.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *entities2.Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
 	switch player.Direction() {
-	case entities.DirectionLeft:
+	case entities2.DirectionLeft:
 		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingLeft1
@@ -150,7 +150,7 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 		case 2:
 			frame = PlayerWalkingLeft3
 		}
-	case entities.DirectionRight:
+	case entities2.DirectionRight:
 		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingRight1
@@ -164,8 +164,8 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.DirectionLeft {
+func (r *Renderer) getJumpingSprite(player *entities2.Player) SpriteType {
+	if player.Direction() == entities2.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
@@ -176,13 +176,13 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawGrounds(screen *ebiten.Image, ground []*entities.Ground) {
+func (r *Renderer) drawGrounds(screen *ebiten.Image, ground []*entities2.Ground) {
 	for _, g := range ground {
 		r.drawGround(screen, g)
 	}
 }
 
-func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Ground) {
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities2.Ground) {
 	bounds := ground.Bounds()
 
 	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
@@ -192,13 +192,13 @@ func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Ground) {
 	}
 }
 
-func (r *Renderer) drawBoxes(screen *ebiten.Image, boxes []*entities.Box) {
+func (r *Renderer) drawBoxes(screen *ebiten.Image, boxes []*entities2.Box) {
 	for _, b := range boxes {
 		r.drawBox(screen, b)
 	}
 }
 
-func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Box) {
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entities2.Box) {
 	r.op.GeoM.Reset()
 
 	bounds := box.Bounds()
