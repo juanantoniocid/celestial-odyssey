@@ -1,4 +1,4 @@
-package physics
+package systems
 
 import (
 	"celestial-odyssey/internal/entities"

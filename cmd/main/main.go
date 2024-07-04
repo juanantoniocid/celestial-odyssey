@@ -11,8 +11,8 @@ import (
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
-	"celestial-odyssey/internal/physics"
 	"celestial-odyssey/internal/screen"
+	"celestial-odyssey/internal/systems"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	player := createPlayer(cfg.Player)
 	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
 	inputHandler := input.NewKeyboardHandler()
-	physicsHandler := physics.NewPhysicsHandler()
+	physicsHandler := systems.NewPhysicsHandler()
 
 	levels := createLevel(cfg.Screen, player, renderer, inputHandler, physicsHandler)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
