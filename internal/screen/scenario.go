@@ -13,6 +13,7 @@ const (
 type ScenarioImpl struct {
 	player *entities.Player
 	world  *entities.World
+	em     *entities.EntityManager
 
 	renderer       Renderer
 	inputHandler   InputHandler
@@ -26,7 +27,12 @@ func NewScenario(player *entities.Player, renderer Renderer, inputHandler InputH
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
 		world:          entities.NewWorld(player, width, height),
+		em:             entities.NewEntityManager(),
 	}
+}
+
+func (s *ScenarioImpl) CreateEntity() *entities.Entity {
+	return s.em.CreateEntity()
 }
 
 func (s *ScenarioImpl) AddBox(b *entities.Box) {
@@ -40,13 +46,13 @@ func (s *ScenarioImpl) AddGround(g *entities.Ground) {
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-	s.physicsHandler.ApplyPhysics(s.world)
+	s.physicsHandler.ApplyPhysics(s.world, s.em.Entities())
 
 	return nil
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.Draw(screen, s.world)
+	s.renderer.Draw(screen, s.world, s.em.Entities())
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {

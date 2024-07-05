@@ -56,11 +56,11 @@ type InputHandler interface {
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer interface {
 	// Draw draws the game entities on the screen.
-	Draw(screen *ebiten.Image, world *entities.World)
+	Draw(screen *ebiten.Image, world *entities.World, ee map[entities.EntityID]*entities.Entity)
 }
 
 // PhysicsHandler is responsible for applying physics to the game entities.
 type PhysicsHandler interface {
 	// ApplyPhysics applies physics to the player and collidables.
-	ApplyPhysics(world *entities.World)
+	ApplyPhysics(world *entities.World, ee map[entities.EntityID]*entities.Entity)
 }

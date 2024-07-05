@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
+	"celestial-odyssey/internal/components"
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entities"
 	"celestial-odyssey/internal/game"
@@ -58,8 +59,13 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Ren
 	sandDunes := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 	ruinedTemple := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
-	landingSite.AddBox(entities.NewBox(image.Rect(100, 150, 200, 200)))
-	landingSite.AddBox(entities.NewBox(image.Rect(120, 50, 200, 100)))
+	box1 := landingSite.CreateEntity()
+	box1.AddComponent("position", &components.Position{X: 100, Y: 150})
+	box1.AddComponent("size", &components.Size{Width: 100, Height: 50})
+
+	box2 := landingSite.CreateEntity()
+	box2.AddComponent("position", &components.Position{X: 120, Y: 50})
+	box2.AddComponent("size", &components.Size{Width: 80, Height: 50})
 
 	landingSite.AddGround(entities.NewGround(image.Rect(0, 172, 320, 200)))
 

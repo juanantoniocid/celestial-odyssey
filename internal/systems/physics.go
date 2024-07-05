@@ -1,8 +1,11 @@
 package systems
 
 import (
-	"celestial-odyssey/internal/entities"
+	"image"
 	"log"
+
+	"celestial-odyssey/internal/components"
+	"celestial-odyssey/internal/entities"
 )
 
 // PhysicsHandler is responsible for applying physics to the game entities.
@@ -14,9 +17,30 @@ func NewPhysicsHandler() *PhysicsHandler {
 }
 
 // ApplyPhysics applies physics to the world entities.
-func (h *PhysicsHandler) ApplyPhysics(world *entities.World) {
-	h.checkCollisions(world.GetPlayer(), world.GetCollidables())
-	h.checkIfPlayerIsOnPlatform(world.GetPlayer(), world.GetCollidables(), world.GetHeight())
+func (h *PhysicsHandler) ApplyPhysics(world *entities.World, ee map[entities.EntityID]*entities.Entity) {
+	collidables := world.GetCollidables()
+	for _, e := range ee {
+		pos, ok1 := e.Components["position"].(*components.Position)
+		if !ok1 {
+			log.Println("failed to get box position")
+			return
+		}
+
+		size, ok2 := e.Components["size"].(*components.Size)
+		if !ok2 {
+			log.Println("failed to get box size")
+			return
+		}
+
+		bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
+		box := entities.NewBox(bounds)
+
+		collidable := box.Bounds()
+		collidables = append(collidables, collidable)
+	}
+
+	h.checkCollisions(world.GetPlayer(), collidables)
+	h.checkIfPlayerIsOnPlatform(world.GetPlayer(), collidables, world.GetHeight())
 	h.enforceBoundaries(world.GetPlayer(), world.GetWidth(), world.GetHeight())
 }
 

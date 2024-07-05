@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
+	"celestial-odyssey/internal/components"
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entities"
 )
@@ -99,9 +100,9 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World) {
+func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World, ee map[entities.EntityID]*entities.Entity) {
 	r.drawBackground(screen)
-	r.drawBoxes(screen, world.GetBoxes())
+	r.drawBoxes(screen, ee)
 	r.drawPlayer(screen, world.GetPlayer())
 	r.drawGrounds(screen, world.GetGrounds())
 }
@@ -192,16 +193,28 @@ func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Ground) {
 	}
 }
 
-func (r *Renderer) drawBoxes(screen *ebiten.Image, boxes []*entities.Box) {
-	for _, b := range boxes {
+func (r *Renderer) drawBoxes(screen *ebiten.Image, ee map[entities.EntityID]*entities.Entity) {
+	for _, b := range ee {
 		r.drawBox(screen, b)
 	}
 }
 
-func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Box) {
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Entity) {
 	r.op.GeoM.Reset()
 
-	bounds := box.Bounds()
+	pos, ok1 := box.Components["position"].(*components.Position)
+	if !ok1 {
+		log.Println("failed to get box position")
+		return
+	}
+
+	size, ok2 := box.Components["size"].(*components.Size)
+	if !ok2 {
+		log.Println("failed to get box size")
+		return
+	}
+
+	bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
 	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
