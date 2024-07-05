@@ -102,9 +102,8 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 
 func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World, ee map[entities.EntityID]*entities.Entity) {
 	r.drawBackground(screen)
-	r.drawBoxes(screen, ee)
+	r.drawEntities(screen, ee)
 	r.drawPlayer(screen, world.GetPlayer())
-	r.drawGrounds(screen, world.GetGrounds())
 }
 
 func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities.Player) {
@@ -177,25 +176,22 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawGrounds(screen *ebiten.Image, ground []*entities.Ground) {
-	for _, g := range ground {
-		r.drawGround(screen, g)
-	}
-}
+func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entities.EntityID]*entities.Entity) {
+	for _, e := range ee {
+		entityType, ok := e.Components["type"].(components.Type)
+		if !ok {
+			log.Println("failed to get entity type")
+			continue
+		}
 
-func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Ground) {
-	bounds := ground.Bounds()
-
-	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
-		r.op.GeoM.Reset()
-		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
-		screen.DrawImage(r.groundImage, r.op)
-	}
-}
-
-func (r *Renderer) drawBoxes(screen *ebiten.Image, ee map[entities.EntityID]*entities.Entity) {
-	for _, b := range ee {
-		r.drawBox(screen, b)
+		switch entityType {
+		case components.TypeBox:
+			r.drawBox(screen, e)
+		case components.TypeGround:
+			r.drawGround(screen, e)
+		default:
+			panic("unhandled default case")
+		}
 	}
 }
 
@@ -222,4 +218,26 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Entity) {
 	img.Fill(brown)
 
 	screen.DrawImage(img, r.op)
+}
+
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Entity) {
+	pos, ok1 := ground.Components["position"].(*components.Position)
+	if !ok1 {
+		log.Println("failed to get ground position")
+		return
+	}
+
+	size, ok2 := ground.Components["size"].(*components.Size)
+	if !ok2 {
+		log.Println("failed to get ground size")
+		return
+	}
+
+	bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
+
+	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
+		r.op.GeoM.Reset()
+		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
+		screen.DrawImage(r.groundImage, r.op)
+	}
 }

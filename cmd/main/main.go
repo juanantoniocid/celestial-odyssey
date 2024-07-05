@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -60,14 +59,19 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Ren
 	ruinedTemple := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
 	box1 := landingSite.CreateEntity()
+	box1.AddComponent("type", components.TypeBox)
 	box1.AddComponent("position", &components.Position{X: 100, Y: 150})
-	box1.AddComponent("size", &components.Size{Width: 100, Height: 50})
+	box1.AddComponent("size", &components.Size{Width: 100, Height: 22})
 
 	box2 := landingSite.CreateEntity()
+	box2.AddComponent("type", components.TypeBox)
 	box2.AddComponent("position", &components.Position{X: 120, Y: 50})
 	box2.AddComponent("size", &components.Size{Width: 80, Height: 50})
 
-	landingSite.AddGround(entities.NewGround(image.Rect(0, 172, 320, 200)))
+	ground := landingSite.CreateEntity()
+	ground.AddComponent("type", components.TypeGround)
+	ground.AddComponent("position", &components.Position{X: 0, Y: 172})
+	ground.AddComponent("size", &components.Size{Width: 320, Height: 28})
 
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)
