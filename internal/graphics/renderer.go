@@ -198,19 +198,7 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entity.ID]*entity.G
 func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 	r.op.GeoM.Reset()
 
-	pos, ok1 := box.Components["position"].(*component.Position)
-	if !ok1 {
-		log.Println("failed to get box position")
-		return
-	}
-
-	size, ok2 := box.Components["size"].(*component.Size)
-	if !ok2 {
-		log.Println("failed to get box size")
-		return
-	}
-
-	bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
+	bounds := box.Bounds()
 	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
@@ -221,19 +209,7 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 }
 
 func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
-	pos, ok1 := ground.Components["position"].(*component.Position)
-	if !ok1 {
-		log.Println("failed to get ground position")
-		return
-	}
-
-	size, ok2 := ground.Components["size"].(*component.Size)
-	if !ok2 {
-		log.Println("failed to get ground size")
-		return
-	}
-
-	bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
+	bounds := ground.Bounds()
 
 	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
 		r.op.GeoM.Reset()

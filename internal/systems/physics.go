@@ -1,10 +1,8 @@
 package systems
 
 import (
-	"image"
 	"log"
 
-	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/entity"
 )
 
@@ -20,22 +18,7 @@ func NewPhysicsHandler() *PhysicsHandler {
 func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.ID]*entity.GameEntity) {
 	collidables := world.GetCollidables()
 	for _, e := range ee {
-		pos, ok1 := e.Components["position"].(*component.Position)
-		if !ok1 {
-			log.Println("failed to get box position")
-			return
-		}
-
-		size, ok2 := e.Components["size"].(*component.Size)
-		if !ok2 {
-			log.Println("failed to get box size")
-			return
-		}
-
-		bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
-		box := entity.NewBox(bounds)
-
-		collidable := box.Bounds()
+		collidable := e.Bounds()
 		collidables = append(collidables, collidable)
 	}
 

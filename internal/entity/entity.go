@@ -1,6 +1,12 @@
 package entity
 
-import "fmt"
+import (
+	"fmt"
+	"image"
+	"log"
+
+	"celestial-odyssey/internal/component"
+)
 
 type ID int
 
@@ -35,4 +41,20 @@ func (e *GameEntity) GetComponent(name string) (interface{}, error) {
 // RemoveComponent removes a component from the entity.
 func (e *GameEntity) RemoveComponent(name string) {
 	delete(e.Components, name)
+}
+
+func (e *GameEntity) Bounds() image.Rectangle {
+	pos, okPos := e.Components["position"].(*component.Position)
+	if !okPos {
+		log.Println("failed to get box position")
+		return image.Rectangle{}
+	}
+
+	size, okSize := e.Components["size"].(*component.Size)
+	if !okSize {
+		log.Println("failed to get box size")
+		return image.Rectangle{}
+	}
+
+	return image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
 }
