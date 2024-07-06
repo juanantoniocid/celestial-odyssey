@@ -1,4 +1,4 @@
-package components
+package component
 
 // Velocity represents a 2D velocity.
 type Velocity struct {

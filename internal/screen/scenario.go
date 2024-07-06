@@ -3,7 +3,7 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/entities"
+	"celestial-odyssey/internal/entity"
 )
 
 const (
@@ -11,35 +11,35 @@ const (
 )
 
 type ScenarioImpl struct {
-	player *entities.Player
-	world  *entities.World
-	em     *entities.EntityManager
+	player *entity.Player
+	world  *entity.World
+	em     *entity.EntityManager
 
 	renderer       Renderer
 	inputHandler   InputHandler
 	physicsHandler PhysicsHandler
 }
 
-func NewScenario(player *entities.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:         player,
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
-		world:          entities.NewWorld(player, width, height),
-		em:             entities.NewEntityManager(),
+		world:          entity.NewWorld(player, width, height),
+		em:             entity.NewEntityManager(),
 	}
 }
 
-func (s *ScenarioImpl) CreateEntity() *entities.Entity {
+func (s *ScenarioImpl) CreateEntity() *entity.Entity {
 	return s.em.CreateEntity()
 }
 
-func (s *ScenarioImpl) AddBox(b *entities.Box) {
+func (s *ScenarioImpl) AddBox(b *entity.Box) {
 	s.world.AddBox(b)
 }
 
-func (s *ScenarioImpl) AddGround(g *entities.Ground) {
+func (s *ScenarioImpl) AddGround(g *entity.Ground) {
 	s.world.AddGround(g)
 }
 

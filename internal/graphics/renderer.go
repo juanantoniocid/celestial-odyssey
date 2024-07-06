@@ -8,9 +8,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
-	"celestial-odyssey/internal/components"
+	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/entities"
+	"celestial-odyssey/internal/entity"
 )
 
 const (
@@ -100,13 +100,13 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, world *entities.World, ee map[entities.EntityID]*entities.Entity) {
+func (r *Renderer) Draw(screen *ebiten.Image, world *entity.World, ee map[entity.EntityID]*entity.Entity) {
 	r.drawBackground(screen)
 	r.drawEntities(screen, ee)
 	r.drawPlayer(screen, world.GetPlayer())
 }
 
-func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities.Player) {
+func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
 	r.op.GeoM.Reset()
 	sprite := r.getSprite(player)
 
@@ -114,13 +114,13 @@ func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entities.Player) {
 	screen.DrawImage(r.playerImages[sprite], r.op)
 }
 
-func (r *Renderer) getSprite(player *entities.Player) (spriteType SpriteType) {
+func (r *Renderer) getSprite(player *entity.Player) (spriteType SpriteType) {
 	switch player.Action() {
-	case entities.ActionIdle:
+	case entity.ActionIdle:
 		spriteType = r.getIdleSprite(player)
-	case entities.ActionJumping:
+	case entity.ActionJumping:
 		spriteType = r.getJumpingSprite(player)
-	case entities.ActionWalking:
+	case entity.ActionWalking:
 		spriteType = r.getWalkingSprite(player)
 	default:
 		spriteType = PlayerIdleRight
@@ -129,19 +129,19 @@ func (r *Renderer) getSprite(player *entities.Player) (spriteType SpriteType) {
 	return spriteType
 }
 
-func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.DirectionLeft {
+func (r *Renderer) getIdleSprite(player *entity.Player) SpriteType {
+	if player.Direction() == entity.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *entity.Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
 	switch player.Direction() {
-	case entities.DirectionLeft:
+	case entity.DirectionLeft:
 		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingLeft1
@@ -150,7 +150,7 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 		case 2:
 			frame = PlayerWalkingLeft3
 		}
-	case entities.DirectionRight:
+	case entity.DirectionRight:
 		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingRight1
@@ -164,8 +164,8 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.DirectionLeft {
+func (r *Renderer) getJumpingSprite(player *entity.Player) SpriteType {
+	if player.Direction() == entity.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
@@ -176,18 +176,18 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entities.EntityID]*entities.Entity) {
+func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entity.EntityID]*entity.Entity) {
 	for _, e := range ee {
-		entityType, ok := e.Components["type"].(components.Type)
+		entityType, ok := e.Components["type"].(component.Type)
 		if !ok {
 			log.Println("failed to get entity type")
 			continue
 		}
 
 		switch entityType {
-		case components.TypeBox:
+		case component.TypeBox:
 			r.drawBox(screen, e)
-		case components.TypeGround:
+		case component.TypeGround:
 			r.drawGround(screen, e)
 		default:
 			panic("unhandled default case")
@@ -195,16 +195,16 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entities.EntityID]*
 	}
 }
 
-func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Entity) {
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.Entity) {
 	r.op.GeoM.Reset()
 
-	pos, ok1 := box.Components["position"].(*components.Position)
+	pos, ok1 := box.Components["position"].(*component.Position)
 	if !ok1 {
 		log.Println("failed to get box position")
 		return
 	}
 
-	size, ok2 := box.Components["size"].(*components.Size)
+	size, ok2 := box.Components["size"].(*component.Size)
 	if !ok2 {
 		log.Println("failed to get box size")
 		return
@@ -220,14 +220,14 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entities.Entity) {
 	screen.DrawImage(img, r.op)
 }
 
-func (r *Renderer) drawGround(screen *ebiten.Image, ground *entities.Entity) {
-	pos, ok1 := ground.Components["position"].(*components.Position)
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.Entity) {
+	pos, ok1 := ground.Components["position"].(*component.Position)
 	if !ok1 {
 		log.Println("failed to get ground position")
 		return
 	}
 
-	size, ok2 := ground.Components["size"].(*components.Size)
+	size, ok2 := ground.Components["size"].(*component.Size)
 	if !ok2 {
 		log.Println("failed to get ground size")
 		return

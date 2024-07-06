@@ -5,9 +5,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/components"
+	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/entities"
+	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
@@ -39,8 +39,8 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entities.Player) {
-	player = entities.NewPlayer(cfg)
+func createPlayer(cfg config.Player) (player *entity.Player) {
+	player = entity.NewPlayer(cfg)
 
 	return player
 }
@@ -51,7 +51,7 @@ func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround 
 	return renderer
 }
 
-func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
+func createLevel(cfg config.Screen, player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
 	level := screen.NewLevel()
 
 	landingSite := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
@@ -59,19 +59,19 @@ func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Ren
 	ruinedTemple := screen.NewScenario(player, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
 
 	box1 := landingSite.CreateEntity()
-	box1.AddComponent("type", components.TypeBox)
-	box1.AddComponent("position", &components.Position{X: 100, Y: 150})
-	box1.AddComponent("size", &components.Size{Width: 100, Height: 22})
+	box1.AddComponent("type", component.TypeBox)
+	box1.AddComponent("position", &component.Position{X: 100, Y: 150})
+	box1.AddComponent("size", &component.Size{Width: 100, Height: 22})
 
 	box2 := landingSite.CreateEntity()
-	box2.AddComponent("type", components.TypeBox)
-	box2.AddComponent("position", &components.Position{X: 120, Y: 50})
-	box2.AddComponent("size", &components.Size{Width: 80, Height: 50})
+	box2.AddComponent("type", component.TypeBox)
+	box2.AddComponent("position", &component.Position{X: 120, Y: 50})
+	box2.AddComponent("size", &component.Size{Width: 80, Height: 50})
 
 	ground := landingSite.CreateEntity()
-	ground.AddComponent("type", components.TypeGround)
-	ground.AddComponent("position", &components.Position{X: 0, Y: 172})
-	ground.AddComponent("size", &components.Size{Width: 320, Height: 28})
+	ground.AddComponent("type", component.TypeGround)
+	ground.AddComponent("position", &component.Position{X: 0, Y: 172})
+	ground.AddComponent("size", &component.Size{Width: 320, Height: 28})
 
 	level.AddScenario(landingSite)
 	level.AddScenario(sandDunes)

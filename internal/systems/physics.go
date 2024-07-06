@@ -4,8 +4,8 @@ import (
 	"image"
 	"log"
 
-	"celestial-odyssey/internal/components"
-	"celestial-odyssey/internal/entities"
+	"celestial-odyssey/internal/component"
+	"celestial-odyssey/internal/entity"
 )
 
 // PhysicsHandler is responsible for applying physics to the game entities.
@@ -17,23 +17,23 @@ func NewPhysicsHandler() *PhysicsHandler {
 }
 
 // ApplyPhysics applies physics to the world entities.
-func (h *PhysicsHandler) ApplyPhysics(world *entities.World, ee map[entities.EntityID]*entities.Entity) {
+func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.EntityID]*entity.Entity) {
 	collidables := world.GetCollidables()
 	for _, e := range ee {
-		pos, ok1 := e.Components["position"].(*components.Position)
+		pos, ok1 := e.Components["position"].(*component.Position)
 		if !ok1 {
 			log.Println("failed to get box position")
 			return
 		}
 
-		size, ok2 := e.Components["size"].(*components.Size)
+		size, ok2 := e.Components["size"].(*component.Size)
 		if !ok2 {
 			log.Println("failed to get box size")
 			return
 		}
 
 		bounds := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
-		box := entities.NewBox(bounds)
+		box := entity.NewBox(bounds)
 
 		collidable := box.Bounds()
 		collidables = append(collidables, collidable)
@@ -44,7 +44,7 @@ func (h *PhysicsHandler) ApplyPhysics(world *entities.World, ee map[entities.Ent
 	h.enforceBoundaries(world.GetPlayer(), world.GetWidth(), world.GetHeight())
 }
 
-func (h *PhysicsHandler) checkCollisions(player *entities.Player, collidables []entities.Collidable) {
+func (h *PhysicsHandler) checkCollisions(player *entity.Player, collidables []entity.Collidable) {
 	for _, c := range collidables {
 		if player.Bounds().Overlaps(c.Bounds()) {
 			h.handleCollision(player, c)
@@ -52,7 +52,7 @@ func (h *PhysicsHandler) checkCollisions(player *entities.Player, collidables []
 	}
 }
 
-func (h *PhysicsHandler) handleCollision(player *entities.Player, c entities.Collidable) {
+func (h *PhysicsHandler) handleCollision(player *entity.Player, c entity.Collidable) {
 	collision := player.Bounds().Intersect(c.Bounds())
 
 	if collision.Dx() < collision.Dy() {
@@ -64,7 +64,7 @@ func (h *PhysicsHandler) handleCollision(player *entities.Player, c entities.Col
 	}
 }
 
-func handleVerticalCollision(player *entities.Player, c entities.Collidable) {
+func handleVerticalCollision(player *entity.Player, c entity.Collidable) {
 	if !player.Bounds().Overlaps(c.Bounds()) {
 		return
 	}
@@ -94,7 +94,7 @@ func handleVerticalCollision(player *entities.Player, c entities.Collidable) {
 	}
 }
 
-func handleHorizontalCollision(player *entities.Player, c entities.Collidable) {
+func handleHorizontalCollision(player *entity.Player, c entity.Collidable) {
 	if !player.Bounds().Overlaps(c.Bounds()) {
 		return
 	}
@@ -122,7 +122,7 @@ func handleHorizontalCollision(player *entities.Player, c entities.Collidable) {
 	}
 }
 
-func (h *PhysicsHandler) checkIfPlayerIsOnPlatform(player *entities.Player, collidables []entities.Collidable, height int) {
+func (h *PhysicsHandler) checkIfPlayerIsOnPlatform(player *entity.Player, collidables []entity.Collidable, height int) {
 	playerBounds := player.Bounds()
 	isOnPlatform := false
 
@@ -150,7 +150,7 @@ func (h *PhysicsHandler) checkIfPlayerIsOnPlatform(player *entities.Player, coll
 	}
 }
 
-func (h *PhysicsHandler) enforceBoundaries(player *entities.Player, width, height int) {
+func (h *PhysicsHandler) enforceBoundaries(player *entity.Player, width, height int) {
 	if player.Position().X < 0 {
 		player.SetPositionX(0)
 	} else if player.Position().X+player.Width() > width {

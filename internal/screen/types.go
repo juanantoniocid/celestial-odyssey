@@ -3,7 +3,7 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/entities"
+	"celestial-odyssey/internal/entity"
 )
 
 // Level represents a game level, which can contain multiple scenarios.
@@ -50,17 +50,17 @@ type Scenario interface {
 // InputHandler is responsible for handling input.
 type InputHandler interface {
 	// UpdatePlayer updates the player based on the input.
-	UpdatePlayer(player *entities.Player)
+	UpdatePlayer(player *entity.Player)
 }
 
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer interface {
 	// Draw draws the game entities on the screen.
-	Draw(screen *ebiten.Image, world *entities.World, ee map[entities.EntityID]*entities.Entity)
+	Draw(screen *ebiten.Image, world *entity.World, ee map[entity.EntityID]*entity.Entity)
 }
 
 // PhysicsHandler is responsible for applying physics to the game entities.
 type PhysicsHandler interface {
 	// ApplyPhysics applies physics to the player and collidables.
-	ApplyPhysics(world *entities.World, ee map[entities.EntityID]*entities.Entity)
+	ApplyPhysics(world *entity.World, ee map[entity.EntityID]*entity.Entity)
 }

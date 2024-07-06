@@ -1,4 +1,4 @@
-package components
+package component
 
 // Position represents a 2D position.
 type Position struct {
