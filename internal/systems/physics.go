@@ -16,7 +16,7 @@ func NewPhysicsHandler() *PhysicsHandler {
 
 // ApplyPhysics applies physics to the world entities.
 func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.ID]*entity.GameEntity) {
-	collidables := world.GetCollidables()
+	collidables := make([]entity.Collidable, 0)
 	for _, e := range ee {
 		collidable := e.Bounds()
 		collidables = append(collidables, collidable)

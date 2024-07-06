@@ -35,14 +35,6 @@ func (s *ScenarioImpl) CreateEntity() *entity.GameEntity {
 	return s.em.CreateEntity()
 }
 
-func (s *ScenarioImpl) AddBox(b *entity.Box) {
-	s.world.AddBox(b)
-}
-
-func (s *ScenarioImpl) AddGround(g *entity.Ground) {
-	s.world.AddGround(g)
-}
-
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
