@@ -17,7 +17,7 @@ func NewPhysicsHandler() *PhysicsHandler {
 }
 
 // ApplyPhysics applies physics to the world entities.
-func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.EntityID]*entity.Entity) {
+func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.ID]*entity.GameEntity) {
 	collidables := world.GetCollidables()
 	for _, e := range ee {
 		pos, ok1 := e.Components["position"].(*component.Position)

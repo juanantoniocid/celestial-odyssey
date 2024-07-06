@@ -2,29 +2,29 @@ package entity
 
 import "fmt"
 
-type EntityID int
+type ID int
 
-// Entity represents a game entity.
-type Entity struct {
-	ID         EntityID
+// GameEntity represents a game entity.
+type GameEntity struct {
+	ID         ID
 	Components map[string]interface{}
 }
 
-// NewEntity creates a new Entity instance.
-func NewEntity(id EntityID) *Entity {
-	return &Entity{
+// NewGameEntity creates a new GameEntity instance.
+func NewGameEntity(id ID) *GameEntity {
+	return &GameEntity{
 		ID:         id,
 		Components: make(map[string]interface{}),
 	}
 }
 
 // AddComponent adds a component to the entity.
-func (e *Entity) AddComponent(name string, component interface{}) {
+func (e *GameEntity) AddComponent(name string, component interface{}) {
 	e.Components[name] = component
 }
 
 // GetComponent returns a component from the entity.
-func (e *Entity) GetComponent(name string) (interface{}, error) {
+func (e *GameEntity) GetComponent(name string) (interface{}, error) {
 	component, exists := e.Components[name]
 	if !exists {
 		return nil, fmt.Errorf("component %s not found", name)
@@ -33,6 +33,6 @@ func (e *Entity) GetComponent(name string) (interface{}, error) {
 }
 
 // RemoveComponent removes a component from the entity.
-func (e *Entity) RemoveComponent(name string) {
+func (e *GameEntity) RemoveComponent(name string) {
 	delete(e.Components, name)
 }

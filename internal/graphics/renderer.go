@@ -100,7 +100,7 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, world *entity.World, ee map[entity.EntityID]*entity.Entity) {
+func (r *Renderer) Draw(screen *ebiten.Image, world *entity.World, ee map[entity.ID]*entity.GameEntity) {
 	r.drawBackground(screen)
 	r.drawEntities(screen, ee)
 	r.drawPlayer(screen, world.GetPlayer())
@@ -176,7 +176,7 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entity.EntityID]*entity.Entity) {
+func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entity.ID]*entity.GameEntity) {
 	for _, e := range ee {
 		entityType, ok := e.Components["type"].(component.Type)
 		if !ok {
@@ -195,7 +195,7 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entity.EntityID]*en
 	}
 }
 
-func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.Entity) {
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 	r.op.GeoM.Reset()
 
 	pos, ok1 := box.Components["position"].(*component.Position)
@@ -220,7 +220,7 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.Entity) {
 	screen.DrawImage(img, r.op)
 }
 
-func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.Entity) {
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
 	pos, ok1 := ground.Components["position"].(*component.Position)
 	if !ok1 {
 		log.Println("failed to get ground position")

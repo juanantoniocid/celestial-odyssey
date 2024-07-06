@@ -31,7 +31,7 @@ func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHan
 	}
 }
 
-func (s *ScenarioImpl) CreateEntity() *entity.Entity {
+func (s *ScenarioImpl) CreateEntity() *entity.GameEntity {
 	return s.em.CreateEntity()
 }
 
