@@ -100,9 +100,9 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, ee map[entity.ID]*entity.GameEntity) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities map[entity.ID]*entity.GameEntity) {
 	r.drawBackground(screen)
-	r.drawEntities(screen, ee)
+	r.drawEntities(screen, entities)
 	r.drawPlayer(screen, player)
 }
 
@@ -176,8 +176,8 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawEntities(screen *ebiten.Image, ee map[entity.ID]*entity.GameEntity) {
-	for _, e := range ee {
+func (r *Renderer) drawEntities(screen *ebiten.Image, entities map[entity.ID]*entity.GameEntity) {
+	for _, e := range entities {
 		entityType, ok := e.Components["type"].(component.Type)
 		if !ok {
 			log.Println("failed to get entity type")

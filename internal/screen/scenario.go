@@ -12,34 +12,34 @@ const (
 )
 
 type ScenarioImpl struct {
-	player *entity.Player
-	em     *entity.EntityManager
+	player   *entity.Player
+	entities *entity.Entities
 
 	renderer       Renderer
 	inputHandler   InputHandler
 	physicsHandler PhysicsHandler
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, entityManager *entity.EntityManager) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, entities *entity.Entities) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:         player,
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
-		em:             entityManager,
+		entities:       entities,
 	}
 }
 
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-	s.physicsHandler.ApplyPhysics(s.player, s.em.Entities())
+	s.physicsHandler.ApplyPhysics(s.player, s.entities.Entities())
 
 	return nil
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.Draw(screen, s.player, s.em.Entities())
+	s.renderer.Draw(screen, s.player, s.entities.Entities())
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
