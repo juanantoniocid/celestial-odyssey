@@ -5,7 +5,7 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
-type Type component.Type
+type Type int
 
 const (
 	TypeUnknown Type = iota

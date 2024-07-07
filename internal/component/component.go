@@ -26,8 +26,6 @@ type Size struct {
 
 // Velocity represents a 2D velocity.
 type Velocity struct {
-	X, Y float64
+	HX, HY float64
+	VX, VY float64
 }
-
-// Type represents a component type.
-type Type int
