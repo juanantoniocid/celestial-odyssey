@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"celestial-odyssey/internal/config"
 	"log"
 
 	"celestial-odyssey/internal/entity"
@@ -23,8 +24,8 @@ func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.ID]*ent
 	}
 
 	h.checkCollisions(world.GetPlayer(), collidables)
-	h.checkIfPlayerIsOnPlatform(world.GetPlayer(), collidables, world.GetHeight())
-	h.enforceBoundaries(world.GetPlayer(), world.GetWidth(), world.GetHeight())
+	h.checkIfPlayerIsOnPlatform(world.GetPlayer(), collidables, config.ScreenHeight)
+	h.enforceBoundaries(world.GetPlayer(), config.ScreenWidth, config.ScreenHeight)
 }
 
 func (h *PhysicsHandler) checkCollisions(player *entity.Player, collidables []entity.Collidable) {

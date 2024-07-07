@@ -3,6 +3,7 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
+	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
 )
 
@@ -20,13 +21,13 @@ type ScenarioImpl struct {
 	physicsHandler PhysicsHandler
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, entityManager *entity.EntityManager, width int, height int) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, entityManager *entity.EntityManager) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:         player,
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
-		world:          entity.NewWorld(player, width, height),
+		world:          entity.NewWorld(player),
 		em:             entityManager,
 	}
 }
@@ -44,7 +45,7 @@ func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
-	return s.player.Position().X+s.player.Width() >= s.world.GetWidth()
+	return s.player.Position().X+s.player.Width() >= config.ScreenWidth
 }
 
 func (s *ScenarioImpl) ShouldTransitionLeft() bool {
@@ -56,5 +57,5 @@ func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionX(s.world.GetWidth() - sideMargin - s.player.Width())
+	s.player.SetPositionX(config.ScreenWidth - sideMargin - s.player.Width())
 }

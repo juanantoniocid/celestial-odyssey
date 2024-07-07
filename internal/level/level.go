@@ -2,21 +2,20 @@ package level
 
 import (
 	"celestial-odyssey/internal/component"
-	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/screen"
 )
 
-func LoadLevel1(cfg config.Screen, player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
+func LoadLevel1(player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
 	level1 := screen.NewLevel()
 
-	level1.AddScenario(LoadLevel1Scenario1(cfg, player, renderer, inputHandler, physicsHandler))
-	level1.AddScenario(LoadLevel1Scenario2(cfg, player, renderer, inputHandler, physicsHandler))
+	level1.AddScenario(LoadLevel1Scenario1(player, renderer, inputHandler, physicsHandler))
+	level1.AddScenario(LoadLevel1Scenario2(player, renderer, inputHandler, physicsHandler))
 
 	return level1
 }
 
-func LoadLevel1Scenario1(cfg config.Screen, player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Scenario {
+func LoadLevel1Scenario1(player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Scenario {
 	entityManager := entity.NewEntityManager()
 
 	box1 := entityManager.CreateEntity()
@@ -34,10 +33,10 @@ func LoadLevel1Scenario1(cfg config.Screen, player *entity.Player, renderer scre
 	ground.AddComponent("position", &component.Position{X: 0, Y: 172})
 	ground.AddComponent("size", &component.Size{Width: 320, Height: 28})
 
-	return screen.NewScenario(player, renderer, inputHandler, physicsHandler, entityManager, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	return screen.NewScenario(player, renderer, inputHandler, physicsHandler, entityManager)
 }
 
-func LoadLevel1Scenario2(cfg config.Screen, player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Scenario {
+func LoadLevel1Scenario2(player *entity.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Scenario {
 	entityManager := entity.NewEntityManager()
 
 	box1 := entityManager.CreateEntity()
@@ -55,5 +54,5 @@ func LoadLevel1Scenario2(cfg config.Screen, player *entity.Player, renderer scre
 	ground.AddComponent("position", &component.Position{X: 0, Y: 172})
 	ground.AddComponent("size", &component.Size{Width: 320, Height: 28})
 
-	return screen.NewScenario(player, renderer, inputHandler, physicsHandler, entityManager, cfg.Dimensions.Width, cfg.Dimensions.Height)
+	return screen.NewScenario(player, renderer, inputHandler, physicsHandler, entityManager)
 }
