@@ -27,21 +27,19 @@ type Entities struct {
 	entities []*GameEntity
 }
 
+// NewEntities creates a new entities' manager.
 func NewEntities() *Entities {
 	return &Entities{
 		entities: make([]*GameEntity, 0),
 	}
 }
 
-func (em *Entities) createEntity() *GameEntity {
-	entity := newGameEntity()
-	return entity
-}
-
+// Entities returns the entities managed by the entities' manager.
 func (em *Entities) Entities() []*GameEntity {
 	return em.entities
 }
 
+// AddBox adds a box entity to the entities' manager.
 func (em *Entities) AddBox(x, y float64) {
 	box := em.createEntity()
 
@@ -50,10 +48,16 @@ func (em *Entities) AddBox(x, y float64) {
 	box.addComponent(component.SizeComponent, &component.Size{Width: boxWidth, Height: boxHeight})
 }
 
+// AddGround adds a ground entity to the entities' manager.
 func (em *Entities) AddGround() {
 	ground := em.createEntity()
 
 	ground.addComponent(component.TypeComponent, TypeGround)
 	ground.addComponent(component.PositionComponent, &component.Position{X: groundPositionX, Y: groundPositionY})
 	ground.addComponent(component.SizeComponent, &component.Size{Width: groundWidth, Height: groundHeight})
+}
+
+func (em *Entities) createEntity() *GameEntity {
+	entity := newGameEntity()
+	return entity
 }

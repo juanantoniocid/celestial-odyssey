@@ -7,21 +7,20 @@ import (
 	"celestial-odyssey/internal/component"
 )
 
-type ID int
-
 // GameEntity represents a game entity.
 type GameEntity struct {
 	components map[component.Kind]interface{}
 }
 
-func newGameEntity() *GameEntity {
-	return &GameEntity{
-		components: make(map[component.Kind]interface{}),
+// Type returns the type of the entity.
+func (e *GameEntity) Type() Type {
+	t, ok := e.components[component.TypeComponent].(Type)
+	if !ok {
+		log.Println("failed to get entity type")
+		return TypeUnknown
 	}
-}
 
-func (e *GameEntity) addComponent(kind component.Kind, component interface{}) {
-	e.components[kind] = component
+	return t
 }
 
 // Bounds returns the bounds of the entity.
@@ -41,13 +40,12 @@ func (e *GameEntity) Bounds() image.Rectangle {
 	return image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
 }
 
-// Type returns the type of the entity.
-func (e *GameEntity) Type() Type {
-	t, ok := e.components[component.TypeComponent].(Type)
-	if !ok {
-		log.Println("failed to get entity type")
-		return TypeUnknown
+func newGameEntity() *GameEntity {
+	return &GameEntity{
+		components: make(map[component.Kind]interface{}),
 	}
+}
 
-	return t
+func (e *GameEntity) addComponent(kind component.Kind, component interface{}) {
+	e.components[kind] = component
 }
