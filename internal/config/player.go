@@ -16,6 +16,6 @@ func setupPlayer() Player {
 		WalkingVelocity:     2,
 		InitialJumpVelocity: -10,
 		Gravity:             0.5,
-		SpriteSheet:         "assets/images/player.png",
+		SpriteSheet:         "internal/assets/player.png",
 	}
 }

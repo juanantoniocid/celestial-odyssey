@@ -6,6 +6,6 @@ type Ground struct {
 
 func setupGround() Ground {
 	return Ground{
-		File: "assets/images/ground.png",
+		File: "internal/assets/ground.png",
 	}
 }
