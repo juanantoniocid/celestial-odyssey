@@ -7,14 +7,21 @@ import (
 	"celestial-odyssey/internal/config"
 )
 
+type Type component.Type
+
 const (
+	TypeGround Type = iota
+	TypeBox
+)
+
+const (
+	boxWidth  = 30
+	boxHeight = 30
+
 	groundPositionX = 0
 	groundPositionY = 172
 	groundWidth     = config.ScreenWidth
 	groundHeight    = 28
-
-	boxWidth  = 30
-	boxHeight = 30
 )
 
 type Entities struct {
@@ -52,19 +59,18 @@ func (em *Entities) Entities() map[ID]*GameEntity {
 	return em.entities
 }
 
-func (em *Entities) AddGround() {
-
-	ground := em.CreateEntity()
-
-	ground.AddComponent("type", component.TypeGround)
-	ground.AddComponent("position", &component.Position{X: groundPositionX, Y: groundPositionY})
-	ground.AddComponent("size", &component.Size{Width: groundWidth, Height: groundHeight})
-}
-
 func (em *Entities) AddBox(x, y float64) {
 	box := em.CreateEntity()
 
-	box.AddComponent("type", component.TypeBox)
+	box.AddComponent("type", TypeBox)
 	box.AddComponent("position", &component.Position{X: x, Y: y})
 	box.AddComponent("size", &component.Size{Width: boxWidth, Height: boxHeight})
+}
+
+func (em *Entities) AddGround() {
+	ground := em.CreateEntity()
+
+	ground.AddComponent("type", TypeGround)
+	ground.AddComponent("position", &component.Position{X: groundPositionX, Y: groundPositionY})
+	ground.AddComponent("size", &component.Size{Width: groundWidth, Height: groundHeight})
 }
