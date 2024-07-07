@@ -24,7 +24,7 @@ func main() {
 	inputHandler := input.NewKeyboardHandler()
 	physicsHandler := systems.NewPhysicsHandler()
 
-	levels := level.LoadLevel(cfg.Screen, player, renderer, inputHandler, physicsHandler)
+	levels := level.LoadLevel1(cfg.Screen, player, renderer, inputHandler, physicsHandler)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
