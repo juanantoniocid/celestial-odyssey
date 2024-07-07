@@ -16,16 +16,16 @@ func NewPhysicsHandler() *PhysicsHandler {
 }
 
 // ApplyPhysics applies physics to the world entities.
-func (h *PhysicsHandler) ApplyPhysics(world *entity.World, ee map[entity.ID]*entity.GameEntity) {
+func (h *PhysicsHandler) ApplyPhysics(player *entity.Player, ee map[entity.ID]*entity.GameEntity) {
 	collidables := make([]entity.Collidable, 0)
 	for _, e := range ee {
 		collidable := e.Bounds()
 		collidables = append(collidables, collidable)
 	}
 
-	h.checkCollisions(world.GetPlayer(), collidables)
-	h.checkIfPlayerIsOnPlatform(world.GetPlayer(), collidables, config.ScreenHeight)
-	h.enforceBoundaries(world.GetPlayer(), config.ScreenWidth, config.ScreenHeight)
+	h.checkCollisions(player, collidables)
+	h.checkIfPlayerIsOnPlatform(player, collidables, config.ScreenHeight)
+	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
 }
 
 func (h *PhysicsHandler) checkCollisions(player *entity.Player, collidables []entity.Collidable) {

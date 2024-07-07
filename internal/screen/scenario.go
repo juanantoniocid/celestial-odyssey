@@ -13,7 +13,6 @@ const (
 
 type ScenarioImpl struct {
 	player *entity.Player
-	world  *entity.World
 	em     *entity.EntityManager
 
 	renderer       Renderer
@@ -27,7 +26,6 @@ func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHan
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
-		world:          entity.NewWorld(player),
 		em:             entityManager,
 	}
 }
@@ -35,13 +33,13 @@ func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHan
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-	s.physicsHandler.ApplyPhysics(s.world, s.em.Entities())
+	s.physicsHandler.ApplyPhysics(s.player, s.em.Entities())
 
 	return nil
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.Draw(screen, s.world, s.em.Entities())
+	s.renderer.Draw(screen, s.player, s.em.Entities())
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
