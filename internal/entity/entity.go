@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"fmt"
 	"image"
 	"log"
 
@@ -16,33 +15,18 @@ type GameEntity struct {
 	Components map[component.Kind]interface{}
 }
 
-// NewGameEntity creates a new GameEntity instance.
-func NewGameEntity(id ID) *GameEntity {
+func newGameEntity(id ID) *GameEntity {
 	return &GameEntity{
 		ID:         id,
 		Components: make(map[component.Kind]interface{}),
 	}
 }
 
-// AddComponent adds a component to the entity.
-func (e *GameEntity) AddComponent(kind component.Kind, component interface{}) {
+func (e *GameEntity) addComponent(kind component.Kind, component interface{}) {
 	e.Components[kind] = component
 }
 
-// GetComponent returns a component from the entity.
-func (e *GameEntity) GetComponent(kind component.Kind) (interface{}, error) {
-	component, exists := e.Components[kind]
-	if !exists {
-		return nil, fmt.Errorf("component %d not found", kind)
-	}
-	return component, nil
-}
-
-// RemoveComponent removes a component from the entity.
-func (e *GameEntity) RemoveComponent(kind component.Kind) {
-	delete(e.Components, kind)
-}
-
+// Bounds returns the bounds of the entity.
 func (e *GameEntity) Bounds() image.Rectangle {
 	pos, okPos := e.Components[component.PositionComponent].(*component.Position)
 	if !okPos {

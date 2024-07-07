@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"fmt"
-
 	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/config"
 )
@@ -36,23 +34,11 @@ func NewEntities() *Entities {
 	}
 }
 
-func (em *Entities) CreateEntity() *GameEntity {
-	entity := NewGameEntity(em.nextEntityID)
+func (em *Entities) createEntity() *GameEntity {
+	entity := newGameEntity(em.nextEntityID)
 	em.entities[em.nextEntityID] = entity
 	em.nextEntityID++
 	return entity
-}
-
-func (em *Entities) GetEntity(id ID) (*GameEntity, error) {
-	entity, exists := em.entities[id]
-	if !exists {
-		return nil, fmt.Errorf("entity %d not found", id)
-	}
-	return entity, nil
-}
-
-func (em *Entities) RemoveEntity(id ID) {
-	delete(em.entities, id)
 }
 
 func (em *Entities) Entities() map[ID]*GameEntity {
@@ -60,17 +46,17 @@ func (em *Entities) Entities() map[ID]*GameEntity {
 }
 
 func (em *Entities) AddBox(x, y float64) {
-	box := em.CreateEntity()
+	box := em.createEntity()
 
-	box.AddComponent(component.TypeComponent, TypeBox)
-	box.AddComponent(component.PositionComponent, &component.Position{X: x, Y: y})
-	box.AddComponent(component.SizeComponent, &component.Size{Width: boxWidth, Height: boxHeight})
+	box.addComponent(component.TypeComponent, TypeBox)
+	box.addComponent(component.PositionComponent, &component.Position{X: x, Y: y})
+	box.addComponent(component.SizeComponent, &component.Size{Width: boxWidth, Height: boxHeight})
 }
 
 func (em *Entities) AddGround() {
-	ground := em.CreateEntity()
+	ground := em.createEntity()
 
-	ground.AddComponent(component.TypeComponent, TypeGround)
-	ground.AddComponent(component.PositionComponent, &component.Position{X: groundPositionX, Y: groundPositionY})
-	ground.AddComponent(component.SizeComponent, &component.Size{Width: groundWidth, Height: groundHeight})
+	ground.addComponent(component.TypeComponent, TypeGround)
+	ground.addComponent(component.PositionComponent, &component.Position{X: groundPositionX, Y: groundPositionY})
+	ground.addComponent(component.SizeComponent, &component.Size{Width: groundWidth, Height: groundHeight})
 }
