@@ -17,44 +17,38 @@ func NewCollisionHandler() *CollisionHandler {
 
 // Update updates the game entities based on the collision rules.
 func (h *CollisionHandler) Update(player *entity.Player, entities []*entity.GameEntity) {
-	collidables := make([]entity.Collidable, 0)
-	for _, e := range entities {
-		collidable := e.Bounds()
-		collidables = append(collidables, collidable)
-	}
-
-	h.checkCollisions(player, collidables)
-	h.checkIfPlayerIsOnPlatform(player, collidables, config.ScreenHeight)
+	h.checkCollisions(player, entities)
+	h.checkIfPlayerIsOnPlatform(player, entities, config.ScreenHeight)
 	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
 }
 
-func (h *CollisionHandler) checkCollisions(player *entity.Player, collidables []entity.Collidable) {
-	for _, c := range collidables {
-		if player.Bounds().Overlaps(c.Bounds()) {
-			h.handleCollision(player, c)
+func (h *CollisionHandler) checkCollisions(player *entity.Player, entities []*entity.GameEntity) {
+	for _, e := range entities {
+		if player.Bounds().Overlaps(e.Bounds()) {
+			h.handleCollision(player, e)
 		}
 	}
 }
 
-func (h *CollisionHandler) handleCollision(player *entity.Player, c entity.Collidable) {
-	collision := player.Bounds().Intersect(c.Bounds())
+func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity.GameEntity) {
+	collision := player.Bounds().Intersect(entity.Bounds())
 
 	if collision.Dx() < collision.Dy() {
-		handleHorizontalCollision(player, c)
-		handleVerticalCollision(player, c)
+		handleHorizontalCollision(player, entity)
+		handleVerticalCollision(player, entity)
 	} else {
-		handleVerticalCollision(player, c)
-		handleHorizontalCollision(player, c)
+		handleVerticalCollision(player, entity)
+		handleHorizontalCollision(player, entity)
 	}
 }
 
-func handleVerticalCollision(player *entity.Player, c entity.Collidable) {
-	if !player.Bounds().Overlaps(c.Bounds()) {
+func handleVerticalCollision(player *entity.Player, entity *entity.GameEntity) {
+	if !player.Bounds().Overlaps(entity.Bounds()) {
 		return
 	}
 
 	playerBounds := player.Bounds()
-	collidableBounds := c.Bounds()
+	collidableBounds := entity.Bounds()
 
 	// Landing on top of the box
 	if player.VerticalVelocity() > 0 &&
@@ -78,13 +72,13 @@ func handleVerticalCollision(player *entity.Player, c entity.Collidable) {
 	}
 }
 
-func handleHorizontalCollision(player *entity.Player, c entity.Collidable) {
-	if !player.Bounds().Overlaps(c.Bounds()) {
+func handleHorizontalCollision(player *entity.Player, entity *entity.GameEntity) {
+	if !player.Bounds().Overlaps(entity.Bounds()) {
 		return
 	}
 
 	playerBounds := player.Bounds()
-	collidableBounds := c.Bounds()
+	collidableBounds := entity.Bounds()
 
 	// Hitting the right side of the box
 	if player.HorizontalVelocity() > 0 &&
@@ -106,18 +100,18 @@ func handleHorizontalCollision(player *entity.Player, c entity.Collidable) {
 	}
 }
 
-func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, collidables []entity.Collidable, height int) {
+func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, entities []*entity.GameEntity, height int) {
 	playerBounds := player.Bounds()
 	isOnPlatform := false
 
 	// Check if the player is on any platform
-	for _, c := range collidables {
-		collidableBounds := c.Bounds()
+	for _, e := range entities {
+		entityBounds := e.Bounds()
 
 		// Check if the player is on top of the box
-		if playerBounds.Max.Y == collidableBounds.Min.Y &&
-			playerBounds.Min.X < collidableBounds.Max.X &&
-			playerBounds.Max.X > collidableBounds.Min.X {
+		if playerBounds.Max.Y == entityBounds.Min.Y &&
+			playerBounds.Min.X < entityBounds.Max.X &&
+			playerBounds.Max.X > entityBounds.Min.X {
 			isOnPlatform = true
 			break
 		}
