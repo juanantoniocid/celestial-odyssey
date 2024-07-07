@@ -8,7 +8,8 @@ import (
 type Type component.Type
 
 const (
-	TypeGround Type = iota
+	TypeUnknown Type = iota
+	TypeGround
 	TypeBox
 )
 
@@ -23,25 +24,21 @@ const (
 )
 
 type Entities struct {
-	nextEntityID ID
-	entities     map[ID]*GameEntity
+	entities []*GameEntity
 }
 
 func NewEntities() *Entities {
 	return &Entities{
-		nextEntityID: 0,
-		entities:     make(map[ID]*GameEntity),
+		entities: make([]*GameEntity, 0),
 	}
 }
 
 func (em *Entities) createEntity() *GameEntity {
-	entity := newGameEntity(em.nextEntityID)
-	em.entities[em.nextEntityID] = entity
-	em.nextEntityID++
+	entity := newGameEntity()
 	return entity
 }
 
-func (em *Entities) Entities() map[ID]*GameEntity {
+func (em *Entities) Entities() []*GameEntity {
 	return em.entities
 }
 

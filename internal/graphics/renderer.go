@@ -1,7 +1,6 @@
 package graphics
 
 import (
-	"celestial-odyssey/internal/component"
 	"image"
 	"image/color"
 	"log"
@@ -100,7 +99,7 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities map[entity.ID]*entity.GameEntity) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities []*entity.GameEntity) {
 	r.drawBackground(screen)
 	r.drawEntities(screen, entities)
 	r.drawPlayer(screen, player)
@@ -176,15 +175,9 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawEntities(screen *ebiten.Image, entities map[entity.ID]*entity.GameEntity) {
+func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEntity) {
 	for _, e := range entities {
-		entityType, ok := e.Components[component.TypeComponent].(entity.Type)
-		if !ok {
-			log.Println("failed to get entity type")
-			continue
-		}
-
-		switch entityType {
+		switch e.Type() {
 		case entity.TypeBox:
 			r.drawBox(screen, e)
 		case entity.TypeGround:
