@@ -59,8 +59,8 @@ type Renderer interface {
 	Draw(screen *ebiten.Image, player *entity.Player, entities []*entity.GameEntity)
 }
 
-// PhysicsHandler is responsible for applying physics to the game entities.
-type PhysicsHandler interface {
-	// ApplyPhysics applies physics to the player and entities.
-	ApplyPhysics(player *entity.Player, entities []*entity.GameEntity)
+// CollisionHandler is responsible for applying physics to the game entities.
+type CollisionHandler interface {
+	// Update applies physics to the player and entities.
+	Update(player *entity.Player, entities []*entity.GameEntity)
 }

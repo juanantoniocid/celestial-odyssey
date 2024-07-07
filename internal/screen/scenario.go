@@ -15,25 +15,25 @@ type ScenarioImpl struct {
 	player   *entity.Player
 	entities *entity.Entities
 
-	renderer       Renderer
-	inputHandler   InputHandler
-	physicsHandler PhysicsHandler
+	renderer         Renderer
+	inputHandler     InputHandler
+	collisionHandler CollisionHandler
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, entities *entity.Entities) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:         player,
-		renderer:       renderer,
-		inputHandler:   inputHandler,
-		physicsHandler: physicsHandler,
-		entities:       entities,
+		player:           player,
+		renderer:         renderer,
+		inputHandler:     inputHandler,
+		collisionHandler: collisionHandler,
+		entities:         entities,
 	}
 }
 
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-	s.physicsHandler.ApplyPhysics(s.player, s.entities.Entities())
+	s.collisionHandler.Update(s.player, s.entities.Entities())
 
 	return nil
 }

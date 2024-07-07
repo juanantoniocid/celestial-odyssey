@@ -1,22 +1,22 @@
 package systems
 
 import (
-	"celestial-odyssey/internal/config"
 	"log"
 
+	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
 )
 
-// PhysicsHandler is responsible for applying physics to the game entities.
-type PhysicsHandler struct{}
+// CollisionHandler is responsible for applying physics to the game entities.
+type CollisionHandler struct{}
 
-// NewPhysicsHandler creates a new PhysicsHandler instance.
-func NewPhysicsHandler() *PhysicsHandler {
-	return &PhysicsHandler{}
+// NewCollisionHandler creates a new CollisionHandler instance.
+func NewCollisionHandler() *CollisionHandler {
+	return &CollisionHandler{}
 }
 
 // ApplyPhysics applies physics to the world entities.
-func (h *PhysicsHandler) ApplyPhysics(player *entity.Player, entities []*entity.GameEntity) {
+func (h *CollisionHandler) Update(player *entity.Player, entities []*entity.GameEntity) {
 	collidables := make([]entity.Collidable, 0)
 	for _, e := range entities {
 		collidable := e.Bounds()
@@ -28,7 +28,7 @@ func (h *PhysicsHandler) ApplyPhysics(player *entity.Player, entities []*entity.
 	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
 }
 
-func (h *PhysicsHandler) checkCollisions(player *entity.Player, collidables []entity.Collidable) {
+func (h *CollisionHandler) checkCollisions(player *entity.Player, collidables []entity.Collidable) {
 	for _, c := range collidables {
 		if player.Bounds().Overlaps(c.Bounds()) {
 			h.handleCollision(player, c)
@@ -36,7 +36,7 @@ func (h *PhysicsHandler) checkCollisions(player *entity.Player, collidables []en
 	}
 }
 
-func (h *PhysicsHandler) handleCollision(player *entity.Player, c entity.Collidable) {
+func (h *CollisionHandler) handleCollision(player *entity.Player, c entity.Collidable) {
 	collision := player.Bounds().Intersect(c.Bounds())
 
 	if collision.Dx() < collision.Dy() {
@@ -106,7 +106,7 @@ func handleHorizontalCollision(player *entity.Player, c entity.Collidable) {
 	}
 }
 
-func (h *PhysicsHandler) checkIfPlayerIsOnPlatform(player *entity.Player, collidables []entity.Collidable, height int) {
+func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, collidables []entity.Collidable, height int) {
 	playerBounds := player.Bounds()
 	isOnPlatform := false
 
@@ -134,7 +134,7 @@ func (h *PhysicsHandler) checkIfPlayerIsOnPlatform(player *entity.Player, collid
 	}
 }
 
-func (h *PhysicsHandler) enforceBoundaries(player *entity.Player, width, height int) {
+func (h *CollisionHandler) enforceBoundaries(player *entity.Player, width, height int) {
 	if player.Position().X < 0 {
 		player.SetPositionX(0)
 	} else if player.Position().X+player.Width() > width {
