@@ -20,19 +20,15 @@ type ScenarioImpl struct {
 	physicsHandler PhysicsHandler
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, entityManager *entity.EntityManager, width int, height int) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:         player,
 		renderer:       renderer,
 		inputHandler:   inputHandler,
 		physicsHandler: physicsHandler,
 		world:          entity.NewWorld(player, width, height),
-		em:             entity.NewEntityManager(),
+		em:             entityManager,
 	}
-}
-
-func (s *ScenarioImpl) CreateEntity() *entity.GameEntity {
-	return s.em.CreateEntity()
 }
 
 func (s *ScenarioImpl) Update() error {
