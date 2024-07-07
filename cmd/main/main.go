@@ -1,32 +1,30 @@
 package main
 
 import (
-	"image"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
-	"celestial-odyssey/internal/physics"
+	"celestial-odyssey/internal/level"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/internal/util"
-	"celestial-odyssey/internal/world/entities"
+	"celestial-odyssey/internal/systems"
 )
 
 func main() {
 	cfg := config.LoadConfig()
 	applyWindowSettings(cfg.Window)
 
-	player, playerImages := createPlayer(cfg.Player)
-	renderer := graphics.NewRenderer(playerImages)
+	player := createPlayer(cfg.Player)
+	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
 	inputHandler := input.NewKeyboardHandler()
-	physicsHandler := physics.NewPhysicsHandler()
+	collisionHandler := systems.NewCollisionHandler()
 
-	levels := createLevel(cfg.Screen, player, renderer, inputHandler, physicsHandler)
+	levels := level.LoadLevel1(player, renderer, inputHandler, collisionHandler)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
@@ -41,69 +39,24 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entities.Player, playerImages []*ebiten.Image) {
-	player = entities.NewPlayer(cfg)
-	playerImages = loadPlayerImages(cfg.SpritesFile, cfg.Dimensions)
+func createPlayer(cfg config.Player) (player *entity.Player) {
+	player = entity.NewPlayer(cfg)
 
-	return player, playerImages
+	return player
 }
 
-func loadPlayerImages(file string, dimensions util.Dimensions) []*ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile(file)
-	if err != nil {
-		log.Fatal("failed to load player sprite sheet:", err)
-		return nil
-	}
+func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *graphics.Renderer {
+	renderer := graphics.NewRenderer(cfgPlayer, cfgScreen, cfgGround)
 
-	var images []*ebiten.Image
-	frameWidth := dimensions.Width
-	frameHeight := dimensions.Height
-	numFrames := img.Bounds().Max.X / frameWidth
-
-	for i := 0; i < numFrames; i++ {
-		x := i * frameWidth
-		frame := img.SubImage(image.Rect(x, 0, x+frameWidth, frameHeight)).(*ebiten.Image)
-		images = append(images, frame)
-	}
-
-	return images
-}
-
-func createLevel(cfg config.Screen, player *entities.Player, renderer screen.Renderer, inputHandler screen.InputHandler, physicsHandler screen.PhysicsHandler) screen.Level {
-	level := screen.NewLevel()
-
-	landingSiteBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/landing_site.png")
-	if err != nil {
-		log.Fatal("failed to load landing site background:", err)
-	}
-	sandDunesBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/sand_dunes.png")
-	if err != nil {
-		log.Fatal("failed to load sand dunes background:", err)
-	}
-	ruinedTempleBg, _, err := ebitenutil.NewImageFromFile("assets/images/scenarios/ruined_temple.png")
-	if err != nil {
-		log.Fatal("failed to load ruined temple background:", err)
-	}
-
-	landingSite := screen.NewScenario(player, landingSiteBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	sandDunes := screen.NewScenario(player, sandDunesBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
-	ruinedTemple := screen.NewScenario(player, ruinedTempleBg, renderer, inputHandler, physicsHandler, cfg.Dimensions.Width, cfg.Dimensions.Height)
-
-	landingSite.AddCollidable(entities.NewBox(image.Rect(100, 100, 200, 200)))
-
-	level.AddScenario(landingSite)
-	level.AddScenario(sandDunes)
-	level.AddScenario(ruinedTemple)
-
-	return level
+	return renderer
 }
 
 func createScreenManager(cfg config.Screen, levels []screen.Level) *screen.Manager {
 	applyScreenSettings(cfg)
 	manager := screen.NewManager(cfg)
 
-	for _, level := range levels {
-		manager.AddLevel(level)
+	for _, l := range levels {
+		manager.AddLevel(l)
 	}
 
 	return manager

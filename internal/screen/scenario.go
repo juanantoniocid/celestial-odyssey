@@ -3,7 +3,8 @@ package screen
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/world/entities"
+	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/entity"
 )
 
 const (
@@ -11,54 +12,38 @@ const (
 )
 
 type ScenarioImpl struct {
-	player      *entities.Player
-	collidables []entities.Collidable
+	player   *entity.Player
+	entities *entity.Entities
 
-	background     *ebiten.Image
-	renderer       Renderer
-	inputHandler   InputHandler
-	physicsHandler PhysicsHandler
-
-	width  int
-	height int
+	renderer         Renderer
+	inputHandler     InputHandler
+	collisionHandler CollisionHandler
 }
 
-func NewScenario(player *entities.Player, background *ebiten.Image, renderer Renderer, inputHandler InputHandler, physicsHandler PhysicsHandler, width int, height int) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:         player,
-		background:     background,
-		renderer:       renderer,
-		inputHandler:   inputHandler,
-		physicsHandler: physicsHandler,
-		width:          width,
-		height:         height,
-		collidables:    make([]entities.Collidable, 0),
+		player:           player,
+		renderer:         renderer,
+		inputHandler:     inputHandler,
+		collisionHandler: collisionHandler,
+		entities:         entities,
 	}
-}
-
-func (s *ScenarioImpl) AddCollidable(c entities.Collidable) {
-	s.collidables = append(s.collidables, c)
 }
 
 func (s *ScenarioImpl) Update() error {
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-
-	s.physicsHandler.ApplyPhysics(s.player, s.collidables, s.width, s.height)
+	s.collisionHandler.Update(s.player, s.entities.Entities())
 
 	return nil
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.DrawBackground(screen, s.background)
-	s.renderer.DrawPlayer(screen, s.player)
-	for _, c := range s.collidables {
-		s.renderer.DrawCollidable(screen, c)
-	}
+	s.renderer.Draw(screen, s.player, s.entities.Entities())
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
-	return s.player.Position().X+s.player.Width() >= s.width
+	return s.player.Position().X+s.player.Width() >= config.ScreenWidth
 }
 
 func (s *ScenarioImpl) ShouldTransitionLeft() bool {
@@ -70,5 +55,5 @@ func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionX(s.width - sideMargin - s.player.Width())
+	s.player.SetPositionX(config.ScreenWidth - sideMargin - s.player.Width())
 }

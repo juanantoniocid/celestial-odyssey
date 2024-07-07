@@ -3,7 +3,7 @@ package input
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/world/entities"
+	"celestial-odyssey/internal/entity"
 )
 
 // KeyboardHandler is responsible for handling keyboard input.
@@ -15,7 +15,7 @@ func NewKeyboardHandler() *KeyboardHandler {
 }
 
 // UpdatePlayer updates the player based on the keyboard input.
-func (kh *KeyboardHandler) UpdatePlayer(player *entities.Player) {
+func (kh *KeyboardHandler) UpdatePlayer(player *entity.Player) {
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		player.MoveLeft()
 	}

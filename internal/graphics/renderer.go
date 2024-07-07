@@ -1,15 +1,20 @@
 package graphics
 
 import (
+	"image"
 	"image/color"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
-	"celestial-odyssey/internal/world/entities"
+	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/entity"
 )
 
 const (
 	framesPerAnimationFrame = 10
+	imagesInSpriteSheet     = 10
 	totalWalkingFrames      = 3
 )
 
@@ -30,53 +35,112 @@ const (
 
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer struct {
-	playerImages []*ebiten.Image
+	playerImages     []*ebiten.Image
+	backgroundImage  *ebiten.Image
+	groundImage      *ebiten.Image
+	groundDimensions image.Rectangle
+
+	op *ebiten.DrawImageOptions
 }
 
 // NewRenderer creates a new Renderer instance.
-func NewRenderer(playerImages []*ebiten.Image) *Renderer {
-	return &Renderer{
-		playerImages: playerImages,
-	}
-}
-
-// DrawPlayer draws the player on the screen.
-func (r *Renderer) DrawPlayer(screen *ebiten.Image, player *entities.Player) {
+func NewRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *Renderer {
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 
-	sprite := r.getSprite(player)
+	playerImages := createPlayerImages(cfgPlayer)
+	groundImage := createGroundImage(cfgGround.File)
 
-	op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
-	screen.DrawImage(r.playerImages[sprite], op)
+	return &Renderer{
+		playerImages:     playerImages,
+		backgroundImage:  createBackgroundImage(cfgScreen),
+		groundImage:      groundImage,
+		groundDimensions: groundImage.Bounds(),
+
+		op: op,
+	}
 }
 
-func (r *Renderer) getSprite(player *entities.Player) SpriteType {
-	switch player.Action() {
-	case entities.ActionIdle:
-		return r.getIdleSprite(player)
-	case entities.ActionJumping:
-		return r.getJumpingSprite(player)
-	case entities.ActionWalking:
-		return r.getWalkingSprite(player)
+func createPlayerImages(cfg config.Player) []*ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile(cfg.SpriteSheet)
+	if err != nil {
+		log.Fatal("failed to load player sprite sheet:", err)
+		return nil
 	}
 
-	return PlayerIdleRight
+	var images []*ebiten.Image
+	frameWidth := img.Bounds().Max.X / imagesInSpriteSheet
+	frameHeight := img.Bounds().Max.Y
+	numFrames := img.Bounds().Max.X / frameWidth
+
+	for i := 0; i < numFrames; i++ {
+		x := i * frameWidth
+		frame := img.SubImage(image.Rect(x, 0, x+frameWidth, frameHeight)).(*ebiten.Image)
+		images = append(images, frame)
+	}
+
+	return images
 }
 
-func (r *Renderer) getIdleSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.DirectionLeft {
+func createGroundImage(file string) *ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile(file)
+	if err != nil {
+		log.Fatal("failed to load ground image:", err)
+		return nil
+	}
+
+	return img
+}
+
+func createBackgroundImage(cfg config.Screen) *ebiten.Image {
+	background := ebiten.NewImage(cfg.Dimensions.Width, cfg.Dimensions.Height)
+	background.Fill(cfg.BackgroundColor)
+
+	return background
+}
+
+func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities []*entity.GameEntity) {
+	r.drawBackground(screen)
+	r.drawEntities(screen, entities)
+	r.drawPlayer(screen, player)
+}
+
+func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
+	r.op.GeoM.Reset()
+	sprite := r.getSprite(player)
+
+	r.op.GeoM.Translate(float64(player.Position().X), float64(player.Position().Y))
+	screen.DrawImage(r.playerImages[sprite], r.op)
+}
+
+func (r *Renderer) getSprite(player *entity.Player) (spriteType SpriteType) {
+	switch player.Action() {
+	case entity.ActionIdle:
+		spriteType = r.getIdleSprite(player)
+	case entity.ActionJumping:
+		spriteType = r.getJumpingSprite(player)
+	case entity.ActionWalking:
+		spriteType = r.getWalkingSprite(player)
+	default:
+		spriteType = PlayerIdleRight
+	}
+
+	return spriteType
+}
+
+func (r *Renderer) getIdleSprite(player *entity.Player) SpriteType {
+	if player.Direction() == entity.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *entity.Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
 	switch player.Direction() {
-	case entities.DirectionLeft:
+	case entity.DirectionLeft:
 		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingLeft1
@@ -85,7 +149,7 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 		case 2:
 			frame = PlayerWalkingLeft3
 		}
-	case entities.DirectionRight:
+	case entity.DirectionRight:
 		switch frameIndex {
 		case 0:
 			frame = PlayerWalkingRight1
@@ -99,32 +163,50 @@ func (r *Renderer) getWalkingSprite(player *entities.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entities.Player) SpriteType {
-	if player.Direction() == entities.DirectionLeft {
+func (r *Renderer) getJumpingSprite(player *entity.Player) SpriteType {
+	if player.Direction() == entity.DirectionLeft {
 		return PlayerJumpingLeft
 	}
 	return PlayerJumpingRight
 }
 
-// DrawBackground draws the background on the screen.
-func (r *Renderer) DrawBackground(screen *ebiten.Image, background *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
-
-	screen.DrawImage(background, op)
+func (r *Renderer) drawBackground(screen *ebiten.Image) {
+	r.op.GeoM.Reset()
+	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-// DrawCollidable draws a collidable entity on the screen.
-func (r *Renderer) DrawCollidable(screen *ebiten.Image, collidable entities.Collidable) {
-	op := &ebiten.DrawImageOptions{}
-	op.Filter = ebiten.FilterNearest
+func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEntity) {
+	for _, e := range entities {
+		switch e.Type() {
+		case entity.TypeBox:
+			r.drawBox(screen, e)
+		case entity.TypeGround:
+			r.drawGround(screen, e)
+		default:
+			panic("unhandled default case")
+		}
+	}
+}
 
-	bounds := collidable.Bounds()
-	op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
+	r.op.GeoM.Reset()
+
+	bounds := box.Bounds()
+	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
 	brown := color.RGBA{R: 139, G: 69, B: 19, A: 255}
 	img.Fill(brown)
 
-	screen.DrawImage(img, op)
+	screen.DrawImage(img, r.op)
+}
+
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
+	bounds := ground.Bounds()
+
+	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
+		r.op.GeoM.Reset()
+		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
+		screen.DrawImage(r.groundImage, r.op)
+	}
 }

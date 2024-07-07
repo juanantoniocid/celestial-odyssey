@@ -1,4 +1,4 @@
-package entities
+package entity
 
 import (
 	"image"
@@ -23,6 +23,7 @@ type Player struct {
 
 	// Physics
 	walkingVelocity     int
+	horizontalVelocity  int
 	verticalVelocity    float64
 	initialJumpVelocity float64
 	gravity             float64
@@ -44,6 +45,7 @@ func NewPlayer(cfg config.Player) *Player {
 		isJumping:     false,
 
 		walkingVelocity:     cfg.WalkingVelocity,
+		horizontalVelocity:  0,
 		verticalVelocity:    0,
 		initialJumpVelocity: cfg.InitialJumpVelocity,
 		gravity:             cfg.Gravity,
@@ -132,6 +134,7 @@ func (p *Player) Stop() {
 	p.isMovingLeft = false
 	p.isMovingRight = false
 	p.currentAction = ActionIdle
+	p.horizontalVelocity = 0
 }
 
 // Fall makes the player character fall down.
@@ -171,17 +174,23 @@ func (p *Player) updateCurrentStateDuration() {
 
 // updateHorizontalPosition updates the player character's horizontal position.
 func (p *Player) updateHorizontalPosition() {
-	if p.isMovingLeft {
-		p.isMovingLeft = false
-		p.position.X -= p.walkingVelocity
-		p.direction = DirectionLeft
-		p.currentAction = ActionWalking
-	} else if p.isMovingRight {
-		p.isMovingRight = false
-		p.position.X += p.walkingVelocity
-		p.direction = DirectionRight
-		p.currentAction = ActionWalking
+	if !p.isMovingLeft && !p.isMovingRight {
+		p.horizontalVelocity = 0
+		return
 	}
+
+	if p.isMovingLeft {
+		p.horizontalVelocity = -p.walkingVelocity
+		p.direction = DirectionLeft
+	} else if p.isMovingRight {
+		p.horizontalVelocity = p.walkingVelocity
+		p.direction = DirectionRight
+	}
+
+	p.isMovingLeft = false
+	p.isMovingRight = false
+	p.position.X += p.horizontalVelocity
+	p.currentAction = ActionWalking
 }
 
 // updateVerticalPosition updates the player character's vertical position.
@@ -191,4 +200,14 @@ func (p *Player) updateVerticalPosition() {
 		p.verticalVelocity += p.gravity
 		p.position.Y += int(p.verticalVelocity)
 	}
+}
+
+// HorizontalVelocity returns the horizontal velocity of the player character.
+func (p *Player) HorizontalVelocity() int {
+	return p.horizontalVelocity
+}
+
+// VerticalVelocity returns the vertical velocity of the player character.
+func (p *Player) VerticalVelocity() float64 {
+	return p.verticalVelocity
 }
