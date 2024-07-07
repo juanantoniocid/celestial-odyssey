@@ -15,7 +15,7 @@ func NewCollisionHandler() *CollisionHandler {
 	return &CollisionHandler{}
 }
 
-// ApplyPhysics applies physics to the world entities.
+// Update updates the game entities based on the collision rules.
 func (h *CollisionHandler) Update(player *entity.Player, entities []*entity.GameEntity) {
 	collidables := make([]entity.Collidable, 0)
 	for _, e := range entities {

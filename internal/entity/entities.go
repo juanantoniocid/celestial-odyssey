@@ -59,5 +59,7 @@ func (em *Entities) AddGround() {
 
 func (em *Entities) createEntity() *GameEntity {
 	entity := newGameEntity()
+	em.entities = append(em.entities, entity)
+
 	return entity
 }
