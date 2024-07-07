@@ -62,15 +62,15 @@ func (em *Entities) Entities() map[ID]*GameEntity {
 func (em *Entities) AddBox(x, y float64) {
 	box := em.CreateEntity()
 
-	box.AddComponent("type", TypeBox)
-	box.AddComponent("position", &component.Position{X: x, Y: y})
-	box.AddComponent("size", &component.Size{Width: boxWidth, Height: boxHeight})
+	box.AddComponent(component.TypeComponent, TypeBox)
+	box.AddComponent(component.PositionComponent, &component.Position{X: x, Y: y})
+	box.AddComponent(component.SizeComponent, &component.Size{Width: boxWidth, Height: boxHeight})
 }
 
 func (em *Entities) AddGround() {
 	ground := em.CreateEntity()
 
-	ground.AddComponent("type", TypeGround)
-	ground.AddComponent("position", &component.Position{X: groundPositionX, Y: groundPositionY})
-	ground.AddComponent("size", &component.Size{Width: groundWidth, Height: groundHeight})
+	ground.AddComponent(component.TypeComponent, TypeGround)
+	ground.AddComponent(component.PositionComponent, &component.Position{X: groundPositionX, Y: groundPositionY})
+	ground.AddComponent(component.SizeComponent, &component.Size{Width: groundWidth, Height: groundHeight})
 }

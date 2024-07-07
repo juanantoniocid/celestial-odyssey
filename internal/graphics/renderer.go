@@ -1,6 +1,7 @@
 package graphics
 
 import (
+	"celestial-odyssey/internal/component"
 	"image"
 	"image/color"
 	"log"
@@ -177,7 +178,7 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 
 func (r *Renderer) drawEntities(screen *ebiten.Image, entities map[entity.ID]*entity.GameEntity) {
 	for _, e := range entities {
-		entityType, ok := e.Components["type"].(entity.Type)
+		entityType, ok := e.Components[component.TypeComponent].(entity.Type)
 		if !ok {
 			log.Println("failed to get entity type")
 			continue
