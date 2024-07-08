@@ -51,16 +51,22 @@ type Scenario interface {
 type InputHandler interface {
 	// UpdatePlayer updates the player based on the input.
 	UpdatePlayer(player *entity.Player)
+	// UpdateCharacter updates the character based on the input.
+	UpdateCharacter(character *entity.GameEntity)
 }
 
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer interface {
 	// Draw draws the game entities on the screen.
-	Draw(screen *ebiten.Image, player *entity.Player, entities []*entity.GameEntity)
+	Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entities []*entity.GameEntity)
 }
 
 // CollisionHandler is responsible for applying physics to the game entities.
 type CollisionHandler interface {
 	// Update applies physics to the player and entities.
 	Update(player *entity.Player, entities []*entity.GameEntity)
+}
+
+type SystemInputHandler interface {
+	Update(character *entity.GameEntity)
 }

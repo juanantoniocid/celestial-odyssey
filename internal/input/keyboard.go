@@ -1,7 +1,9 @@
 package input
 
 import (
+	"celestial-odyssey/internal/component"
 	"github.com/hajimehoshi/ebiten/v2"
+	"log"
 
 	"celestial-odyssey/internal/entity"
 )
@@ -26,5 +28,29 @@ func (kh *KeyboardHandler) UpdatePlayer(player *entity.Player) {
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
 		player.Jump()
+	}
+}
+
+// UpdateCharacter updates the character based on the keyboard input.
+func (kh *KeyboardHandler) UpdateCharacter(character *entity.GameEntity) {
+	characterInput, ok := character.GetComponent(component.InputComponent).(*component.Input)
+	if !ok {
+		log.Println("failed to get character input")
+		return
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		log.Println("left")
+		characterInput.Left = true
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		log.Println("right")
+		characterInput.Right = true
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		log.Println("jump")
+		characterInput.Jump = true
 	}
 }

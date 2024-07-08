@@ -12,25 +12,31 @@ const (
 )
 
 type ScenarioImpl struct {
-	player   *entity.Player
-	entities *entity.Entities
+	player    *entity.Player
+	character *entity.GameEntity
+	entities  *entity.Entities
 
-	renderer         Renderer
-	inputHandler     InputHandler
-	collisionHandler CollisionHandler
+	renderer           Renderer
+	inputHandler       InputHandler
+	collisionHandler   CollisionHandler
+	systemInputHandler SystemInputHandler
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, systemInputHandler SystemInputHandler, character *entity.GameEntity, entities *entity.Entities) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:           player,
-		renderer:         renderer,
-		inputHandler:     inputHandler,
-		collisionHandler: collisionHandler,
-		entities:         entities,
+		player:             player,
+		character:          character,
+		renderer:           renderer,
+		inputHandler:       inputHandler,
+		collisionHandler:   collisionHandler,
+		systemInputHandler: systemInputHandler,
+		entities:           entities,
 	}
 }
 
 func (s *ScenarioImpl) Update() error {
+	s.inputHandler.UpdateCharacter(s.character)
+	s.systemInputHandler.Update(s.character)
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
 	s.collisionHandler.Update(s.player, s.entities.Entities())
@@ -39,7 +45,7 @@ func (s *ScenarioImpl) Update() error {
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.Draw(screen, s.player, s.entities.Entities())
+	s.renderer.Draw(screen, s.player, s.character, s.entities.Entities())
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {

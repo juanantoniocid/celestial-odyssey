@@ -11,6 +11,7 @@ const (
 	TypeUnknown Type = iota
 	TypeGround
 	TypeBox
+	TypePlayer
 )
 
 const (

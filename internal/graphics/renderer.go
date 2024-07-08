@@ -99,10 +99,11 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities []*entity.GameEntity) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entities []*entity.GameEntity) {
 	r.drawBackground(screen)
 	r.drawEntities(screen, entities)
 	r.drawPlayer(screen, player)
+	r.drawCharacter(screen, character)
 }
 
 func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
@@ -209,4 +210,14 @@ func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
 		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
 		screen.DrawImage(r.groundImage, r.op)
 	}
+}
+
+func (r *Renderer) drawCharacter(screen *ebiten.Image, character *entity.GameEntity) {
+	r.op.GeoM.Reset()
+	r.op.GeoM.Translate(character.Position().X, character.Position().Y)
+
+	img := ebiten.NewImage(int(character.Size().Width), int(character.Size().Height))
+	img.Fill(color.White)
+
+	screen.DrawImage(img, r.op)
 }

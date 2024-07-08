@@ -12,6 +12,8 @@ const (
 	VelocityComponent
 	// TypeComponent represents a type component.
 	TypeComponent
+	// InputComponent represents an input component.
+	InputComponent
 )
 
 // Position represents a 2D position.
@@ -26,6 +28,10 @@ type Size struct {
 
 // Velocity represents a 2D velocity.
 type Velocity struct {
-	HX, HY float64
-	VX, VY float64
+	X, Y float64
+}
+
+// Input represents the input state.
+type Input struct {
+	Left, Right, Jump bool
 }
