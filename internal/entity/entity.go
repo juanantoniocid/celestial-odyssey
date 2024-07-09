@@ -12,18 +12,19 @@ type GameEntity struct {
 	components map[component.Type]interface{}
 }
 
-// GetComponent returns the component of the given kind.
-func (e *GameEntity) GetComponent(kind component.Type) interface{} {
-	return e.components[kind]
-}
-
 // Type returns the type of the entity.
 func (e *GameEntity) Type() (component.EntityType, error) {
-	t, ok := e.components[component.EntityTypeComponent].(component.EntityType)
+	t, ok := e.components[component.EntityTypeComponent]
 	if !ok {
 		return TypeUnknown, fmt.Errorf("failed to get entity type")
 	}
-	return t, nil
+
+	return t.(component.EntityType), nil
+}
+
+// SetType sets the type of the entity.
+func (e *GameEntity) SetType(t component.EntityType) {
+	e.components[component.EntityTypeComponent] = t
 }
 
 // Bounds returns the bounds of the entity.
@@ -52,6 +53,11 @@ func (e *GameEntity) Position() (*component.Position, error) {
 	return pos, nil
 }
 
+// SetPosition sets the position of the entity.
+func (e *GameEntity) SetPosition(p *component.Position) {
+	e.components[component.PositionComponent] = p
+}
+
 // Size returns the size of the entity.
 func (e *GameEntity) Size() (*component.Size, error) {
 	size, ok := e.components[component.SizeComponent].(*component.Size)
@@ -60,6 +66,11 @@ func (e *GameEntity) Size() (*component.Size, error) {
 	}
 
 	return size, nil
+}
+
+// SetSize sets the size of the entity.
+func (e *GameEntity) SetSize(s *component.Size) {
+	e.components[component.SizeComponent] = s
 }
 
 // Velocity returns the velocity of the entity.
@@ -72,6 +83,11 @@ func (e *GameEntity) Velocity() (*component.Velocity, error) {
 	return velocity, nil
 }
 
+// SetVelocity sets the velocity of the entity.
+func (e *GameEntity) SetVelocity(v *component.Velocity) {
+	e.components[component.VelocityComponent] = v
+}
+
 // Input returns the input state of the entity.
 func (e *GameEntity) Input() (*component.Input, error) {
 	input, ok := e.components[component.InputComponent].(*component.Input)
@@ -82,40 +98,25 @@ func (e *GameEntity) Input() (*component.Input, error) {
 	return input, nil
 }
 
+// SetInput sets the input state of the entity.
+func (e *GameEntity) SetInput(input *component.Input) {
+	e.components[component.InputComponent] = input
+}
+
 func newGameEntity() *GameEntity {
 	return &GameEntity{
 		components: make(map[component.Type]interface{}),
 	}
 }
 
-func (e *GameEntity) addEntityType(t component.EntityType) {
-	e.components[component.EntityTypeComponent] = t
-}
-
-func (e *GameEntity) addInput(input *component.Input) {
-	e.components[component.InputComponent] = input
-}
-
-func (e *GameEntity) addVelocity(v *component.Velocity) {
-	e.components[component.VelocityComponent] = v
-}
-
-func (e *GameEntity) addSize(s *component.Size) {
-	e.components[component.SizeComponent] = s
-}
-
-func (e *GameEntity) addPosition(p *component.Position) {
-	e.components[component.PositionComponent] = p
-}
-
 func CreatePlayer() *GameEntity {
 	player := newGameEntity()
 
-	player.addEntityType(TypePlayer)
-	player.addPosition(&component.Position{X: 0, Y: 0})
-	player.addSize(&component.Size{Width: 20, Height: 40})
-	player.addVelocity(&component.Velocity{VX: 0, VY: 0})
-	player.addInput(&component.Input{Left: false, Right: false, Jump: false})
+	player.SetType(TypePlayer)
+	player.SetPosition(&component.Position{X: 0, Y: 0})
+	player.SetSize(&component.Size{Width: 20, Height: 40})
+	player.SetVelocity(&component.Velocity{VX: 0, VY: 0})
+	player.SetInput(&component.Input{Left: false, Right: false, Jump: false})
 
 	return player
 }
