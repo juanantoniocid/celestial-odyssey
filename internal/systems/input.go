@@ -46,6 +46,9 @@ func (is *InputHandler) Update(character *entity.GameEntity) {
 		input.Jump = false // Reset jump after applying it
 	}
 
+	character.SetVelocity(velocity)
+	debug.Log("Velocity after input: %v", velocity)
+
 	is.applyPhysics(character)
 }
 
@@ -62,6 +65,12 @@ func (is *InputHandler) applyPhysics(character *entity.GameEntity) {
 		return
 	}
 
+	debug.Log("Velocity: %v", velocity)
+	debug.Log("Position: %v", position)
+
 	position.X += velocity.VX
 	position.Y += velocity.VY
+
+	character.SetPosition(position)
+	debug.Log("Position after velocity: %v", position)
 }

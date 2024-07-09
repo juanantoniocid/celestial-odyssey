@@ -52,4 +52,6 @@ func (kh *KeyboardHandler) UpdateCharacter(character *entity.GameEntity) {
 		log.Println("jump")
 		characterInput.Jump = true
 	}
+
+	character.SetInput(characterInput)
 }
