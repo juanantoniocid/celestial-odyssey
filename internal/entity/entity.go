@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"fmt"
 	"image"
 	"log"
 
@@ -18,14 +19,13 @@ func (e *GameEntity) GetComponent(kind component.Type) interface{} {
 }
 
 // Type returns the type of the entity.
-func (e *GameEntity) Type() component.EntityType {
+// Returns an error if the type component is not found.
+func (e *GameEntity) Type() (component.EntityType, error) {
 	t, ok := e.components[component.EntityTypeComponent].(component.EntityType)
 	if !ok {
-		log.Println("failed to get entity type")
-		return TypeUnknown
+		return TypeUnknown, fmt.Errorf("failed to get entity type")
 	}
-
-	return t
+	return t, nil
 }
 
 // Bounds returns the bounds of the entity.

@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/debug"
 	"celestial-odyssey/internal/entity"
 )
 
@@ -178,13 +179,20 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 
 func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEntity) {
 	for _, e := range entities {
-		switch e.Type() {
+		entityType, err := e.Type()
+		if err != nil {
+			debug.Log("failed to get entity type: %e", err)
+			continue
+		}
+
+		switch entityType {
 		case entity.TypeBox:
 			r.drawBox(screen, e)
 		case entity.TypeGround:
 			r.drawGround(screen, e)
 		default:
-			panic("unhandled default case")
+
+			debug.Log("unhandled entity type: %d", entityType)
 		}
 	}
 }
