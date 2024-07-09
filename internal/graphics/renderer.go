@@ -191,23 +191,22 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEnt
 		case entity.TypeGround:
 			r.drawGround(screen, e)
 		default:
-
 			debug.Log("unhandled entity type: %d", entityType)
 		}
 	}
 }
 
 func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
-	bounds, err := box.Bounds()
+	boxBounds, err := box.Bounds()
 	if err != nil {
 		debug.Log("failed to get box bounds: %e", err)
 		return
 	}
 
 	r.op.GeoM.Reset()
-	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
+	r.op.GeoM.Translate(float64(boxBounds.Min.X), float64(boxBounds.Min.Y))
 
-	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
+	img := ebiten.NewImage(boxBounds.Dx(), boxBounds.Dy())
 	brown := color.RGBA{R: 139, G: 69, B: 19, A: 255}
 	img.Fill(brown)
 
@@ -215,24 +214,36 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 }
 
 func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
-	bounds, err := ground.Bounds()
+	groundBounds, err := ground.Bounds()
 	if err != nil {
 		debug.Log("failed to get ground bounds: %e", err)
 		return
 	}
 
-	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
+	for x := groundBounds.Min.X; x < groundBounds.Dx(); x += r.groundDimensions.Dx() {
 		r.op.GeoM.Reset()
-		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
+		r.op.GeoM.Translate(float64(x), float64(groundBounds.Min.Y))
 		screen.DrawImage(r.groundImage, r.op)
 	}
 }
 
 func (r *Renderer) drawCharacter(screen *ebiten.Image, character *entity.GameEntity) {
-	r.op.GeoM.Reset()
-	r.op.GeoM.Translate(character.Position().X, character.Position().Y)
+	characterPosition, err := character.Position()
+	if err != nil {
+		debug.Log("failed to get character position: %e", err)
+		return
+	}
 
-	img := ebiten.NewImage(int(character.Size().Width), int(character.Size().Height))
+	characterSize, err := character.Size()
+	if err != nil {
+		debug.Log("failed to get character size: %e", err)
+		return
+	}
+
+	r.op.GeoM.Reset()
+	r.op.GeoM.Translate(characterPosition.X, characterPosition.Y)
+
+	img := ebiten.NewImage(int(characterSize.Width), int(characterSize.Height))
 	img.Fill(color.White)
 
 	screen.DrawImage(img, r.op)

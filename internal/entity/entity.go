@@ -1,11 +1,9 @@
 package entity
 
 import (
+	"celestial-odyssey/internal/component"
 	"fmt"
 	"image"
-	"log"
-
-	"celestial-odyssey/internal/component"
 )
 
 // GameEntity represents a game entity.
@@ -19,7 +17,6 @@ func (e *GameEntity) GetComponent(kind component.Type) interface{} {
 }
 
 // Type returns the type of the entity.
-// Returns an error if the type component is not found.
 func (e *GameEntity) Type() (component.EntityType, error) {
 	t, ok := e.components[component.EntityTypeComponent].(component.EntityType)
 	if !ok {
@@ -45,25 +42,23 @@ func (e *GameEntity) Bounds() (image.Rectangle, error) {
 }
 
 // Position returns the position of the entity.
-func (e *GameEntity) Position() *component.Position {
+func (e *GameEntity) Position() (*component.Position, error) {
 	pos, ok := e.components[component.PositionComponent].(*component.Position)
 	if !ok {
-		log.Println("failed to get entity position")
-		return &component.Position{}
+		return &component.Position{}, fmt.Errorf("failed to get entity position")
 	}
 
-	return pos
+	return pos, nil
 }
 
 // Size returns the size of the entity.
-func (e *GameEntity) Size() *component.Size {
+func (e *GameEntity) Size() (*component.Size, error) {
 	size, ok := e.components[component.SizeComponent].(*component.Size)
 	if !ok {
-		log.Println("failed to get entity size")
-		return &component.Size{}
+		return &component.Size{}, fmt.Errorf("failed to get entity size")
 	}
 
-	return size
+	return size, nil
 }
 
 func newGameEntity() *GameEntity {
