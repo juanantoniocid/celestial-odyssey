@@ -8,7 +8,7 @@ import (
 type Type int
 
 const (
-	TypeUnknown Type = iota
+	TypeUnknown component.EntityType = iota
 	TypeGround
 	TypeBox
 	TypePlayer

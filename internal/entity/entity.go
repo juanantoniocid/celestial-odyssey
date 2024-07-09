@@ -18,8 +18,8 @@ func (e *GameEntity) GetComponent(kind component.Type) interface{} {
 }
 
 // Type returns the type of the entity.
-func (e *GameEntity) Type() Type {
-	t, ok := e.components[component.EntityTypeComponent].(Type)
+func (e *GameEntity) Type() component.EntityType {
+	t, ok := e.components[component.EntityTypeComponent].(component.EntityType)
 	if !ok {
 		log.Println("failed to get entity type")
 		return TypeUnknown

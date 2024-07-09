@@ -31,6 +31,9 @@ type Velocity struct {
 	VX, VY float64
 }
 
+// EntityType represents the type of entity (e.g., player, enemy, box).
+type EntityType int
+
 // Input represents the input state of an entity, such as movement and action commands.
 type Input struct {
 	Left, Right, Jump bool
