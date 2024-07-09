@@ -44,7 +44,7 @@ func (em *Entities) Entities() []*GameEntity {
 func (em *Entities) AddBox(x, y float64) {
 	box := em.createEntity()
 
-	box.addComponent(component.TypeComponent, TypeBox)
+	box.addComponent(component.EntityTypeComponent, TypeBox)
 	box.addComponent(component.PositionComponent, &component.Position{X: x, Y: y})
 	box.addComponent(component.SizeComponent, &component.Size{Width: boxWidth, Height: boxHeight})
 }
@@ -53,7 +53,7 @@ func (em *Entities) AddBox(x, y float64) {
 func (em *Entities) AddGround() {
 	ground := em.createEntity()
 
-	ground.addComponent(component.TypeComponent, TypeGround)
+	ground.addComponent(component.EntityTypeComponent, TypeGround)
 	ground.addComponent(component.PositionComponent, &component.Position{X: groundPositionX, Y: groundPositionY})
 	ground.addComponent(component.SizeComponent, &component.Size{Width: groundWidth, Height: groundHeight})
 }

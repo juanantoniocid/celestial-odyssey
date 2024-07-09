@@ -25,18 +25,18 @@ func (is *InputHandler) Update(character *entity.GameEntity) {
 
 	if inputOk && velOk {
 		log.Println("Updating character based on input: ", input, velocity)
-		velocity.X = 0
+		velocity.VX = 0
 		if input.Left {
 			log.Println("Move to left")
-			velocity.X = -moveSpeed
+			velocity.VX = -moveSpeed
 		}
 		if input.Right {
 			log.Println("Move to right")
-			velocity.X = moveSpeed
+			velocity.VX = moveSpeed
 		}
 		if input.Jump {
 			log.Println("Let's jump")
-			velocity.Y = jumpSpeed
+			velocity.VY = jumpSpeed
 			input.Jump = false // Reset jump after applying it
 		}
 	}
@@ -51,7 +51,7 @@ func (is *InputHandler) applyPhysics(character *entity.GameEntity) {
 
 	if ok && posOk {
 		log.Println("Applying physics to character: ", velocity, position)
-		position.X += velocity.X
-		position.Y += velocity.Y
+		position.X += velocity.VX
+		position.Y += velocity.VY
 	}
 }
