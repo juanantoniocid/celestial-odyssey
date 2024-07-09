@@ -1,7 +1,6 @@
 package input
 
 import (
-	"celestial-odyssey/internal/component"
 	"github.com/hajimehoshi/ebiten/v2"
 	"log"
 
@@ -33,8 +32,8 @@ func (kh *KeyboardHandler) UpdatePlayer(player *entity.Player) {
 
 // UpdateCharacter updates the character based on the keyboard input.
 func (kh *KeyboardHandler) UpdateCharacter(character *entity.GameEntity) {
-	characterInput, ok := character.GetComponent(component.InputComponent).(*component.Input)
-	if !ok {
+	characterInput, err := character.Input()
+	if err != nil {
 		log.Println("failed to get character input")
 		return
 	}

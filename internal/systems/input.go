@@ -20,10 +20,11 @@ const (
 
 func (is *InputHandler) Update(character *entity.GameEntity) {
 	log.Println("Updating character based on input")
-	input, inputOk := character.GetComponent(component.InputComponent).(*component.Input)
+	input, inputErr := character.Input()
+
 	velocity, velOk := character.GetComponent(component.VelocityComponent).(*component.Velocity)
 
-	if inputOk && velOk {
+	if inputErr == nil && velOk {
 		log.Println("Updating character based on input: ", input, velocity)
 		velocity.VX = 0
 		if input.Left {

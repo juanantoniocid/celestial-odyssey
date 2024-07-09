@@ -1,9 +1,10 @@
 package entity
 
 import (
-	"celestial-odyssey/internal/component"
 	"fmt"
 	"image"
+
+	"celestial-odyssey/internal/component"
 )
 
 // GameEntity represents a game entity.
@@ -61,6 +62,16 @@ func (e *GameEntity) Size() (*component.Size, error) {
 	return size, nil
 }
 
+// Input returns the input state of the entity.
+func (e *GameEntity) Input() (*component.Input, error) {
+	input, ok := e.components[component.InputComponent].(*component.Input)
+	if !ok {
+		return &component.Input{}, fmt.Errorf("failed to get entity input")
+	}
+
+	return input, nil
+}
+
 func newGameEntity() *GameEntity {
 	return &GameEntity{
 		components: make(map[component.Type]interface{}),
@@ -71,14 +82,22 @@ func (e *GameEntity) addComponent(kind component.Type, component interface{}) {
 	e.components[kind] = component
 }
 
+func (e *GameEntity) addEntityType(t component.EntityType) {
+	e.components[component.EntityTypeComponent] = t
+}
+
+func (e *GameEntity) addInput(input *component.Input) {
+	e.components[component.InputComponent] = input
+}
+
 func CreatePlayer() *GameEntity {
 	player := newGameEntity()
 
-	player.addComponent(component.EntityTypeComponent, TypePlayer)
+	player.addEntityType(TypePlayer)
 	player.addComponent(component.PositionComponent, &component.Position{X: 0, Y: 0})
 	player.addComponent(component.SizeComponent, &component.Size{Width: 20, Height: 40})
 	player.addComponent(component.VelocityComponent, &component.Velocity{VX: 0, VY: 0})
-	player.addComponent(component.InputComponent, &component.Input{Left: false, Right: false, Jump: false})
+	player.addInput(&component.Input{Left: false, Right: false, Jump: false})
 
 	return player
 }
