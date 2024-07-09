@@ -62,6 +62,16 @@ func (e *GameEntity) Size() (*component.Size, error) {
 	return size, nil
 }
 
+// Velocity returns the velocity of the entity.
+func (e *GameEntity) Velocity() (*component.Velocity, error) {
+	velocity, ok := e.components[component.VelocityComponent].(*component.Velocity)
+	if !ok {
+		return &component.Velocity{}, fmt.Errorf("failed to get entity velocity")
+	}
+
+	return velocity, nil
+}
+
 // Input returns the input state of the entity.
 func (e *GameEntity) Input() (*component.Input, error) {
 	input, ok := e.components[component.InputComponent].(*component.Input)
@@ -78,10 +88,6 @@ func newGameEntity() *GameEntity {
 	}
 }
 
-func (e *GameEntity) addComponent(kind component.Type, component interface{}) {
-	e.components[kind] = component
-}
-
 func (e *GameEntity) addEntityType(t component.EntityType) {
 	e.components[component.EntityTypeComponent] = t
 }
@@ -90,13 +96,25 @@ func (e *GameEntity) addInput(input *component.Input) {
 	e.components[component.InputComponent] = input
 }
 
+func (e *GameEntity) addVelocity(v *component.Velocity) {
+	e.components[component.VelocityComponent] = v
+}
+
+func (e *GameEntity) addSize(s *component.Size) {
+	e.components[component.SizeComponent] = s
+}
+
+func (e *GameEntity) addPosition(p *component.Position) {
+	e.components[component.PositionComponent] = p
+}
+
 func CreatePlayer() *GameEntity {
 	player := newGameEntity()
 
 	player.addEntityType(TypePlayer)
-	player.addComponent(component.PositionComponent, &component.Position{X: 0, Y: 0})
-	player.addComponent(component.SizeComponent, &component.Size{Width: 20, Height: 40})
-	player.addComponent(component.VelocityComponent, &component.Velocity{VX: 0, VY: 0})
+	player.addPosition(&component.Position{X: 0, Y: 0})
+	player.addSize(&component.Size{Width: 20, Height: 40})
+	player.addVelocity(&component.Velocity{VX: 0, VY: 0})
 	player.addInput(&component.Input{Left: false, Right: false, Jump: false})
 
 	return player

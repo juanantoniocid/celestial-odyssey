@@ -1,7 +1,7 @@
 package systems
 
 import (
-	"celestial-odyssey/internal/component"
+	"celestial-odyssey/internal/debug"
 	"celestial-odyssey/internal/entity"
 	"log"
 )
@@ -19,40 +19,49 @@ const (
 )
 
 func (is *InputHandler) Update(character *entity.GameEntity) {
-	log.Println("Updating character based on input")
-	input, inputErr := character.Input()
+	input, err := character.Input()
+	if err != nil {
+		debug.Log("Failed to get input component: %e", err)
+		return
+	}
 
-	velocity, velOk := character.GetComponent(component.VelocityComponent).(*component.Velocity)
+	velocity, err := character.Velocity()
+	if err != nil {
+		debug.Log("Failed to get velocity component: %e", err)
+		return
+	}
 
-	if inputErr == nil && velOk {
-		log.Println("Updating character based on input: ", input, velocity)
-		velocity.VX = 0
-		if input.Left {
-			log.Println("Move to left")
-			velocity.VX = -moveSpeed
-		}
-		if input.Right {
-			log.Println("Move to right")
-			velocity.VX = moveSpeed
-		}
-		if input.Jump {
-			log.Println("Let's jump")
-			velocity.VY = jumpSpeed
-			input.Jump = false // Reset jump after applying it
-		}
+	velocity.VX = 0
+	if input.Left {
+		log.Println("Move to left")
+		velocity.VX = -moveSpeed
+	}
+	if input.Right {
+		log.Println("Move to right")
+		velocity.VX = moveSpeed
+	}
+	if input.Jump {
+		log.Println("Let's jump")
+		velocity.VY = jumpSpeed
+		input.Jump = false // Reset jump after applying it
 	}
 
 	is.applyPhysics(character)
 }
 
 func (is *InputHandler) applyPhysics(character *entity.GameEntity) {
-	log.Println("Applying physics to character")
-	velocity, ok := character.GetComponent(component.VelocityComponent).(*component.Velocity)
-	position, posOk := character.GetComponent(component.PositionComponent).(*component.Position)
-
-	if ok && posOk {
-		log.Println("Applying physics to character: ", velocity, position)
-		position.X += velocity.VX
-		position.Y += velocity.VY
+	velocity, err := character.Velocity()
+	if err != nil {
+		debug.Log("Failed to get velocity component: %e", err)
+		return
 	}
+
+	position, err := character.Position()
+	if err != nil {
+		debug.Log("Failed to get position component: %e", err)
+		return
+	}
+
+	position.X += velocity.VX
+	position.Y += velocity.VY
 }

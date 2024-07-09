@@ -45,8 +45,8 @@ func (em *Entities) AddBox(x, y float64) {
 	box := em.createEntity()
 
 	box.addEntityType(TypeBox)
-	box.addComponent(component.PositionComponent, &component.Position{X: x, Y: y})
-	box.addComponent(component.SizeComponent, &component.Size{Width: boxWidth, Height: boxHeight})
+	box.addPosition(&component.Position{X: x, Y: y})
+	box.addSize(&component.Size{Width: boxWidth, Height: boxHeight})
 }
 
 // AddGround adds a ground entity to the entities' manager.
@@ -54,8 +54,8 @@ func (em *Entities) AddGround() {
 	ground := em.createEntity()
 
 	ground.addEntityType(TypeGround)
-	ground.addComponent(component.PositionComponent, &component.Position{X: groundPositionX, Y: groundPositionY})
-	ground.addComponent(component.SizeComponent, &component.Size{Width: groundWidth, Height: groundHeight})
+	ground.addPosition(&component.Position{X: groundPositionX, Y: groundPositionY})
+	ground.addSize(&component.Size{Width: groundWidth, Height: groundHeight})
 }
 
 func (em *Entities) createEntity() *GameEntity {
