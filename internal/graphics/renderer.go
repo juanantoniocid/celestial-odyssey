@@ -198,9 +198,13 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEnt
 }
 
 func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
-	r.op.GeoM.Reset()
+	bounds, err := box.Bounds()
+	if err != nil {
+		debug.Log("failed to get box bounds: %e", err)
+		return
+	}
 
-	bounds := box.Bounds()
+	r.op.GeoM.Reset()
 	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
@@ -211,7 +215,11 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 }
 
 func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
-	bounds := ground.Bounds()
+	bounds, err := ground.Bounds()
+	if err != nil {
+		debug.Log("failed to get ground bounds: %e", err)
+		return
+	}
 
 	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
 		r.op.GeoM.Reset()

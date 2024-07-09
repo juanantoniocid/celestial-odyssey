@@ -29,20 +29,19 @@ func (e *GameEntity) Type() (component.EntityType, error) {
 }
 
 // Bounds returns the bounds of the entity.
-func (e *GameEntity) Bounds() image.Rectangle {
+func (e *GameEntity) Bounds() (image.Rectangle, error) {
 	pos, okPos := e.components[component.PositionComponent].(*component.Position)
 	if !okPos {
-		log.Println("failed to get box position")
-		return image.Rectangle{}
+		return image.Rectangle{}, fmt.Errorf("failed to get entity position")
 	}
 
 	size, okSize := e.components[component.SizeComponent].(*component.Size)
 	if !okSize {
-		log.Println("failed to get box size")
-		return image.Rectangle{}
+		return image.Rectangle{}, fmt.Errorf("failed to get entity size")
 	}
 
-	return image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
+	rect := image.Rect(int(pos.X), int(pos.Y), int(pos.X+size.Width), int(pos.Y+size.Height))
+	return rect, nil
 }
 
 // Position returns the position of the entity.
