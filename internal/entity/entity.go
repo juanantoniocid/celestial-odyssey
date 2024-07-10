@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"celestial-odyssey/internal/config"
 	"image"
 
 	"celestial-odyssey/internal/component"
@@ -109,52 +108,4 @@ func (e *GameEntity) Input() (component.Input, bool) {
 // SetInput sets the input state of the entity.
 func (e *GameEntity) SetInput(input component.Input) {
 	e.components[component.InputComponent] = input
-}
-
-func newGameEntity() *GameEntity {
-	return &GameEntity{
-		components: make(map[component.Type]interface{}),
-	}
-}
-
-func CreatePlayer() *GameEntity {
-	player := newGameEntity()
-
-	player.SetType(TypePlayer)
-	player.SetPosition(component.Position{X: 0, Y: 0})
-	player.SetSize(component.Size{Width: 20, Height: 40})
-	player.SetVelocity(component.Velocity{VX: 0, VY: 0})
-	player.SetInput(component.Input{Left: false, Right: false, Jump: false})
-
-	return player
-}
-func CreateBox(x, y float64) *GameEntity {
-	const (
-		boxWidth  = 30
-		boxHeight = 30
-	)
-
-	box := newGameEntity()
-
-	box.SetType(TypeBox)
-	box.SetPosition(component.Position{X: x, Y: y})
-	box.SetSize(component.Size{Width: boxWidth, Height: boxHeight})
-
-	return box
-}
-
-func CreateGround() *GameEntity {
-	const (
-		groundPositionX = 0
-		groundPositionY = 172
-		groundWidth     = config.ScreenWidth
-		groundHeight    = 28
-	)
-	ground := newGameEntity()
-
-	ground.SetType(TypeGround)
-	ground.SetPosition(component.Position{X: groundPositionX, Y: groundPositionY})
-	ground.SetSize(component.Size{Width: groundWidth, Height: groundHeight})
-
-	return ground
 }
