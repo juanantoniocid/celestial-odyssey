@@ -1,22 +1,14 @@
 package entity
 
-type Collection struct {
-	entities []*GameEntity
-}
+type Collection []*GameEntity
 
 // NewCollection creates a new entities' collection.
 func NewCollection() *Collection {
-	return &Collection{
-		entities: make([]*GameEntity, 0),
-	}
+	collection := make(Collection, 0)
+	return &collection
 }
 
 // AddGameEntity adds an entity to the entities' collection.
 func (c *Collection) AddGameEntity(entity *GameEntity) {
-	c.entities = append(c.entities, entity)
-}
-
-// GameEntities returns the entities managed by the entities' collection.
-func (c *Collection) GameEntities() []*GameEntity {
-	return c.entities
+	*c = append(*c, entity)
 }

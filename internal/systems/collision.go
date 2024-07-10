@@ -14,14 +14,14 @@ func NewCollisionHandler() *CollisionHandler {
 }
 
 // Update updates the game entities based on the collision rules.
-func (h *CollisionHandler) Update(player *entity.Player, entities []*entity.GameEntity) {
-	h.handleCollisions(player, entities)
-	h.checkIfPlayerIsOnPlatform(player, entities, config.ScreenHeight)
+func (h *CollisionHandler) Update(player *entity.Player, entityCollection *entity.Collection) {
+	h.handleCollisions(player, entityCollection)
+	h.checkIfPlayerIsOnPlatform(player, entityCollection, config.ScreenHeight)
 	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
 }
 
-func (h *CollisionHandler) handleCollisions(player *entity.Player, entities []*entity.GameEntity) {
-	for _, e := range entities {
+func (h *CollisionHandler) handleCollisions(player *entity.Player, entityCollection *entity.Collection) {
+	for _, e := range *entityCollection {
 		bounds, found := e.Bounds()
 		if !found {
 			continue
@@ -152,12 +152,12 @@ func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, 
 		playerBounds.Max.X > entityBounds.Max.X
 }
 
-func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, entities []*entity.GameEntity, height int) {
+func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, entityCollection *entity.Collection, height int) {
 	playerBounds := player.Bounds()
 	isOnPlatform := false
 
 	// Check if the player is on any platform
-	for _, e := range entities {
+	for _, e := range *entityCollection {
 		entityBounds, found := e.Bounds()
 		if !found {
 			continue

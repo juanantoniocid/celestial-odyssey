@@ -55,16 +55,16 @@ type InputHandler interface {
 	UpdateCharacter(character *entity.GameEntity)
 }
 
-// Renderer is responsible for drawing the game entities on the screen.
+// Renderer is responsible for drawing the game entityCollection on the screen.
 type Renderer interface {
-	// Draw draws the game entities on the screen.
-	Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entities []*entity.GameEntity)
+	// Draw draws the game entityCollection on the screen.
+	Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entityCollection *entity.Collection)
 }
 
-// CollisionHandler is responsible for applying physics to the game entities.
+// CollisionHandler is responsible for applying physics to the game entityCollection.
 type CollisionHandler interface {
-	// Update applies physics to the player and entities.
-	Update(player *entity.Player, entities []*entity.GameEntity)
+	// Update applies physics to the player and entityCollection.
+	Update(player *entity.Player, collection *entity.Collection)
 }
 
 type SystemInputHandler interface {

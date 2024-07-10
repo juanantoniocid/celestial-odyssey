@@ -99,9 +99,9 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entities []*entity.GameEntity) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entityCollection *entity.Collection) {
 	r.drawBackground(screen)
-	r.drawEntities(screen, entities)
+	r.drawEntities(screen, entityCollection)
 	r.drawPlayer(screen, player)
 	r.drawCharacter(screen, character)
 }
@@ -176,8 +176,8 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	screen.DrawImage(r.backgroundImage, r.op)
 }
 
-func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEntity) {
-	for _, e := range entities {
+func (r *Renderer) drawEntities(screen *ebiten.Image, entityCollection *entity.Collection) {
+	for _, e := range *entityCollection {
 		entityType, found := e.Type()
 		if !found {
 			continue
