@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"celestial-odyssey/internal/config"
 	"image"
 
 	"celestial-odyssey/internal/component"
@@ -126,4 +127,34 @@ func CreatePlayer() *GameEntity {
 	player.SetInput(component.Input{Left: false, Right: false, Jump: false})
 
 	return player
+}
+func CreateBox(x, y float64) *GameEntity {
+	const (
+		boxWidth  = 30
+		boxHeight = 30
+	)
+
+	box := newGameEntity()
+
+	box.SetType(TypeBox)
+	box.SetPosition(component.Position{X: x, Y: y})
+	box.SetSize(component.Size{Width: boxWidth, Height: boxHeight})
+
+	return box
+}
+
+func CreateGround() *GameEntity {
+	const (
+		groundPositionX = 0
+		groundPositionY = 172
+		groundWidth     = config.ScreenWidth
+		groundHeight    = 28
+	)
+	ground := newGameEntity()
+
+	ground.SetType(TypeGround)
+	ground.SetPosition(component.Position{X: groundPositionX, Y: groundPositionY})
+	ground.SetSize(component.Size{Width: groundWidth, Height: groundHeight})
+
+	return ground
 }
