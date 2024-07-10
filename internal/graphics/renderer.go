@@ -9,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/debug"
 	"celestial-odyssey/internal/entity"
 )
 
@@ -179,9 +178,8 @@ func (r *Renderer) drawBackground(screen *ebiten.Image) {
 
 func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEntity) {
 	for _, e := range entities {
-		entityType, err := e.Type()
-		if err != nil {
-			debug.Log("failed to get entity type: %e", err)
+		entityType, found := e.Type()
+		if !found {
 			continue
 		}
 
@@ -191,15 +189,14 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEnt
 		case entity.TypeGround:
 			r.drawGround(screen, e)
 		default:
-			debug.Log("unhandled entity type: %d", entityType)
+			// Do nothing
 		}
 	}
 }
 
 func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
-	boxBounds, err := box.Bounds()
-	if err != nil {
-		debug.Log("failed to get box bounds: %e", err)
+	boxBounds, found := box.Bounds()
+	if !found {
 		return
 	}
 
@@ -214,9 +211,8 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 }
 
 func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
-	groundBounds, err := ground.Bounds()
-	if err != nil {
-		debug.Log("failed to get ground bounds: %e", err)
+	groundBounds, found := ground.Bounds()
+	if !found {
 		return
 	}
 
@@ -228,15 +224,13 @@ func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
 }
 
 func (r *Renderer) drawCharacter(screen *ebiten.Image, character *entity.GameEntity) {
-	characterPosition, err := character.Position()
-	if err != nil {
-		debug.Log("failed to get character position: %e", err)
+	characterPosition, found := character.Position()
+	if !found {
 		return
 	}
 
-	characterSize, err := character.Size()
-	if err != nil {
-		debug.Log("failed to get character size: %e", err)
+	characterSize, found := character.Size()
+	if !found {
 		return
 	}
 

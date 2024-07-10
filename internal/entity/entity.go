@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"fmt"
 	"image"
 
 	"celestial-odyssey/internal/component"
@@ -13,13 +12,13 @@ type GameEntity struct {
 }
 
 // Type returns the type of the entity.
-func (e *GameEntity) Type() (component.EntityType, error) {
+func (e *GameEntity) Type() (component.EntityType, bool) {
 	t, ok := e.components[component.EntityTypeComponent]
 	if !ok {
-		return TypeUnknown, fmt.Errorf("failed to get entity type")
+		return TypeUnknown, false
 	}
 
-	return t.(component.EntityType), nil
+	return t.(component.EntityType), true
 }
 
 // SetType sets the type of the entity.
@@ -28,15 +27,15 @@ func (e *GameEntity) SetType(t component.EntityType) {
 }
 
 // Bounds returns the bounds of the entity.
-func (e *GameEntity) Bounds() (image.Rectangle, error) {
-	pos, okPos := e.components[component.PositionComponent]
-	if !okPos {
-		return image.Rectangle{}, fmt.Errorf("failed to get entity position")
+func (e *GameEntity) Bounds() (image.Rectangle, bool) {
+	pos, found := e.components[component.PositionComponent]
+	if !found {
+		return image.Rectangle{}, false
 	}
 
-	size, okSize := e.components[component.SizeComponent]
-	if !okSize {
-		return image.Rectangle{}, fmt.Errorf("failed to get entity size")
+	size, found := e.components[component.SizeComponent]
+	if !found {
+		return image.Rectangle{}, false
 	}
 
 	componentPosition := pos.(component.Position)
@@ -48,17 +47,17 @@ func (e *GameEntity) Bounds() (image.Rectangle, error) {
 		int(componentPosition.X+componentSize.Width),
 		int(componentPosition.Y+componentSize.Height),
 	)
-	return rect, nil
+	return rect, true
 }
 
 // Position returns the position of the entity.
-func (e *GameEntity) Position() (component.Position, error) {
-	pos, ok := e.components[component.PositionComponent]
-	if !ok {
-		return component.Position{}, fmt.Errorf("failed to get entity position")
+func (e *GameEntity) Position() (component.Position, bool) {
+	pos, found := e.components[component.PositionComponent]
+	if !found {
+		return component.Position{}, false
 	}
 
-	return pos.(component.Position), nil
+	return pos.(component.Position), true
 }
 
 // SetPosition sets the position of the entity.
@@ -67,13 +66,13 @@ func (e *GameEntity) SetPosition(position component.Position) {
 }
 
 // Size returns the size of the entity.
-func (e *GameEntity) Size() (component.Size, error) {
-	size, ok := e.components[component.SizeComponent]
-	if !ok {
-		return component.Size{}, fmt.Errorf("failed to get entity size")
+func (e *GameEntity) Size() (component.Size, bool) {
+	size, found := e.components[component.SizeComponent]
+	if !found {
+		return component.Size{}, false
 	}
 
-	return size.(component.Size), nil
+	return size.(component.Size), true
 }
 
 // SetSize sets the size of the entity.
@@ -82,13 +81,13 @@ func (e *GameEntity) SetSize(size component.Size) {
 }
 
 // Velocity returns the velocity of the entity.
-func (e *GameEntity) Velocity() (component.Velocity, error) {
-	velocity, ok := e.components[component.VelocityComponent]
-	if !ok {
-		return component.Velocity{}, fmt.Errorf("failed to get entity velocity")
+func (e *GameEntity) Velocity() (component.Velocity, bool) {
+	velocity, found := e.components[component.VelocityComponent]
+	if !found {
+		return component.Velocity{}, false
 	}
 
-	return velocity.(component.Velocity), nil
+	return velocity.(component.Velocity), true
 }
 
 // SetVelocity sets the velocity of the entity.
@@ -97,13 +96,13 @@ func (e *GameEntity) SetVelocity(v component.Velocity) {
 }
 
 // Input returns the input state of the entity.
-func (e *GameEntity) Input() (component.Input, error) {
-	input, ok := e.components[component.InputComponent]
-	if !ok {
-		return component.Input{}, fmt.Errorf("failed to get entity input")
+func (e *GameEntity) Input() (component.Input, bool) {
+	input, found := e.components[component.InputComponent]
+	if !found {
+		return component.Input{}, false
 	}
 
-	return input.(component.Input), nil
+	return input.(component.Input), true
 }
 
 // SetInput sets the input state of the entity.

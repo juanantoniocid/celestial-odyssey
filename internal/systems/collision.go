@@ -2,7 +2,6 @@ package systems
 
 import (
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/debug"
 	"celestial-odyssey/internal/entity"
 )
 
@@ -23,9 +22,8 @@ func (h *CollisionHandler) Update(player *entity.Player, entities []*entity.Game
 
 func (h *CollisionHandler) handleCollisions(player *entity.Player, entities []*entity.GameEntity) {
 	for _, e := range entities {
-		bounds, err := e.Bounds()
-		if err != nil {
-			debug.Log("failed to get entity bounds for collision detection: %v", err)
+		bounds, found := e.Bounds()
+		if !found {
 			continue
 		}
 
@@ -46,9 +44,8 @@ func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity
 }
 
 func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *entity.GameEntity) bool {
-	bounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	bounds, found := entity.Bounds()
+	if !found {
 		return false
 	}
 
@@ -56,9 +53,8 @@ func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *
 }
 
 func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity *entity.GameEntity) {
-	entityBounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	entityBounds, found := entity.Bounds()
+	if !found {
 		return
 	}
 
@@ -75,9 +71,8 @@ func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity
 }
 
 func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
-	entityBounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	entityBounds, found := entity.Bounds()
+	if !found {
 		return false
 	}
 
@@ -93,9 +88,8 @@ func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, en
 }
 
 func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
-	entityBounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	entityBounds, found := entity.Bounds()
+	if !found {
 		return false
 	}
 
@@ -111,9 +105,8 @@ func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player,
 }
 
 func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, entity *entity.GameEntity) {
-	entityBounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	entityBounds, found := entity.Bounds()
+	if !found {
 		return
 	}
 
@@ -130,9 +123,8 @@ func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, enti
 }
 
 func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
-	entityBounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	entityBounds, found := entity.Bounds()
+	if !found {
 		return false
 	}
 
@@ -144,9 +136,8 @@ func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, e
 }
 
 func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
-	entityBounds, err := entity.Bounds()
-	if err != nil {
-		debug.Log("failed to get entity bounds for collision detection: %v", err)
+	entityBounds, found := entity.Bounds()
+	if !found {
 		return false
 	}
 
@@ -167,9 +158,8 @@ func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, enti
 
 	// Check if the player is on any platform
 	for _, e := range entities {
-		entityBounds, err := e.Bounds()
-		if err != nil {
-			debug.Log("failed to get entity bounds for collision detection: %v", err)
+		entityBounds, found := e.Bounds()
+		if !found {
 			continue
 		}
 

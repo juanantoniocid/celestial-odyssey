@@ -1,10 +1,8 @@
 package input
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"log"
-
 	"celestial-odyssey/internal/entity"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // KeyboardHandler is responsible for handling keyboard input.
@@ -32,24 +30,20 @@ func (kh *KeyboardHandler) UpdatePlayer(player *entity.Player) {
 
 // UpdateCharacter updates the character based on the keyboard input.
 func (kh *KeyboardHandler) UpdateCharacter(character *entity.GameEntity) {
-	characterInput, err := character.Input()
-	if err != nil {
-		log.Println("failed to get character input")
+	characterInput, found := character.Input()
+	if !found {
 		return
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		log.Println("left")
 		characterInput.Left = true
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		log.Println("right")
 		characterInput.Right = true
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		log.Println("jump")
 		characterInput.Jump = true
 	}
 

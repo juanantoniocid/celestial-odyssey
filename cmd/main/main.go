@@ -6,7 +6,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/debug"
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
@@ -17,8 +16,6 @@ import (
 )
 
 func main() {
-	debug.Mode = true
-
 	cfg := config.LoadConfig()
 	applyWindowSettings(cfg.Window)
 

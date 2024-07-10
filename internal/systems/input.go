@@ -1,9 +1,7 @@
 package systems
 
 import (
-	"celestial-odyssey/internal/debug"
 	"celestial-odyssey/internal/entity"
-	"log"
 )
 
 type InputHandler struct {
@@ -19,58 +17,46 @@ const (
 )
 
 func (is *InputHandler) Update(character *entity.GameEntity) {
-	input, err := character.Input()
-	if err != nil {
-		debug.Log("Failed to get input component: %e", err)
+	input, found := character.Input()
+	if !found {
 		return
 	}
 
-	velocity, err := character.Velocity()
-	if err != nil {
-		debug.Log("Failed to get velocity component: %e", err)
+	velocity, found := character.Velocity()
+	if !found {
 		return
 	}
 
 	velocity.VX = 0
 	if input.Left {
-		log.Println("Move to left")
 		velocity.VX = -moveSpeed
 	}
 	if input.Right {
-		log.Println("Move to right")
 		velocity.VX = moveSpeed
 	}
 	if input.Jump {
-		log.Println("Let's jump")
 		velocity.VY = jumpSpeed
 		input.Jump = false // Reset jump after applying it
 	}
 
 	character.SetVelocity(velocity)
-	debug.Log("Velocity after input: %v", velocity)
 
 	is.applyPhysics(character)
 }
 
 func (is *InputHandler) applyPhysics(character *entity.GameEntity) {
-	velocity, err := character.Velocity()
-	if err != nil {
-		debug.Log("Failed to get velocity component: %e", err)
+	velocity, found := character.Velocity()
+	if !found {
 		return
 	}
 
-	position, err := character.Position()
-	if err != nil {
-		debug.Log("Failed to get position component: %e", err)
+	position, found := character.Position()
+	if !found {
 		return
 	}
-
-	debug.Log("Velocity: %v", velocity)
-	debug.Log("Position: %v", position)
 
 	position.X += velocity.VX
 	position.Y += velocity.VY
 
 	character.SetPosition(position)
-	debug.Log("Position after velocity: %v", position)
 }
