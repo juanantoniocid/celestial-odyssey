@@ -109,3 +109,18 @@ func (e *GameEntity) Input() (component.Input, bool) {
 func (e *GameEntity) SetInput(input component.Input) {
 	e.components[component.InputComponent] = input
 }
+
+// InputMap returns the input map of the entity.
+func (e *GameEntity) InputMap() (component.InputMap, bool) {
+	inputMap, found := e.components[component.InputMapComponent]
+	if !found {
+		return component.InputMap{}, false
+	}
+
+	return inputMap.(component.InputMap), true
+}
+
+// SetInputMap sets the input map of the entity.
+func (e *GameEntity) SetInputMap(inputMap component.InputMap) {
+	e.components[component.InputMapComponent] = inputMap
+}

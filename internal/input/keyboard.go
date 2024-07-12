@@ -2,6 +2,7 @@ package input
 
 import (
 	"celestial-odyssey/internal/entity"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

@@ -1,5 +1,7 @@
 package component
 
+import "github.com/hajimehoshi/ebiten/v2"
+
 // Type represents the kind of given component.
 type Type int
 
@@ -14,6 +16,8 @@ const (
 	EntityTypeComponent
 	// InputComponent indicates that the component handles the input state for an entity.
 	InputComponent
+	// InputMapComponent indicates that the component defines the mapping from actions to keys.
+	InputMapComponent
 )
 
 // Position represents a 2D position with X and Y coordinates.
@@ -37,4 +41,11 @@ type EntityType int
 // Input represents the input state of an entity, such as movement and action commands.
 type Input struct {
 	Left, Right, Jump bool
+}
+
+// InputMap represents a mapping from actions to keys.
+type InputMap struct {
+	Left  ebiten.Key
+	Right ebiten.Key
+	Jump  ebiten.Key
 }

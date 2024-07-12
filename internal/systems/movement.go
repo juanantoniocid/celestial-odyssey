@@ -4,11 +4,11 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-type InputHandler struct {
+type Movement struct {
 }
 
-func NewInputHandler() *InputHandler {
-	return &InputHandler{}
+func NewMovement() *Movement {
+	return &Movement{}
 }
 
 const (
@@ -16,7 +16,7 @@ const (
 	jumpSpeed = -5.0
 )
 
-func (is *InputHandler) Update(character *entity.GameEntity) {
+func (is *Movement) Update(character *entity.GameEntity) {
 	input, found := character.Input()
 	if !found {
 		return
@@ -44,7 +44,7 @@ func (is *InputHandler) Update(character *entity.GameEntity) {
 	is.applyPhysics(character)
 }
 
-func (is *InputHandler) applyPhysics(character *entity.GameEntity) {
+func (is *Movement) applyPhysics(character *entity.GameEntity) {
 	velocity, found := character.Velocity()
 	if !found {
 		return
