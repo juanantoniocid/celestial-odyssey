@@ -5,16 +5,16 @@ import (
 	"celestial-odyssey/internal/screen"
 )
 
-func LoadLevel1(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemsInputHandler screen.SystemInputHandler) screen.Level {
+func LoadLevel1(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Level {
 	level1 := screen.NewLevel()
 
-	level1.AddScenario(LoadLevel1Scenario1(player, character, renderer, inputHandler, collisionHandler, systemsInputHandler))
-	level1.AddScenario(LoadLevel1Scenario2(player, character, renderer, inputHandler, collisionHandler, systemsInputHandler))
+	level1.AddScenario(LoadLevel1Scenario1(player, character, renderer, inputHandler, collisionHandler, systemManager))
+	level1.AddScenario(LoadLevel1Scenario2(player, character, renderer, inputHandler, collisionHandler, systemManager))
 
 	return level1
 }
 
-func LoadLevel1Scenario1(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemsInputHandler screen.SystemInputHandler) screen.Scenario {
+func LoadLevel1Scenario1(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Scenario {
 	collection := entity.NewCollection()
 
 	ground := entity.CreateGround()
@@ -26,10 +26,10 @@ func LoadLevel1Scenario1(player *entity.Player, character *entity.GameEntity, re
 	box2 := entity.CreateBox(120, 50)
 	collection.AddGameEntity(box2)
 
-	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, systemsInputHandler, character, collection)
+	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, character, collection, systemManager)
 }
 
-func LoadLevel1Scenario2(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemsInputHandler screen.SystemInputHandler) screen.Scenario {
+func LoadLevel1Scenario2(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Scenario {
 	collection := entity.NewCollection()
 
 	ground := entity.CreateGround()
@@ -44,5 +44,5 @@ func LoadLevel1Scenario2(player *entity.Player, character *entity.GameEntity, re
 	box3 := entity.CreateBox(180, 50)
 	collection.AddGameEntity(box3)
 
-	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, systemsInputHandler, character, collection)
+	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, character, collection, systemManager)
 }

@@ -16,13 +16,19 @@ const (
 	jumpSpeed = -5.0
 )
 
-func (is *Movement) Update(character *entity.GameEntity) {
-	input, found := character.Input()
+func (is *Movement) Update(entityCollection *entity.Collection) {
+	for _, e := range *entityCollection {
+		is.update(e)
+	}
+}
+
+func (is *Movement) update(e *entity.GameEntity) {
+	input, found := e.Input()
 	if !found {
 		return
 	}
 
-	velocity, found := character.Velocity()
+	velocity, found := e.Velocity()
 	if !found {
 		return
 	}
@@ -39,9 +45,9 @@ func (is *Movement) Update(character *entity.GameEntity) {
 		input.Jump = false // Reset jump after applying it
 	}
 
-	character.SetVelocity(velocity)
+	e.SetVelocity(velocity)
 
-	is.applyPhysics(character)
+	is.applyPhysics(e)
 }
 
 func (is *Movement) applyPhysics(character *entity.GameEntity) {

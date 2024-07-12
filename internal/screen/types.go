@@ -63,10 +63,15 @@ type Renderer interface {
 
 // CollisionHandler is responsible for applying physics to the game entityCollection.
 type CollisionHandler interface {
-	// Update applies physics to the player and entityCollection.
-	Update(player *entity.Player, collection *entity.Collection)
+	// UpdatePlayer applies physics to the player and entityCollection.
+	UpdatePlayer(player *entity.Player, collection *entity.Collection)
+	Update(collection *entity.Collection)
 }
 
 type SystemInputHandler interface {
 	Update(character *entity.GameEntity)
+}
+
+type SystemManager interface {
+	Update(entityCollection *entity.Collection)
 }

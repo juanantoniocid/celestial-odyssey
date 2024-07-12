@@ -16,30 +16,29 @@ type ScenarioImpl struct {
 	character        *entity.GameEntity
 	entityCollection *entity.Collection
 
-	renderer           Renderer
-	inputHandler       InputHandler
-	collisionHandler   CollisionHandler
-	systemInputHandler SystemInputHandler
+	renderer         Renderer
+	inputHandler     InputHandler
+	collisionHandler CollisionHandler
+	systemManager    SystemManager
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, systemInputHandler SystemInputHandler, character *entity.GameEntity, entityCollection *entity.Collection) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, character *entity.GameEntity, entityCollection *entity.Collection, systemManager SystemManager) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:             player,
-		character:          character,
-		renderer:           renderer,
-		inputHandler:       inputHandler,
-		collisionHandler:   collisionHandler,
-		systemInputHandler: systemInputHandler,
-		entityCollection:   entityCollection,
+		player:           player,
+		character:        character,
+		renderer:         renderer,
+		inputHandler:     inputHandler,
+		collisionHandler: collisionHandler,
+		entityCollection: entityCollection,
+		systemManager:    systemManager,
 	}
 }
 
 func (s *ScenarioImpl) Update() error {
-	s.inputHandler.UpdateCharacter(s.character)
-	s.systemInputHandler.Update(s.character)
+	s.systemManager.Update(s.entityCollection)
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
-	s.collisionHandler.Update(s.player, s.entityCollection)
+	s.collisionHandler.UpdatePlayer(s.player, s.entityCollection)
 
 	return nil
 }

@@ -13,11 +13,24 @@ func NewCollisionHandler() *CollisionHandler {
 	return &CollisionHandler{}
 }
 
-// Update updates the game entities based on the collision rules.
-func (h *CollisionHandler) Update(player *entity.Player, entityCollection *entity.Collection) {
+// UpdatePlayer updates the game entities based on the collision rules.
+func (h *CollisionHandler) UpdatePlayer(player *entity.Player, entityCollection *entity.Collection) {
 	h.handleCollisions(player, entityCollection)
 	h.checkIfPlayerIsOnPlatform(player, entityCollection, config.ScreenHeight)
 	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
+}
+
+func (h *CollisionHandler) Update(entityCollection *entity.Collection) {
+	for _, e := range *entityCollection {
+		entityType, found := e.Type()
+		if !found {
+			continue
+		}
+
+		if entityType == entity.TypePlayer {
+			h.handleEntityCollisions(e, entityCollection)
+		}
+	}
 }
 
 func (h *CollisionHandler) handleCollisions(player *entity.Player, entityCollection *entity.Collection) {
@@ -29,6 +42,24 @@ func (h *CollisionHandler) handleCollisions(player *entity.Player, entityCollect
 
 		if player.Bounds().Overlaps(bounds) {
 			h.handleCollision(player, e)
+		}
+	}
+}
+
+func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.GameEntity, entityCollection *entity.Collection) {
+	singleEntityBounds, found := singleEntity.Bounds()
+	if !found {
+		return
+	}
+
+	for _, e := range *entityCollection {
+		bounds, found := e.Bounds()
+		if !found {
+			continue
+		}
+
+		if singleEntityBounds.Overlaps(bounds) {
+			// TODO: Handle entity collisions
 		}
 	}
 }
