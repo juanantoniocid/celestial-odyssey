@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"celestial-odyssey/internal/system"
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/config"
@@ -12,28 +13,29 @@ const (
 )
 
 type ScenarioImpl struct {
-	player           *entity.Player
-	entityCollection *entity.Collection
+	player   *entity.Player
+	renderer Renderer
 
-	renderer         Renderer
 	inputHandler     InputHandler
 	collisionHandler CollisionHandler
-	systemManager    SystemManager
+
+	entityCollection *entity.Collection
+	systems          system.System
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entityCollection *entity.Collection, systemManager SystemManager) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entityCollection *entity.Collection, systems system.System) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:           player,
 		entityCollection: entityCollection,
 		renderer:         renderer,
 		inputHandler:     inputHandler,
 		collisionHandler: collisionHandler,
-		systemManager:    systemManager,
+		systems:          systems,
 	}
 }
 
 func (s *ScenarioImpl) Update() error {
-	s.systemManager.Update(s.entityCollection)
+	s.systems.Update(s.entityCollection)
 	s.inputHandler.UpdatePlayer(s.player)
 	s.player.Update()
 	s.collisionHandler.UpdatePlayer(s.player, s.entityCollection)

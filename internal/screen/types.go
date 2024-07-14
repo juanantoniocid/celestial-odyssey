@@ -64,7 +64,3 @@ type CollisionHandler interface {
 	// UpdatePlayer applies physics to the player and entityCollection.
 	UpdatePlayer(player *entity.Player, collection *entity.Collection)
 }
-
-type SystemManager interface {
-	Update(entityCollection *entity.Collection)
-}
