@@ -21,11 +21,11 @@ func main() {
 	character := factory.CreatePlayer()
 	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
 	inputHandler := legacy.NewKeyboardHandler()
-	collisionHandler := system.NewCollisionHandler()
+	collisionHandler := legacy.NewCollisionHandler()
 
 	inputManager := system.NewInput()
 	movementManager := system.NewMovement()
-	systems := system.NewSystems(inputManager, movementManager, collisionHandler)
+	systems := system.NewSystems(inputManager, movementManager)
 
 	simpleDraw := system.NewSimpleDraw()
 	drawSystems := system.NewDrawSystems(simpleDraw)
