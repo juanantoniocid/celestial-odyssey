@@ -12,7 +12,7 @@ import (
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/internal/systems"
+	"celestial-odyssey/internal/system"
 )
 
 func main() {
@@ -23,11 +23,11 @@ func main() {
 	character := factory.CreatePlayer()
 	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
 	inputHandler := input.NewKeyboardHandler()
-	collisionHandler := systems.NewCollisionHandler()
+	collisionHandler := system.NewCollisionHandler()
 
-	inputManager := systems.NewInput()
-	movementManager := systems.NewMovement()
-	systemManager := systems.NewManager(inputManager, inputManager, movementManager, collisionHandler)
+	inputManager := system.NewInput()
+	movementManager := system.NewMovement()
+	systemManager := system.NewManager(inputManager, inputManager, movementManager, collisionHandler)
 
 	levels := factory.LoadLevel1(player, character, renderer, inputHandler, collisionHandler, systemManager)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
