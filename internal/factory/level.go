@@ -16,38 +16,38 @@ func LoadLevel1(player *entity.Player, character *entity.Entity, renderer screen
 }
 
 func LoadLevel1Scenario1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System) screen.Scenario {
-	collection := entity.NewCollection()
+	entities := entity.NewEntities()
 
-	collection.AddGameEntity(character)
+	entities.AddEntity(character)
 
 	ground := CreateGround()
-	collection.AddGameEntity(ground)
+	entities.AddEntity(ground)
 
 	box1 := CreateBox(100, 130)
-	collection.AddGameEntity(box1)
+	entities.AddEntity(box1)
 
 	box2 := CreateBox(120, 50)
-	collection.AddGameEntity(box2)
+	entities.AddEntity(box2)
 
-	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, collection, systems)
+	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, entities, systems)
 }
 
 func LoadLevel1Scenario2(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System) screen.Scenario {
-	collection := entity.NewCollection()
+	entities := entity.NewEntities()
 
-	collection.AddGameEntity(character)
+	entities.AddEntity(character)
 
 	ground := CreateGround()
-	collection.AddGameEntity(ground)
+	entities.AddEntity(ground)
 
 	box1 := CreateBox(140, 140)
-	collection.AddGameEntity(box1)
+	entities.AddEntity(box1)
 
 	box2 := CreateBox(160, 70)
-	collection.AddGameEntity(box2)
+	entities.AddEntity(box2)
 
 	box3 := CreateBox(180, 50)
-	collection.AddGameEntity(box3)
+	entities.AddEntity(box3)
 
-	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, collection, systems)
+	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, entities, systems)
 }

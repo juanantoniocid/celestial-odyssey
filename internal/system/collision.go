@@ -14,27 +14,27 @@ func NewCollisionHandler() *CollisionHandler {
 }
 
 // UpdatePlayer updates the game entities based on the collision rules.
-func (h *CollisionHandler) UpdatePlayer(player *entity.Player, entityCollection *entity.Collection) {
-	h.handleCollisions(player, entityCollection)
-	h.checkIfPlayerIsOnPlatform(player, entityCollection, config.ScreenHeight)
+func (h *CollisionHandler) UpdatePlayer(player *entity.Player, entities *entity.Entities) {
+	h.handleCollisions(player, entities)
+	h.checkIfPlayerIsOnPlatform(player, entities, config.ScreenHeight)
 	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
 }
 
-func (h *CollisionHandler) Update(entityCollection *entity.Collection) {
-	for _, e := range *entityCollection {
+func (h *CollisionHandler) Update(entities *entity.Entities) {
+	for _, e := range *entities {
 		entityType, found := e.Type()
 		if !found {
 			continue
 		}
 
 		if entityType == entity.TypePlayer {
-			h.handleEntityCollisions(e, entityCollection)
+			h.handleEntityCollisions(e, entities)
 		}
 	}
 }
 
-func (h *CollisionHandler) handleCollisions(player *entity.Player, entityCollection *entity.Collection) {
-	for _, e := range *entityCollection {
+func (h *CollisionHandler) handleCollisions(player *entity.Player, entities *entity.Entities) {
+	for _, e := range *entities {
 		bounds, found := e.Bounds()
 		if !found {
 			continue
@@ -46,13 +46,13 @@ func (h *CollisionHandler) handleCollisions(player *entity.Player, entityCollect
 	}
 }
 
-func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.Entity, entityCollection *entity.Collection) {
+func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.Entity, entities *entity.Entities) {
 	singleEntityBounds, found := singleEntity.Bounds()
 	if !found {
 		return
 	}
 
-	for _, e := range *entityCollection {
+	for _, e := range *entities {
 		bounds, found := e.Bounds()
 		if !found {
 			continue
@@ -183,12 +183,12 @@ func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, 
 		playerBounds.Max.X > entityBounds.Max.X
 }
 
-func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, entityCollection *entity.Collection, height int) {
+func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, entities *entity.Entities, height int) {
 	playerBounds := player.Bounds()
 	isOnPlatform := false
 
 	// Check if the player is on any platform
-	for _, e := range *entityCollection {
+	for _, e := range *entities {
 		entityBounds, found := e.Bounds()
 		if !found {
 			continue

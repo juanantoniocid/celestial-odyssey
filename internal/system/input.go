@@ -14,8 +14,8 @@ func NewInput() *Input {
 	return &Input{}
 }
 
-func (is *Input) Update(entityCollection *entity.Collection) {
-	for _, e := range *entityCollection {
+func (is *Input) Update(entities *entity.Entities) {
+	for _, e := range *entities {
 		inputMap, found := e.InputMap()
 		if !found {
 			continue

@@ -16,8 +16,8 @@ const (
 	jumpSpeed = -5.0
 )
 
-func (is *Movement) Update(entityCollection *entity.Collection) {
-	for _, e := range *entityCollection {
+func (is *Movement) Update(entities *entity.Entities) {
+	for _, e := range *entities {
 		is.update(e)
 	}
 }
