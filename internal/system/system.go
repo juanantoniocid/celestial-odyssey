@@ -13,15 +13,15 @@ type Systems struct {
 }
 
 // NewSystems creates a new Systems struct.
-func NewSystems(sh ...System) *Systems {
-	systemHandler := make([]System, 0)
+func NewSystems(ss ...System) *Systems {
+	systems := make([]System, 0)
 
-	for _, s := range sh {
-		systemHandler = append(systemHandler, s)
+	for _, s := range ss {
+		systems = append(systems, s)
 	}
 
 	return &Systems{
-		systems: systemHandler,
+		systems: systems,
 	}
 }
 
