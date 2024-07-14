@@ -51,8 +51,6 @@ type Scenario interface {
 type InputHandler interface {
 	// UpdatePlayer updates the player based on the input.
 	UpdatePlayer(player *entity.Player)
-	// UpdateCharacter updates the character based on the input.
-	UpdateCharacter(character *entity.GameEntity)
 }
 
 // Renderer is responsible for drawing the game entityCollection on the screen.
@@ -61,19 +59,10 @@ type Renderer interface {
 	Draw(screen *ebiten.Image, player *entity.Player, entityCollection *entity.Collection)
 }
 
-type SystemHandler interface {
-	Update(entityCollection *entity.Collection)
-}
-
 // CollisionHandler is responsible for applying physics to the game entityCollection.
 type CollisionHandler interface {
 	// UpdatePlayer applies physics to the player and entityCollection.
 	UpdatePlayer(player *entity.Player, collection *entity.Collection)
-	Update(collection *entity.Collection)
-}
-
-type SystemInputHandler interface {
-	Update(character *entity.GameEntity)
 }
 
 type SystemManager interface {

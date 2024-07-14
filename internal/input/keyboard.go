@@ -28,25 +28,3 @@ func (kh *KeyboardHandler) UpdatePlayer(player *entity.Player) {
 		player.Jump()
 	}
 }
-
-// UpdateCharacter updates the character based on the keyboard input.
-func (kh *KeyboardHandler) UpdateCharacter(character *entity.GameEntity) {
-	characterInput, found := character.Input()
-	if !found {
-		return
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		characterInput.Left = true
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		characterInput.Right = true
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		characterInput.Jump = true
-	}
-
-	character.SetInput(characterInput)
-}
