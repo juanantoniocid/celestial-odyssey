@@ -27,9 +27,9 @@ func main() {
 
 	inputManager := system.NewInput()
 	movementManager := system.NewMovement()
-	systemManager := system.NewManager(inputManager, inputManager, movementManager, collisionHandler)
+	systems := system.NewSystems(inputManager, movementManager, collisionHandler)
 
-	levels := factory.LoadLevel1(player, character, renderer, inputHandler, collisionHandler, systemManager)
+	levels := factory.LoadLevel1(player, character, renderer, inputHandler, collisionHandler, systems)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
