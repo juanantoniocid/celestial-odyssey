@@ -6,31 +6,31 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-// Draw is an interface that defines the Draw method.
-type Draw interface {
+// DrawSystem is an interface that defines the DrawSystem method.
+type DrawSystem interface {
 	Draw(*ebiten.Image, *entity.Entities)
 }
 
-// DrawSystem is a struct that holds a slice of Draw.
-type DrawSystem struct {
-	draws []Draw
+// DrawSystems is a struct that holds a slice of DrawSystem.
+type DrawSystems struct {
+	draws []DrawSystem
 }
 
-// NewDrawSystem creates a new DrawSystem struct.
-func NewDrawSystem(ds ...Draw) *DrawSystem {
-	drawSystem := make([]Draw, 0)
+// NewDrawSystems creates a new DrawSystems struct.
+func NewDrawSystems(ds ...DrawSystem) *DrawSystems {
+	drawSystem := make([]DrawSystem, 0)
 
 	for _, d := range ds {
 		drawSystem = append(drawSystem, d)
 	}
 
-	return &DrawSystem{
+	return &DrawSystems{
 		draws: drawSystem,
 	}
 }
 
-// Draw calls the Draw method on each Draw in the DrawSystem struct.
-func (ds *DrawSystem) Draw(screen *ebiten.Image, entities *entity.Entities) {
+// Draw calls the DrawSystem method on each DrawSystem in the DrawSystems struct.
+func (ds *DrawSystems) Draw(screen *ebiten.Image, entities *entity.Entities) {
 	for _, d := range ds.draws {
 		d.Draw(screen, entities)
 	}

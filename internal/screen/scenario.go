@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/system"
 	"github.com/hajimehoshi/ebiten/v2"
 
@@ -19,18 +20,22 @@ type ScenarioImpl struct {
 	inputHandler     InputHandler
 	collisionHandler CollisionHandler
 
-	entities *entity.Entities
-	systems  system.System
+	entities    *entity.Entities
+	systems     system.System
+	drawSystems graphics.DrawSystem
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities, systems system.System) *ScenarioImpl {
+func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities, systems system.System, drawSystems graphics.DrawSystem) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:           player,
-		entities:         entities,
-		renderer:         renderer,
+		player:   player,
+		renderer: renderer,
+
 		inputHandler:     inputHandler,
 		collisionHandler: collisionHandler,
-		systems:          systems,
+
+		entities:    entities,
+		systems:     systems,
+		drawSystems: drawSystems,
 	}
 }
 
@@ -45,6 +50,7 @@ func (s *ScenarioImpl) Update() error {
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
 	s.renderer.Draw(screen, s.player, s.entities)
+	s.drawSystems.Draw(screen, s.entities)
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
