@@ -1,6 +1,9 @@
 package component
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+	"image/color"
+)
 
 // Component represents a component of an entity.
 type Component interface{}
@@ -21,6 +24,8 @@ const (
 	InputComponent
 	// InputMapComponent indicates that the component defines the mapping from actions to keys.
 	InputMapComponent
+	// ColorComponent indicates that the component defines the color of an entity.
+	ColorComponent
 )
 
 // Position represents a 2D position with X and Y coordinates.
@@ -49,4 +54,9 @@ type Input struct {
 // InputMap represents a mapping from actions to keys.
 type InputMap struct {
 	Left, Right, Jump ebiten.Key
+}
+
+// Color represents the color of an entity.
+type Color struct {
+	Color color.RGBA
 }

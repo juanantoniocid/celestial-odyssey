@@ -18,6 +18,22 @@ func NewGameEntity() *Entity {
 	}
 }
 
+// GetComponent returns the component of the entity.
+func (e *Entity) GetComponent(t component.Type) (component.Component, bool) {
+	c, ok := e.components[t]
+	return c, ok
+}
+
+// SetComponent sets the component of the entity.
+func (e *Entity) SetComponent(t component.Type, c component.Component) {
+	e.components[t] = c
+}
+
+// RemoveComponent removes the component from the entity.
+func (e *Entity) RemoveComponent(t component.Type) {
+	delete(e.components, t)
+}
+
 // Type returns the type of the entity.
 func (e *Entity) Type() (component.EntityType, bool) {
 	t, ok := e.components[component.EntityTypeComponent]
@@ -130,4 +146,19 @@ func (e *Entity) InputMap() (component.InputMap, bool) {
 // SetInputMap sets the input map of the entity.
 func (e *Entity) SetInputMap(inputMap component.InputMap) {
 	e.components[component.InputMapComponent] = inputMap
+}
+
+// Color returns the color of the entity.
+func (e *Entity) Color() (component.Color, bool) {
+	color, found := e.components[component.ColorComponent]
+	if !found {
+		return component.Color{}, false
+	}
+
+	return color.(component.Color), true
+}
+
+// SetColor sets the color of the entity.
+func (e *Entity) SetColor(color component.Color) {
+	e.components[component.ColorComponent] = color
 }

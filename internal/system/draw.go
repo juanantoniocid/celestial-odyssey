@@ -59,29 +59,17 @@ func (sd *SimpleDraw) Draw(screen *ebiten.Image, entities *entity.Entities) {
 }
 
 func (sd *SimpleDraw) drawEntity(screen *ebiten.Image, e *entity.Entity) {
-	entityType, found := e.Type()
-	if !found {
-		return
-	}
-
 	bounds, found := e.Bounds()
 	if !found {
 		return
 	}
 
-	switch entityType {
-	case entity.TypeBox:
-		orange := color.RGBA{R: 255, G: 165, B: 0, A: 255}
-		sd.drawSolidColor(screen, bounds, orange)
-	case entity.TypeGround:
-		darkGrey := color.RGBA{R: 169, G: 169, B: 169, A: 255}
-		sd.drawSolidColor(screen, bounds, darkGrey)
-	case entity.TypePlayer:
-		white := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-		sd.drawSolidColor(screen, bounds, white)
-	default:
-		// Do nothing
+	entityColor, found := e.Color()
+	if !found {
+		return
 	}
+
+	sd.drawSolidColor(screen, bounds, entityColor.Color)
 }
 
 func (sd *SimpleDraw) drawSolidColor(screen *ebiten.Image, bounds image.Rectangle, c color.RGBA) {

@@ -3,6 +3,7 @@ package factory
 import (
 	"celestial-odyssey/internal/entity"
 	"github.com/hajimehoshi/ebiten/v2"
+	"image/color"
 
 	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/config"
@@ -29,6 +30,7 @@ func CreatePlayer() *entity.Entity {
 	player.SetVelocity(component.Velocity{VX: 0, VY: 0})
 	player.SetInput(component.Input{Left: false, Right: false, Jump: false})
 	player.SetInputMap(component.InputMap{Left: ebiten.KeyLeft, Right: ebiten.KeyRight, Jump: ebiten.KeySpace})
+	player.SetColor(component.Color{Color: color.RGBA{R: 255, G: 255, B: 255, A: 255}})
 
 	return player
 }
@@ -40,6 +42,7 @@ func CreateBox(x, y float64) *entity.Entity {
 	box.SetType(entity.TypeBox)
 	box.SetPosition(component.Position{X: x, Y: y})
 	box.SetSize(component.Size{Width: boxWidth, Height: boxHeight})
+	box.SetColor(component.Color{Color: color.RGBA{R: 255, G: 165, B: 0, A: 255}})
 
 	return box
 }
@@ -51,6 +54,7 @@ func CreateGround() *entity.Entity {
 	ground.SetType(entity.TypeGround)
 	ground.SetPosition(component.Position{X: groundPositionX, Y: groundPositionY})
 	ground.SetSize(component.Size{Width: groundWidth, Height: groundHeight})
+	ground.SetColor(component.Color{Color: color.RGBA{R: 169, G: 169, B: 169, A: 255}})
 
 	return ground
 }
