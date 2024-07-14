@@ -1,16 +1,14 @@
 package main
 
 import (
+	"celestial-odyssey/internal/legacy"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/config"
-	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/factory"
 	"celestial-odyssey/internal/game"
-	"celestial-odyssey/internal/graphics"
-	"celestial-odyssey/internal/input"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/system"
 )
@@ -22,7 +20,7 @@ func main() {
 	player := createPlayer(cfg.Player)
 	character := factory.CreatePlayer()
 	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
-	inputHandler := input.NewKeyboardHandler()
+	inputHandler := legacy.NewKeyboardHandler()
 	collisionHandler := system.NewCollisionHandler()
 
 	inputManager := system.NewInput()
@@ -47,14 +45,14 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entity.Player) {
-	player = entity.NewPlayer(cfg)
+func createPlayer(cfg config.Player) (player *legacy.Player) {
+	player = legacy.NewPlayer(cfg)
 
 	return player
 }
 
-func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *graphics.Renderer {
-	renderer := graphics.NewRenderer(cfgPlayer, cfgScreen, cfgGround)
+func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *legacy.Renderer {
+	renderer := legacy.NewRenderer(cfgPlayer, cfgScreen, cfgGround)
 
 	return renderer
 }

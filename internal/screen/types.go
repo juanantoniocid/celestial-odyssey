@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"celestial-odyssey/internal/legacy"
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/entity"
@@ -50,17 +51,17 @@ type Scenario interface {
 // InputHandler is responsible for handling input.
 type InputHandler interface {
 	// UpdatePlayer updates the player based on the input.
-	UpdatePlayer(player *entity.Player)
+	UpdatePlayer(player *legacy.Player)
 }
 
 // Renderer is responsible for drawing the game entities on the screen.
 type Renderer interface {
 	// Draw draws the game entities on the screen.
-	Draw(screen *ebiten.Image, player *entity.Player, entities *entity.Entities)
+	Draw(screen *ebiten.Image, player *legacy.Player, entities *entity.Entities)
 }
 
 // CollisionHandler is responsible for applying physics to the game entities.
 type CollisionHandler interface {
 	// UpdatePlayer applies physics to the player and entities.
-	UpdatePlayer(player *entity.Player, collection *entity.Entities)
+	UpdatePlayer(player *legacy.Player, collection *entity.Entities)
 }

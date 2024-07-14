@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"celestial-odyssey/internal/legacy"
 	"celestial-odyssey/internal/system"
 	"github.com/hajimehoshi/ebiten/v2"
 
@@ -13,7 +14,7 @@ const (
 )
 
 type ScenarioImpl struct {
-	player   *entity.Player
+	player   *legacy.Player
 	renderer Renderer
 
 	inputHandler     InputHandler
@@ -24,7 +25,7 @@ type ScenarioImpl struct {
 	drawSystems system.DrawSystem
 }
 
-func NewScenario(player *entity.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities, systems system.System, drawSystems system.DrawSystem) *ScenarioImpl {
+func NewScenario(player *legacy.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities, systems system.System, drawSystems system.DrawSystem) *ScenarioImpl {
 	return &ScenarioImpl{
 		player:   player,
 		renderer: renderer,

@@ -1,6 +1,7 @@
-package entity
+package legacy
 
 import (
+	"celestial-odyssey/internal/entity"
 	"image"
 
 	"celestial-odyssey/internal/config"
@@ -14,9 +15,9 @@ type Player struct {
 	height   int
 
 	// Movement and actions
-	direction     HorizontalDirection
-	currentAction CharacterAction
-	prevAction    CharacterAction
+	direction     entity.HorizontalDirection
+	currentAction entity.CharacterAction
+	prevAction    entity.CharacterAction
 	isMovingLeft  bool
 	isMovingRight bool
 	isJumping     bool
@@ -38,8 +39,8 @@ func NewPlayer(cfg config.Player) *Player {
 		width:  cfg.Dimensions.Width,
 		height: cfg.Dimensions.Height,
 
-		direction:     DirectionRight,
-		currentAction: ActionIdle,
+		direction:     entity.DirectionRight,
+		currentAction: entity.ActionIdle,
 		isMovingLeft:  false,
 		isMovingRight: false,
 		isJumping:     false,
@@ -89,12 +90,12 @@ func (p *Player) Bounds() image.Rectangle {
 // Movement and actions
 
 // Direction returns the current direction of the player character.
-func (p *Player) Direction() HorizontalDirection {
+func (p *Player) Direction() entity.HorizontalDirection {
 	return p.direction
 }
 
 // Action returns the current currentAction of the player character.
-func (p *Player) Action() CharacterAction {
+func (p *Player) Action() entity.CharacterAction {
 	return p.currentAction
 }
 
@@ -113,7 +114,7 @@ func (p *Player) Jump() {
 	if !p.isJumping {
 		p.isJumping = true
 		p.verticalVelocity = p.initialJumpVelocity
-		p.currentAction = ActionJumping
+		p.currentAction = entity.ActionJumping
 	}
 }
 
@@ -126,14 +127,14 @@ func (p *Player) IsJumping() bool {
 func (p *Player) Land() {
 	p.isJumping = false
 	p.verticalVelocity = 0
-	p.currentAction = ActionIdle
+	p.currentAction = entity.ActionIdle
 }
 
 // Stop stops the player character from moving.
 func (p *Player) Stop() {
 	p.isMovingLeft = false
 	p.isMovingRight = false
-	p.currentAction = ActionIdle
+	p.currentAction = entity.ActionIdle
 	p.horizontalVelocity = 0
 }
 
@@ -141,14 +142,14 @@ func (p *Player) Stop() {
 func (p *Player) Fall() {
 	p.isJumping = true
 	p.verticalVelocity = 0
-	p.currentAction = ActionJumping
+	p.currentAction = entity.ActionJumping
 }
 
 // State
 
 // Update updates the player character's state.
 func (p *Player) Update() {
-	p.currentAction = ActionIdle
+	p.currentAction = entity.ActionIdle
 	p.updateHorizontalPosition()
 	p.updateVerticalPosition()
 	p.updateCurrentStateDuration()
@@ -181,22 +182,22 @@ func (p *Player) updateHorizontalPosition() {
 
 	if p.isMovingLeft {
 		p.horizontalVelocity = -p.walkingVelocity
-		p.direction = DirectionLeft
+		p.direction = entity.DirectionLeft
 	} else if p.isMovingRight {
 		p.horizontalVelocity = p.walkingVelocity
-		p.direction = DirectionRight
+		p.direction = entity.DirectionRight
 	}
 
 	p.isMovingLeft = false
 	p.isMovingRight = false
 	p.position.X += p.horizontalVelocity
-	p.currentAction = ActionWalking
+	p.currentAction = entity.ActionWalking
 }
 
 // updateVerticalPosition updates the player character's vertical position.
 func (p *Player) updateVerticalPosition() {
 	if p.isJumping {
-		p.currentAction = ActionJumping
+		p.currentAction = entity.ActionJumping
 		p.verticalVelocity += p.gravity
 		p.position.Y += int(p.verticalVelocity)
 	}

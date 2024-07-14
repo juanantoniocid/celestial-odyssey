@@ -3,6 +3,7 @@ package system
 import (
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/legacy"
 )
 
 // CollisionHandler is responsible for applying physics to the game entities.
@@ -14,7 +15,7 @@ func NewCollisionHandler() *CollisionHandler {
 }
 
 // UpdatePlayer updates the game entities based on the collision rules.
-func (h *CollisionHandler) UpdatePlayer(player *entity.Player, entities *entity.Entities) {
+func (h *CollisionHandler) UpdatePlayer(player *legacy.Player, entities *entity.Entities) {
 	h.handleCollisions(player, entities)
 	h.checkIfPlayerIsOnPlatform(player, entities, config.ScreenHeight)
 	h.enforceBoundaries(player, config.ScreenWidth, config.ScreenHeight)
@@ -33,7 +34,7 @@ func (h *CollisionHandler) Update(entities *entity.Entities) {
 	}
 }
 
-func (h *CollisionHandler) handleCollisions(player *entity.Player, entities *entity.Entities) {
+func (h *CollisionHandler) handleCollisions(player *legacy.Player, entities *entity.Entities) {
 	for _, e := range *entities {
 		bounds, found := e.Bounds()
 		if !found {
@@ -64,7 +65,7 @@ func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.Entity, e
 	}
 }
 
-func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity.Entity) {
+func (h *CollisionHandler) handleCollision(player *legacy.Player, entity *entity.Entity) {
 	if h.isHorizontalCollision(player, entity) {
 		h.handleHorizontalCollision(player, entity)
 		h.handleVerticalCollision(player, entity)
@@ -74,7 +75,7 @@ func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity
 	}
 }
 
-func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *entity.Entity) bool {
+func (h *CollisionHandler) isHorizontalCollision(player *legacy.Player, entity *entity.Entity) bool {
 	bounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -83,7 +84,7 @@ func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *
 	return player.Bounds().Intersect(bounds).Dx() < player.Bounds().Intersect(bounds).Dy()
 }
 
-func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity *entity.Entity) {
+func (h *CollisionHandler) handleVerticalCollision(player *legacy.Player, entity *entity.Entity) {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return
@@ -101,7 +102,7 @@ func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity
 	}
 }
 
-func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, entity *entity.Entity) bool {
+func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *legacy.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -118,7 +119,7 @@ func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, en
 		playerBounds.Max.Y > entityBounds.Min.Y
 }
 
-func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player, entity *entity.Entity) bool {
+func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *legacy.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -135,7 +136,7 @@ func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player,
 		playerBounds.Min.Y < entityBounds.Max.Y
 }
 
-func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, entity *entity.Entity) {
+func (h *CollisionHandler) handleHorizontalCollision(player *legacy.Player, entity *entity.Entity) {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return
@@ -153,7 +154,7 @@ func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, enti
 	}
 }
 
-func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, entity *entity.Entity) bool {
+func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *legacy.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -166,7 +167,7 @@ func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, e
 		playerBounds.Max.X > entityBounds.Min.X
 }
 
-func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, entity *entity.Entity) bool {
+func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *legacy.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -183,7 +184,7 @@ func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, 
 		playerBounds.Max.X > entityBounds.Max.X
 }
 
-func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, entities *entity.Entities, height int) {
+func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *legacy.Player, entities *entity.Entities, height int) {
 	playerBounds := player.Bounds()
 	isOnPlatform := false
 
@@ -214,7 +215,7 @@ func (h *CollisionHandler) checkIfPlayerIsOnPlatform(player *entity.Player, enti
 	}
 }
 
-func (h *CollisionHandler) enforceBoundaries(player *entity.Player, width, height int) {
+func (h *CollisionHandler) enforceBoundaries(player *legacy.Player, width, height int) {
 	if player.Position().X < 0 {
 		player.SetPositionX(0)
 	} else if player.Position().X+player.Width() > width {

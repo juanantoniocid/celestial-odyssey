@@ -24,8 +24,8 @@ func CreatePlayer() *entity.Entity {
 	player := entity.NewGameEntity()
 
 	player.SetType(entity.TypePlayer)
-	player.SetPosition(component.Position{X: 0, Y: 0})
-	player.SetSize(component.Size{Width: 20, Height: 40})
+	player.SetPosition(component.Position{X: 8, Y: 140})
+	player.SetSize(component.Size{Width: 16, Height: 32})
 	player.SetVelocity(component.Velocity{VX: 0, VY: 0})
 	player.SetInput(component.Input{Left: false, Right: false, Jump: false})
 	player.SetInputMap(component.InputMap{Left: ebiten.KeyLeft, Right: ebiten.KeyRight, Jump: ebiten.KeySpace})

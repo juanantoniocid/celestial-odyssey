@@ -1,4 +1,4 @@
-package graphics
+package legacy
 
 import (
 	"image"
@@ -98,12 +98,12 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities *entity.Entities) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *Player, entities *entity.Entities) {
 	r.drawBackground(screen)
 	r.drawPlayer(screen, player)
 }
 
-func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
+func (r *Renderer) drawPlayer(screen *ebiten.Image, player *Player) {
 	r.op.GeoM.Reset()
 	sprite := r.getSprite(player)
 
@@ -111,7 +111,7 @@ func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
 	screen.DrawImage(r.playerImages[sprite], r.op)
 }
 
-func (r *Renderer) getSprite(player *entity.Player) (spriteType SpriteType) {
+func (r *Renderer) getSprite(player *Player) (spriteType SpriteType) {
 	switch player.Action() {
 	case entity.ActionIdle:
 		spriteType = r.getIdleSprite(player)
@@ -126,14 +126,14 @@ func (r *Renderer) getSprite(player *entity.Player) (spriteType SpriteType) {
 	return spriteType
 }
 
-func (r *Renderer) getIdleSprite(player *entity.Player) SpriteType {
+func (r *Renderer) getIdleSprite(player *Player) SpriteType {
 	if player.Direction() == entity.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entity.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
@@ -161,7 +161,7 @@ func (r *Renderer) getWalkingSprite(player *entity.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entity.Player) SpriteType {
+func (r *Renderer) getJumpingSprite(player *Player) SpriteType {
 	if player.Direction() == entity.DirectionLeft {
 		return PlayerJumpingLeft
 	}
