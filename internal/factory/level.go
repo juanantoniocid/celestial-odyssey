@@ -2,12 +2,11 @@ package factory
 
 import (
 	"celestial-odyssey/internal/entity"
-	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/system"
 )
 
-func LoadLevel1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System, drawSystems graphics.DrawSystem) screen.Level {
+func LoadLevel1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System, drawSystems system.DrawSystem) screen.Level {
 	level1 := screen.NewLevel()
 
 	level1.AddScenario(LoadLevel1Scenario1(player, character, renderer, inputHandler, collisionHandler, systems, drawSystems))
@@ -16,7 +15,7 @@ func LoadLevel1(player *entity.Player, character *entity.Entity, renderer screen
 	return level1
 }
 
-func LoadLevel1Scenario1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System, drawSystems graphics.DrawSystem) screen.Scenario {
+func LoadLevel1Scenario1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System, drawSystems system.DrawSystem) screen.Scenario {
 	entities := entity.NewEntities()
 
 	entities.AddEntity(character)
@@ -33,7 +32,7 @@ func LoadLevel1Scenario1(player *entity.Player, character *entity.Entity, render
 	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, entities, systems, drawSystems)
 }
 
-func LoadLevel1Scenario2(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System, drawSystems graphics.DrawSystem) screen.Scenario {
+func LoadLevel1Scenario2(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systems system.System, drawSystems system.DrawSystem) screen.Scenario {
 	entities := entity.NewEntities()
 
 	entities.AddEntity(character)

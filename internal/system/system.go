@@ -26,8 +26,8 @@ func NewSystems(ss ...System) *Systems {
 }
 
 // Update calls the Update method on each System in the Systems struct.
-func (m *Systems) Update(entities *entity.Entities) {
-	for _, sh := range m.systems {
-		sh.Update(entities)
+func (ss *Systems) Update(entities *entity.Entities) {
+	for _, s := range ss.systems {
+		s.Update(entities)
 	}
 }
