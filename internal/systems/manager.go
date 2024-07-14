@@ -7,24 +7,23 @@ type System interface {
 }
 
 type Manager struct {
-	inputSystem     System
-	physicsSystem   System
-	movementSystem  System
-	collisionSystem System
+	systemHandlers []System
 }
 
-func NewManager(inputSystem System, physicsSystem System, movementSystem System, collisionSystem System) *Manager {
+func NewManager(sh ...System) *Manager {
+	systemHandler := make([]System, 0)
+
+	for _, s := range sh {
+		systemHandler = append(systemHandler, s)
+	}
+
 	return &Manager{
-		inputSystem:     inputSystem,
-		physicsSystem:   physicsSystem,
-		movementSystem:  movementSystem,
-		collisionSystem: collisionSystem,
+		systemHandlers: systemHandler,
 	}
 }
 
 func (m *Manager) Update(entityCollection *entity.Collection) {
-	m.inputSystem.Update(entityCollection)
-	m.physicsSystem.Update(entityCollection)
-	m.movementSystem.Update(entityCollection)
-	m.collisionSystem.Update(entityCollection)
+	for _, sh := range m.systemHandlers {
+		sh.Update(entityCollection)
+	}
 }

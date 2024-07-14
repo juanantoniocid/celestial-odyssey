@@ -1,9 +1,10 @@
 package systems
 
 import (
+	"github.com/hajimehoshi/ebiten/v2"
+
 	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/entity"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Input struct {

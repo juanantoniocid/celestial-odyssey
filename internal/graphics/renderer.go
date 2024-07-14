@@ -99,11 +99,10 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, character *entity.GameEntity, entityCollection *entity.Collection) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entityCollection *entity.Collection) {
 	r.drawBackground(screen)
 	r.drawEntities(screen, entityCollection)
 	r.drawPlayer(screen, player)
-	r.drawCharacter(screen, character)
 }
 
 func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
@@ -188,6 +187,8 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, entityCollection *entity.C
 			r.drawBox(screen, e)
 		case entity.TypeGround:
 			r.drawGround(screen, e)
+		case entity.TypePlayer:
+			r.drawCharacter(screen, e)
 		default:
 			// Do nothing
 		}

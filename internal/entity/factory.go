@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"github.com/hajimehoshi/ebiten/v2"
+
 	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/config"
 )
@@ -25,6 +27,7 @@ func CreatePlayer() *GameEntity {
 	player.SetSize(component.Size{Width: 20, Height: 40})
 	player.SetVelocity(component.Velocity{VX: 0, VY: 0})
 	player.SetInput(component.Input{Left: false, Right: false, Jump: false})
+	player.SetInputMap(component.InputMap{Left: ebiten.KeyLeft, Right: ebiten.KeyRight, Jump: ebiten.KeySpace})
 
 	return player
 }
