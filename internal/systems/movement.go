@@ -22,7 +22,7 @@ func (is *Movement) Update(entityCollection *entity.Collection) {
 	}
 }
 
-func (is *Movement) update(e *entity.GameEntity) {
+func (is *Movement) update(e *entity.Entity) {
 	input, found := e.Input()
 	if !found {
 		return
@@ -50,7 +50,7 @@ func (is *Movement) update(e *entity.GameEntity) {
 	is.applyPhysics(e)
 }
 
-func (is *Movement) applyPhysics(character *entity.GameEntity) {
+func (is *Movement) applyPhysics(character *entity.Entity) {
 	velocity, found := character.Velocity()
 	if !found {
 		return

@@ -2,6 +2,9 @@ package component
 
 import "github.com/hajimehoshi/ebiten/v2"
 
+// Component represents a component of an entity.
+type Component interface{}
+
 // Type represents the kind of given component.
 type Type int
 
@@ -45,7 +48,5 @@ type Input struct {
 
 // InputMap represents a mapping from actions to keys.
 type InputMap struct {
-	Left  ebiten.Key
-	Right ebiten.Key
-	Jump  ebiten.Key
+	Left, Right, Jump ebiten.Key
 }

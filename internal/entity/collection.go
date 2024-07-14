@@ -1,6 +1,6 @@
 package entity
 
-type Collection []*GameEntity
+type Collection []*Entity
 
 // NewCollection creates a new entities' collection.
 func NewCollection() *Collection {
@@ -9,6 +9,6 @@ func NewCollection() *Collection {
 }
 
 // AddGameEntity adds an entity to the entities' collection.
-func (c *Collection) AddGameEntity(entity *GameEntity) {
+func (c *Collection) AddGameEntity(entity *Entity) {
 	*c = append(*c, entity)
 }

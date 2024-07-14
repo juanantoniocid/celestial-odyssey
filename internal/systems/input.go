@@ -25,7 +25,7 @@ func (is *Input) Update(entityCollection *entity.Collection) {
 	}
 }
 
-func (is *Input) updatePlayer(e *entity.GameEntity, inputMap component.InputMap) {
+func (is *Input) updatePlayer(e *entity.Entity, inputMap component.InputMap) {
 	var input component.Input
 
 	if ebiten.IsKeyPressed(inputMap.Left) {

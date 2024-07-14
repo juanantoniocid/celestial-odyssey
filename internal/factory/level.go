@@ -5,7 +5,7 @@ import (
 	"celestial-odyssey/internal/screen"
 )
 
-func LoadLevel1(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Level {
+func LoadLevel1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Level {
 	level1 := screen.NewLevel()
 
 	level1.AddScenario(LoadLevel1Scenario1(player, character, renderer, inputHandler, collisionHandler, systemManager))
@@ -14,7 +14,7 @@ func LoadLevel1(player *entity.Player, character *entity.GameEntity, renderer sc
 	return level1
 }
 
-func LoadLevel1Scenario1(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Scenario {
+func LoadLevel1Scenario1(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Scenario {
 	collection := entity.NewCollection()
 
 	collection.AddGameEntity(character)
@@ -31,7 +31,7 @@ func LoadLevel1Scenario1(player *entity.Player, character *entity.GameEntity, re
 	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, collection, systemManager)
 }
 
-func LoadLevel1Scenario2(player *entity.Player, character *entity.GameEntity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Scenario {
+func LoadLevel1Scenario2(player *entity.Player, character *entity.Entity, renderer screen.Renderer, inputHandler screen.InputHandler, collisionHandler screen.CollisionHandler, systemManager screen.SystemManager) screen.Scenario {
 	collection := entity.NewCollection()
 
 	collection.AddGameEntity(character)

@@ -20,7 +20,7 @@ const (
 )
 
 // CreatePlayer creates a player entity.
-func CreatePlayer() *entity.GameEntity {
+func CreatePlayer() *entity.Entity {
 	player := entity.NewGameEntity()
 
 	player.SetType(entity.TypePlayer)
@@ -34,7 +34,7 @@ func CreatePlayer() *entity.GameEntity {
 }
 
 // CreateBox creates a box entity.
-func CreateBox(x, y float64) *entity.GameEntity {
+func CreateBox(x, y float64) *entity.Entity {
 	box := entity.NewGameEntity()
 
 	box.SetType(entity.TypeBox)
@@ -45,7 +45,7 @@ func CreateBox(x, y float64) *entity.GameEntity {
 }
 
 // CreateGround creates a ground entity.
-func CreateGround() *entity.GameEntity {
+func CreateGround() *entity.Entity {
 	ground := entity.NewGameEntity()
 
 	ground.SetType(entity.TypeGround)

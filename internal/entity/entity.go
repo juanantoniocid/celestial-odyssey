@@ -6,20 +6,20 @@ import (
 	"celestial-odyssey/internal/component"
 )
 
-// GameEntity represents a game entity.
-type GameEntity struct {
-	components map[component.Type]interface{}
+// Entity represents a game entity.
+type Entity struct {
+	components map[component.Type]component.Component
 }
 
 // NewGameEntity creates a new game entity.
-func NewGameEntity() *GameEntity {
-	return &GameEntity{
-		components: make(map[component.Type]interface{}),
+func NewGameEntity() *Entity {
+	return &Entity{
+		components: make(map[component.Type]component.Component),
 	}
 }
 
 // Type returns the type of the entity.
-func (e *GameEntity) Type() (component.EntityType, bool) {
+func (e *Entity) Type() (component.EntityType, bool) {
 	t, ok := e.components[component.EntityTypeComponent]
 	if !ok {
 		return TypeUnknown, false
@@ -29,12 +29,12 @@ func (e *GameEntity) Type() (component.EntityType, bool) {
 }
 
 // SetType sets the type of the entity.
-func (e *GameEntity) SetType(t component.EntityType) {
+func (e *Entity) SetType(t component.EntityType) {
 	e.components[component.EntityTypeComponent] = t
 }
 
 // Bounds returns the bounds of the entity.
-func (e *GameEntity) Bounds() (image.Rectangle, bool) {
+func (e *Entity) Bounds() (image.Rectangle, bool) {
 	pos, found := e.components[component.PositionComponent]
 	if !found {
 		return image.Rectangle{}, false
@@ -58,7 +58,7 @@ func (e *GameEntity) Bounds() (image.Rectangle, bool) {
 }
 
 // Position returns the position of the entity.
-func (e *GameEntity) Position() (component.Position, bool) {
+func (e *Entity) Position() (component.Position, bool) {
 	pos, found := e.components[component.PositionComponent]
 	if !found {
 		return component.Position{}, false
@@ -68,12 +68,12 @@ func (e *GameEntity) Position() (component.Position, bool) {
 }
 
 // SetPosition sets the position of the entity.
-func (e *GameEntity) SetPosition(position component.Position) {
+func (e *Entity) SetPosition(position component.Position) {
 	e.components[component.PositionComponent] = position
 }
 
 // Size returns the size of the entity.
-func (e *GameEntity) Size() (component.Size, bool) {
+func (e *Entity) Size() (component.Size, bool) {
 	size, found := e.components[component.SizeComponent]
 	if !found {
 		return component.Size{}, false
@@ -83,12 +83,12 @@ func (e *GameEntity) Size() (component.Size, bool) {
 }
 
 // SetSize sets the size of the entity.
-func (e *GameEntity) SetSize(size component.Size) {
+func (e *Entity) SetSize(size component.Size) {
 	e.components[component.SizeComponent] = size
 }
 
 // Velocity returns the velocity of the entity.
-func (e *GameEntity) Velocity() (component.Velocity, bool) {
+func (e *Entity) Velocity() (component.Velocity, bool) {
 	velocity, found := e.components[component.VelocityComponent]
 	if !found {
 		return component.Velocity{}, false
@@ -98,12 +98,12 @@ func (e *GameEntity) Velocity() (component.Velocity, bool) {
 }
 
 // SetVelocity sets the velocity of the entity.
-func (e *GameEntity) SetVelocity(v component.Velocity) {
+func (e *Entity) SetVelocity(v component.Velocity) {
 	e.components[component.VelocityComponent] = v
 }
 
 // Input returns the input state of the entity.
-func (e *GameEntity) Input() (component.Input, bool) {
+func (e *Entity) Input() (component.Input, bool) {
 	input, found := e.components[component.InputComponent]
 	if !found {
 		return component.Input{}, false
@@ -113,12 +113,12 @@ func (e *GameEntity) Input() (component.Input, bool) {
 }
 
 // SetInput sets the input state of the entity.
-func (e *GameEntity) SetInput(input component.Input) {
+func (e *Entity) SetInput(input component.Input) {
 	e.components[component.InputComponent] = input
 }
 
 // InputMap returns the input map of the entity.
-func (e *GameEntity) InputMap() (component.InputMap, bool) {
+func (e *Entity) InputMap() (component.InputMap, bool) {
 	inputMap, found := e.components[component.InputMapComponent]
 	if !found {
 		return component.InputMap{}, false
@@ -128,6 +128,6 @@ func (e *GameEntity) InputMap() (component.InputMap, bool) {
 }
 
 // SetInputMap sets the input map of the entity.
-func (e *GameEntity) SetInputMap(inputMap component.InputMap) {
+func (e *Entity) SetInputMap(inputMap component.InputMap) {
 	e.components[component.InputMapComponent] = inputMap
 }

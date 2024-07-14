@@ -195,7 +195,7 @@ func (r *Renderer) drawEntities(screen *ebiten.Image, entityCollection *entity.C
 	}
 }
 
-func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
+func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.Entity) {
 	boxBounds, found := box.Bounds()
 	if !found {
 		return
@@ -211,7 +211,7 @@ func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
 	screen.DrawImage(img, r.op)
 }
 
-func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
+func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.Entity) {
 	groundBounds, found := ground.Bounds()
 	if !found {
 		return
@@ -224,7 +224,7 @@ func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
 	}
 }
 
-func (r *Renderer) drawCharacter(screen *ebiten.Image, character *entity.GameEntity) {
+func (r *Renderer) drawCharacter(screen *ebiten.Image, character *entity.Entity) {
 	characterPosition, found := character.Position()
 	if !found {
 		return

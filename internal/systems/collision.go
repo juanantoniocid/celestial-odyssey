@@ -46,7 +46,7 @@ func (h *CollisionHandler) handleCollisions(player *entity.Player, entityCollect
 	}
 }
 
-func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.GameEntity, entityCollection *entity.Collection) {
+func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.Entity, entityCollection *entity.Collection) {
 	singleEntityBounds, found := singleEntity.Bounds()
 	if !found {
 		return
@@ -64,7 +64,7 @@ func (h *CollisionHandler) handleEntityCollisions(singleEntity *entity.GameEntit
 	}
 }
 
-func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity.GameEntity) {
+func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity.Entity) {
 	if h.isHorizontalCollision(player, entity) {
 		h.handleHorizontalCollision(player, entity)
 		h.handleVerticalCollision(player, entity)
@@ -74,7 +74,7 @@ func (h *CollisionHandler) handleCollision(player *entity.Player, entity *entity
 	}
 }
 
-func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *entity.GameEntity) bool {
+func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *entity.Entity) bool {
 	bounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -83,7 +83,7 @@ func (h *CollisionHandler) isHorizontalCollision(player *entity.Player, entity *
 	return player.Bounds().Intersect(bounds).Dx() < player.Bounds().Intersect(bounds).Dy()
 }
 
-func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity *entity.GameEntity) {
+func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity *entity.Entity) {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return
@@ -101,7 +101,7 @@ func (h *CollisionHandler) handleVerticalCollision(player *entity.Player, entity
 	}
 }
 
-func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
+func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -118,7 +118,7 @@ func (h *CollisionHandler) playerCollidesOnTopOfEntity(player *entity.Player, en
 		playerBounds.Max.Y > entityBounds.Min.Y
 }
 
-func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
+func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -135,7 +135,7 @@ func (h *CollisionHandler) playerCollidesOnBottomOfEntity(player *entity.Player,
 		playerBounds.Min.Y < entityBounds.Max.Y
 }
 
-func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, entity *entity.GameEntity) {
+func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, entity *entity.Entity) {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return
@@ -153,7 +153,7 @@ func (h *CollisionHandler) handleHorizontalCollision(player *entity.Player, enti
 	}
 }
 
-func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
+func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -166,7 +166,7 @@ func (h *CollisionHandler) playerCollidesOnLeftOfEntity(player *entity.Player, e
 		playerBounds.Max.X > entityBounds.Min.X
 }
 
-func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, entity *entity.GameEntity) bool {
+func (h *CollisionHandler) playerCollidesOnRightOfEntity(player *entity.Player, entity *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
