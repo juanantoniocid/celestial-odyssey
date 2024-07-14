@@ -1,4 +1,4 @@
-package level
+package factory
 
 import (
 	"celestial-odyssey/internal/entity"
@@ -19,13 +19,13 @@ func LoadLevel1Scenario1(player *entity.Player, character *entity.GameEntity, re
 
 	collection.AddGameEntity(character)
 
-	ground := entity.CreateGround()
+	ground := CreateGround()
 	collection.AddGameEntity(ground)
 
-	box1 := entity.CreateBox(100, 130)
+	box1 := CreateBox(100, 130)
 	collection.AddGameEntity(box1)
 
-	box2 := entity.CreateBox(120, 50)
+	box2 := CreateBox(120, 50)
 	collection.AddGameEntity(box2)
 
 	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, collection, systemManager)
@@ -36,16 +36,16 @@ func LoadLevel1Scenario2(player *entity.Player, character *entity.GameEntity, re
 
 	collection.AddGameEntity(character)
 
-	ground := entity.CreateGround()
+	ground := CreateGround()
 	collection.AddGameEntity(ground)
 
-	box1 := entity.CreateBox(140, 140)
+	box1 := CreateBox(140, 140)
 	collection.AddGameEntity(box1)
 
-	box2 := entity.CreateBox(160, 70)
+	box2 := CreateBox(160, 70)
 	collection.AddGameEntity(box2)
 
-	box3 := entity.CreateBox(180, 50)
+	box3 := CreateBox(180, 50)
 	collection.AddGameEntity(box3)
 
 	return screen.NewScenario(player, renderer, inputHandler, collisionHandler, collection, systemManager)

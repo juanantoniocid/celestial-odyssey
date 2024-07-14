@@ -7,10 +7,10 @@ import (
 
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/factory"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/graphics"
 	"celestial-odyssey/internal/input"
-	"celestial-odyssey/internal/level"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/systems"
 )
@@ -20,7 +20,7 @@ func main() {
 	applyWindowSettings(cfg.Window)
 
 	player := createPlayer(cfg.Player)
-	character := entity.CreatePlayer()
+	character := factory.CreatePlayer()
 	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
 	inputHandler := input.NewKeyboardHandler()
 	collisionHandler := systems.NewCollisionHandler()
@@ -29,7 +29,7 @@ func main() {
 	movementManager := systems.NewMovement()
 	systemManager := systems.NewManager(inputManager, inputManager, movementManager, collisionHandler)
 
-	levels := level.LoadLevel1(player, character, renderer, inputHandler, collisionHandler, systemManager)
+	levels := factory.LoadLevel1(player, character, renderer, inputHandler, collisionHandler, systemManager)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)

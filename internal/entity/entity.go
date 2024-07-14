@@ -11,6 +11,13 @@ type GameEntity struct {
 	components map[component.Type]interface{}
 }
 
+// NewGameEntity creates a new game entity.
+func NewGameEntity() *GameEntity {
+	return &GameEntity{
+		components: make(map[component.Type]interface{}),
+	}
+}
+
 // Type returns the type of the entity.
 func (e *GameEntity) Type() (component.EntityType, bool) {
 	t, ok := e.components[component.EntityTypeComponent]
