@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/factory"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/screen"
@@ -16,7 +17,8 @@ func main() {
 	cfg := config.LoadConfig()
 	applyWindowSettings(cfg.Window)
 
-	character := factory.CreatePlayer()
+	sharedEntities := entity.NewEntities()
+	sharedEntities.AddEntity(factory.CreatePlayer())
 
 	inputManager := system.NewInput()
 	movementManager := system.NewMovement()
@@ -25,7 +27,7 @@ func main() {
 	simpleDraw := system.NewSimpleDraw()
 	drawSystems := system.NewDrawSystems(simpleDraw)
 
-	levels := factory.LoadLevel1(character, systems, drawSystems)
+	levels := factory.LoadLevel1(sharedEntities, systems, drawSystems)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)

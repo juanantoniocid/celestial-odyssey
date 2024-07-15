@@ -12,3 +12,8 @@ func NewEntities() *Entities {
 func (c *Entities) AddEntity(entity *Entity) {
 	*c = append(*c, entity)
 }
+
+// AddEntities adds entities to the entities' collection.
+func (c *Entities) AddEntities(entities *Entities) {
+	*c = append(*c, *entities...)
+}
