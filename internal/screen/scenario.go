@@ -1,12 +1,10 @@
 package screen
 
 import (
-	"celestial-odyssey/internal/legacy"
-	"celestial-odyssey/internal/system"
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/system"
 )
 
 const (
@@ -14,25 +12,13 @@ const (
 )
 
 type ScenarioImpl struct {
-	player   *legacy.Player
-	renderer Renderer
-
-	inputHandler     InputHandler
-	collisionHandler CollisionHandler
-
 	entities    *entity.Entities
 	systems     system.System
 	drawSystems system.DrawSystem
 }
 
-func NewScenario(player *legacy.Player, renderer Renderer, inputHandler InputHandler, collisionHandler CollisionHandler, entities *entity.Entities, systems system.System, drawSystems system.DrawSystem) *ScenarioImpl {
+func NewScenario(entities *entity.Entities, systems system.System, drawSystems system.DrawSystem) *ScenarioImpl {
 	return &ScenarioImpl{
-		player:   player,
-		renderer: renderer,
-
-		inputHandler:     inputHandler,
-		collisionHandler: collisionHandler,
-
 		entities:    entities,
 		systems:     systems,
 		drawSystems: drawSystems,
@@ -41,30 +27,28 @@ func NewScenario(player *legacy.Player, renderer Renderer, inputHandler InputHan
 
 func (s *ScenarioImpl) Update() error {
 	s.systems.Update(s.entities)
-	s.inputHandler.UpdatePlayer(s.player)
-	s.player.Update()
-	s.collisionHandler.UpdatePlayer(s.player, s.entities)
 
 	return nil
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.renderer.Draw(screen, s.player, s.entities)
 	s.drawSystems.Draw(screen, s.entities)
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {
-	return s.player.Position().X+s.player.Width() >= config.ScreenWidth
+	//return s.player.Position().X+s.player.Width() >= config.ScreenWidth
+	return false
 }
 
 func (s *ScenarioImpl) ShouldTransitionLeft() bool {
-	return s.player.Position().X <= 0
+	// return s.player.Position().X <= 0
+	return false
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtLeft() {
-	s.player.SetPositionX(sideMargin)
+	// s.player.SetPositionX(sideMargin)
 }
 
 func (s *ScenarioImpl) SetPlayerPositionAtRight() {
-	s.player.SetPositionX(config.ScreenWidth - sideMargin - s.player.Width())
+	// s.player.SetPositionX(config.ScreenWidth - sideMargin - s.player.Width())
 }
