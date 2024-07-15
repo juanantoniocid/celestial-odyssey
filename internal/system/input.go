@@ -14,29 +14,29 @@ func NewInput() *Input {
 	return &Input{}
 }
 
-func (is *Input) Update(entities *entity.Entities) {
+func (i *Input) Update(entities *entity.Entities) {
 	for _, e := range *entities {
-		inputMap, found := e.InputMap()
+		input, found := e.Input()
 		if !found {
 			continue
 		}
 
-		is.updatePlayer(e, inputMap)
+		i.updatePlayer(e, input)
 	}
 }
 
-func (is *Input) updatePlayer(e *entity.Entity, inputMap component.InputMap) {
+func (i *Input) updatePlayer(e *entity.Entity, input component.Input) {
 	var action component.Action
 
-	if ebiten.IsKeyPressed(inputMap.Left) {
+	if ebiten.IsKeyPressed(input.Left) {
 		action.Left = true
 	}
 
-	if ebiten.IsKeyPressed(inputMap.Right) {
+	if ebiten.IsKeyPressed(input.Right) {
 		action.Right = true
 	}
 
-	if ebiten.IsKeyPressed(inputMap.Jump) {
+	if ebiten.IsKeyPressed(input.Jump) {
 		action.Jump = true
 	}
 

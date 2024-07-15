@@ -16,13 +16,13 @@ const (
 	jumpSpeed = -5.0
 )
 
-func (is *Movement) Update(entities *entity.Entities) {
+func (m *Movement) Update(entities *entity.Entities) {
 	for _, e := range *entities {
-		is.update(e)
+		m.update(e)
 	}
 }
 
-func (is *Movement) update(e *entity.Entity) {
+func (m *Movement) update(e *entity.Entity) {
 	action, found := e.Action()
 	if !found {
 		return
@@ -47,10 +47,10 @@ func (is *Movement) update(e *entity.Entity) {
 
 	e.SetVelocity(velocity)
 
-	is.applyPhysics(e)
+	m.applyPhysics(e)
 }
 
-func (is *Movement) applyPhysics(character *entity.Entity) {
+func (m *Movement) applyPhysics(character *entity.Entity) {
 	velocity, found := character.Velocity()
 	if !found {
 		return

@@ -133,19 +133,19 @@ func (e *Entity) SetAction(input component.Action) {
 	e.components[component.ActionComponent] = input
 }
 
-// InputMap returns the input map of the entity.
-func (e *Entity) InputMap() (component.InputMap, bool) {
-	inputMap, found := e.components[component.InputMapComponent]
+// Input returns the input map of the entity.
+func (e *Entity) Input() (component.Input, bool) {
+	input, found := e.components[component.InputComponent]
 	if !found {
-		return component.InputMap{}, false
+		return component.Input{}, false
 	}
 
-	return inputMap.(component.InputMap), true
+	return input.(component.Input), true
 }
 
-// SetInputMap sets the input map of the entity.
-func (e *Entity) SetInputMap(inputMap component.InputMap) {
-	e.components[component.InputMapComponent] = inputMap
+// SetInput sets the input map of the entity.
+func (e *Entity) SetInput(input component.Input) {
+	e.components[component.InputComponent] = input
 }
 
 // Color returns the color of the entity.

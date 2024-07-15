@@ -22,8 +22,8 @@ const (
 	EntityTypeComponent
 	// ActionComponent indicates that the component handles the input state for an entity.
 	ActionComponent
-	// InputMapComponent indicates that the component defines the mapping from actions to keys.
-	InputMapComponent
+	// InputComponent indicates that the component defines a mapping from keys to actions
+	InputComponent
 	// ColorComponent indicates that the component defines the color of an entity.
 	ColorComponent
 )
@@ -51,8 +51,8 @@ type Action struct {
 	Left, Right, Jump bool
 }
 
-// InputMap represents a mapping from actions to keys.
-type InputMap struct {
+// Input represents a mapping from keys to actions.
+type Input struct {
 	Left, Right, Jump ebiten.Key
 }
 
