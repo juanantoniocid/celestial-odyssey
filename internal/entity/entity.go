@@ -118,19 +118,19 @@ func (e *Entity) SetVelocity(v component.Velocity) {
 	e.components[component.VelocityComponent] = v
 }
 
-// Input returns the input state of the entity.
-func (e *Entity) Input() (component.Input, bool) {
-	input, found := e.components[component.InputComponent]
+// Action returns the input state of the entity.
+func (e *Entity) Action() (component.Action, bool) {
+	action, found := e.components[component.ActionComponent]
 	if !found {
-		return component.Input{}, false
+		return component.Action{}, false
 	}
 
-	return input.(component.Input), true
+	return action.(component.Action), true
 }
 
-// SetInput sets the input state of the entity.
-func (e *Entity) SetInput(input component.Input) {
-	e.components[component.InputComponent] = input
+// SetAction sets the input state of the entity.
+func (e *Entity) SetAction(input component.Action) {
+	e.components[component.ActionComponent] = input
 }
 
 // InputMap returns the input map of the entity.

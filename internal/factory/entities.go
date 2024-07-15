@@ -28,7 +28,7 @@ func CreatePlayer() *entity.Entity {
 	player.SetPosition(component.Position{X: 8, Y: 140})
 	player.SetSize(component.Size{Width: 16, Height: 32})
 	player.SetVelocity(component.Velocity{VX: 0, VY: 0})
-	player.SetInput(component.Input{Left: false, Right: false, Jump: false})
+	player.SetAction(component.Action{Left: false, Right: false, Jump: false})
 	player.SetInputMap(component.InputMap{Left: ebiten.KeyLeft, Right: ebiten.KeyRight, Jump: ebiten.KeySpace})
 	player.SetColor(component.Color{Color: color.RGBA{R: 255, G: 255, B: 255, A: 255}})
 

@@ -20,8 +20,8 @@ const (
 	VelocityComponent
 	// EntityTypeComponent indicates that the component defines the type of the entity (e.g., player, enemy).
 	EntityTypeComponent
-	// InputComponent indicates that the component handles the input state for an entity.
-	InputComponent
+	// ActionComponent indicates that the component handles the input state for an entity.
+	ActionComponent
 	// InputMapComponent indicates that the component defines the mapping from actions to keys.
 	InputMapComponent
 	// ColorComponent indicates that the component defines the color of an entity.
@@ -46,8 +46,8 @@ type Velocity struct {
 // EntityType represents the type of entity (e.g., player, enemy, box).
 type EntityType int
 
-// Input represents the input state of an entity, such as movement and action commands.
-type Input struct {
+// Action represents the actions that an entity can perform (e.g., move left, move right, jump).s
+type Action struct {
 	Left, Right, Jump bool
 }
 

@@ -23,7 +23,7 @@ func (is *Movement) Update(entities *entity.Entities) {
 }
 
 func (is *Movement) update(e *entity.Entity) {
-	input, found := e.Input()
+	action, found := e.Action()
 	if !found {
 		return
 	}
@@ -34,15 +34,15 @@ func (is *Movement) update(e *entity.Entity) {
 	}
 
 	velocity.VX = 0
-	if input.Left {
+	if action.Left {
 		velocity.VX = -moveSpeed
 	}
-	if input.Right {
+	if action.Right {
 		velocity.VX = moveSpeed
 	}
-	if input.Jump {
+	if action.Jump {
 		velocity.VY = jumpSpeed
-		input.Jump = false // Reset jump after applying it
+		action.Jump = false // Reset jump after applying it
 	}
 
 	e.SetVelocity(velocity)
