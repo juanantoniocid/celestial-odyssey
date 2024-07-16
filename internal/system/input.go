@@ -26,19 +26,19 @@ func (i *Input) Update(entities *entity.Entities) {
 }
 
 func (i *Input) updatePlayer(e *entity.Entity, input component.Input) {
-	var action component.Action
+	var currentAction component.Action
 
 	if ebiten.IsKeyPressed(input.Left) {
-		action.Left = true
+		currentAction.Left = true
 	}
 
 	if ebiten.IsKeyPressed(input.Right) {
-		action.Right = true
+		currentAction.Right = true
 	}
 
 	if ebiten.IsKeyPressed(input.Jump) {
-		action.Jump = true
+		currentAction.Jump = true
 	}
 
-	e.SetAction(action)
+	e.SetAction(currentAction)
 }

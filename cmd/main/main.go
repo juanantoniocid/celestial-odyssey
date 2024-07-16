@@ -20,9 +20,11 @@ func main() {
 	sharedEntities := entity.NewEntities()
 	sharedEntities.AddEntity(factory.CreatePlayer())
 
-	inputManager := system.NewInput()
-	movementManager := system.NewMovement()
-	systems := system.NewSystems(inputManager, movementManager)
+	inputSystem := system.NewInput()
+	actionSystem := system.NewAction()
+	gravitySystem := system.NewGravity()
+	movementSystem := system.NewMovement()
+	systems := system.NewSystems(inputSystem, actionSystem, gravitySystem, movementSystem)
 
 	simpleDraw := system.NewSimpleDraw()
 	drawSystems := system.NewDrawSystems(simpleDraw)

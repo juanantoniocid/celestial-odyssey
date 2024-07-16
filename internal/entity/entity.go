@@ -51,24 +51,21 @@ func (e *Entity) SetType(t component.EntityType) {
 
 // Bounds returns the bounds of the entity.
 func (e *Entity) Bounds() (image.Rectangle, bool) {
-	pos, found := e.components[component.PositionComponent]
+	pos, found := e.Position()
 	if !found {
 		return image.Rectangle{}, false
 	}
 
-	size, found := e.components[component.SizeComponent]
+	size, found := e.Size()
 	if !found {
 		return image.Rectangle{}, false
 	}
-
-	componentPosition := pos.(component.Position)
-	componentSize := size.(component.Size)
 
 	rect := image.Rect(
-		int(componentPosition.X),
-		int(componentPosition.Y),
-		int(componentPosition.X+componentSize.Width),
-		int(componentPosition.Y+componentSize.Height),
+		int(pos.X),
+		int(pos.Y),
+		int(pos.X+size.Width),
+		int(pos.Y+size.Height),
 	)
 	return rect, true
 }
