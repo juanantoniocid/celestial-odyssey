@@ -13,7 +13,7 @@ func NewAction() *Action {
 
 const (
 	moveSpeed = 2.0
-	jumpSpeed = -5.0
+	jumpSpeed = -10.0
 )
 
 func (m *Action) Update(entities *entity.Entities) {
