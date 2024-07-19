@@ -5,7 +5,7 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-func entityIsSupported(e *entity.Entity, entities *entity.Entities) bool {
+func isEntityGrounded(e *entity.Entity, entities *entity.Entities) bool {
 	entityBounds, entityBoundsFound := e.Bounds()
 	if !entityBoundsFound {
 		return false
@@ -21,10 +21,14 @@ func entityIsSupported(e *entity.Entity, entities *entity.Entities) bool {
 			continue
 		}
 
-		if entityBounds.Max.Y == otherBounds.Min.Y &&
-			(entityBounds.Min.X >= otherBounds.Min.X && entityBounds.Min.X <= otherBounds.Max.X ||
-				entityBounds.Max.X <= otherBounds.Min.X && entityBounds.Max.X <= otherBounds.Max.X) {
-			return true
+		// Check if the bottom of the entity is aligned with the top of the other entity
+		if entityBounds.Max.Y == otherBounds.Min.Y {
+			// Check if there is horizontal overlap
+			if (entityBounds.Min.X >= otherBounds.Min.X && entityBounds.Min.X < otherBounds.Max.X) ||
+				(entityBounds.Max.X > otherBounds.Min.X && entityBounds.Max.X <= otherBounds.Max.X) ||
+				(entityBounds.Min.X <= otherBounds.Min.X && entityBounds.Max.X >= otherBounds.Max.X) {
+				return true
+			}
 		}
 	}
 

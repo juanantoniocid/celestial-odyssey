@@ -32,7 +32,7 @@ func (p *Gravity) update(e *entity.Entity, entities *entity.Entities) {
 		return
 	}
 
-	if entityIsSupported(e, entities) {
+	if isEntityGrounded(e, entities) {
 		if !action.Jump {
 			velocity.VY = 0
 		}

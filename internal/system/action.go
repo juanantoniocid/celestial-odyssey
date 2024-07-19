@@ -61,7 +61,7 @@ func (m *Action) applyVerticalMovement(e *entity.Entity, entities *entity.Entiti
 	}
 
 	if action.Jump {
-		if entityIsSupported(e, entities) {
+		if isEntityGrounded(e, entities) {
 			velocity.VY = jumpSpeed
 		}
 	}
