@@ -1,11 +1,11 @@
-package system
+package util
 
 import (
 	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/entity"
 )
 
-func isEntityGrounded(e *entity.Entity, entities *entity.Entities) bool {
+func IsEntityGrounded(e *entity.Entity, entities *entity.Entities) bool {
 	entityBounds, entityBoundsFound := e.Bounds()
 	if !entityBoundsFound {
 		return false
@@ -35,7 +35,7 @@ func isEntityGrounded(e *entity.Entity, entities *entity.Entities) bool {
 	return false
 }
 
-func entityPositionAndVelocity(entity *entity.Entity) (component.Position, component.Velocity, bool) {
+func EntityPositionAndVelocity(entity *entity.Entity) (component.Position, component.Velocity, bool) {
 	position, positionFound := entity.Position()
 	velocity, velocityFound := entity.Velocity()
 	if !positionFound || !velocityFound {
@@ -45,7 +45,7 @@ func entityPositionAndVelocity(entity *entity.Entity) (component.Position, compo
 	return position, velocity, true
 }
 
-func entityCollidesOnTop(entity, other *entity.Entity) bool {
+func EntityCollidesOnTop(entity, other *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -63,7 +63,7 @@ func entityCollidesOnTop(entity, other *entity.Entity) bool {
 	return entityBounds.Min.Y > otherBounds.Min.Y && entityBounds.Min.Y < otherBounds.Max.Y
 }
 
-func entityCollidesOnBottom(entity, other *entity.Entity) bool {
+func EntityCollidesOnBottom(entity, other *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -81,7 +81,7 @@ func entityCollidesOnBottom(entity, other *entity.Entity) bool {
 	return entityBounds.Max.Y > otherBounds.Min.Y && entityBounds.Min.Y < otherBounds.Min.Y
 }
 
-func entityCollidesOnLeft(entity, other *entity.Entity) bool {
+func EntityCollidesOnLeft(entity, other *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false
@@ -99,7 +99,7 @@ func entityCollidesOnLeft(entity, other *entity.Entity) bool {
 	return entityBounds.Min.X > otherBounds.Min.X && entityBounds.Min.X < otherBounds.Max.X
 }
 
-func entityCollidesOnRight(entity, other *entity.Entity) bool {
+func EntityCollidesOnRight(entity, other *entity.Entity) bool {
 	entityBounds, found := entity.Bounds()
 	if !found {
 		return false

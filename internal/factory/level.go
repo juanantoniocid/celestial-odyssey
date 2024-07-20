@@ -3,20 +3,20 @@ package factory
 import (
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/internal/system"
+	"celestial-odyssey/internal/system/behavior"
 	"celestial-odyssey/internal/system/graphics"
 )
 
-func LoadLevel1(sharedEntities *entity.Entities, systems system.System, drawSystems graphics.Renderer) screen.Level {
+func LoadLevel1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) screen.Level {
 	level1 := screen.NewLevel()
 
-	level1.AddScenario(LoadLevel1Scenario1(sharedEntities, systems, drawSystems))
-	level1.AddScenario(LoadLevel1Scenario2(sharedEntities, systems, drawSystems))
+	level1.AddScenario(LoadLevel1Scenario1(sharedEntities, updateSystem, renderer))
+	level1.AddScenario(LoadLevel1Scenario2(sharedEntities, updateSystem, renderer))
 
 	return level1
 }
 
-func LoadLevel1Scenario1(sharedEntities *entity.Entities, systems system.System, drawSystems graphics.Renderer) screen.Scenario {
+func LoadLevel1Scenario1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) screen.Scenario {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -29,10 +29,10 @@ func LoadLevel1Scenario1(sharedEntities *entity.Entities, systems system.System,
 	box2 := CreateBox(120, 50)
 	entities.AddEntity(box2)
 
-	return screen.NewScenario(entities, systems, drawSystems)
+	return screen.NewScenario(entities, updateSystem, renderer)
 }
 
-func LoadLevel1Scenario2(sharedEntities *entity.Entities, systems system.System, drawSystems graphics.Renderer) screen.Scenario {
+func LoadLevel1Scenario2(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) screen.Scenario {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -48,5 +48,5 @@ func LoadLevel1Scenario2(sharedEntities *entity.Entities, systems system.System,
 	box3 := CreateBox(180, 50)
 	entities.AddEntity(box3)
 
-	return screen.NewScenario(entities, systems, drawSystems)
+	return screen.NewScenario(entities, updateSystem, renderer)
 }

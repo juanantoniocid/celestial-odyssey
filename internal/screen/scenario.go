@@ -4,7 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/entity"
-	"celestial-odyssey/internal/system"
+	"celestial-odyssey/internal/system/behavior"
 	"celestial-odyssey/internal/system/graphics"
 )
 
@@ -13,22 +13,21 @@ const (
 )
 
 type ScenarioImpl struct {
-	entities *entity.Entities
-	systems  system.System
-	renderer graphics.Renderer
+	entities     *entity.Entities
+	updateSystem behavior.UpdateSystem
+	renderer     graphics.Renderer
 }
 
-func NewScenario(entities *entity.Entities, systems system.System, renderer graphics.Renderer) *ScenarioImpl {
+func NewScenario(entities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *ScenarioImpl {
 	return &ScenarioImpl{
-		entities: entities,
-		systems:  systems,
-		renderer: renderer,
+		entities:     entities,
+		updateSystem: updateSystem,
+		renderer:     renderer,
 	}
 }
 
 func (s *ScenarioImpl) Update() error {
-	s.systems.Update(s.entities)
-
+	s.updateSystem.Update(s.entities)
 	return nil
 }
 

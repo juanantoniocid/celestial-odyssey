@@ -1,7 +1,8 @@
-package system
+package behavior
 
 import (
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/system/util"
 )
 
 type Action struct {
@@ -61,7 +62,7 @@ func (m *Action) applyVerticalMovement(e *entity.Entity, entities *entity.Entiti
 	}
 
 	if action.Jump {
-		if isEntityGrounded(e, entities) {
+		if util.IsEntityGrounded(e, entities) {
 			velocity.VY = jumpSpeed
 		}
 	}

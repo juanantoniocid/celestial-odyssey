@@ -1,7 +1,8 @@
-package system
+package behavior
 
 import (
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/system/util"
 )
 
 type Movement struct{}
@@ -22,7 +23,7 @@ func (m *Movement) update(e *entity.Entity, entities *entity.Entities) {
 }
 
 func (m *Movement) updateVerticalMovement(entity *entity.Entity, entities *entity.Entities) {
-	position, velocity, found := entityPositionAndVelocity(entity)
+	position, velocity, found := util.EntityPositionAndVelocity(entity)
 	if !found {
 		return
 	}
@@ -70,7 +71,7 @@ func (m *Movement) handleBottomCollision(entity, other *entity.Entity) {
 		return
 	}
 
-	if entityCollidesOnBottom(entity, other) {
+	if util.EntityCollidesOnBottom(entity, other) {
 		// Align the bottom of the entity with the top of the other entity
 		entityPosition.Y = otherPosition.Y - entitySize.Height
 		entity.SetPosition(entityPosition)
@@ -102,7 +103,7 @@ func (m *Movement) handleTopCollision(entity, other *entity.Entity) {
 		return
 	}
 
-	if entityCollidesOnTop(entity, other) {
+	if util.EntityCollidesOnTop(entity, other) {
 		// Align the top of the entity with the bottom of the other entity
 		entityPosition.Y = otherPosition.Y + otherSize.Height
 		entity.SetPosition(entityPosition)
@@ -114,7 +115,7 @@ func (m *Movement) handleTopCollision(entity, other *entity.Entity) {
 }
 
 func (m *Movement) updateHorizontalMovement(entity *entity.Entity, entities *entity.Entities) {
-	position, velocity, found := entityPositionAndVelocity(entity)
+	position, velocity, found := util.EntityPositionAndVelocity(entity)
 	if !found {
 		return
 	}
@@ -162,7 +163,7 @@ func (m *Movement) handleLeftCollision(entity, other *entity.Entity) {
 		return
 	}
 
-	if entityCollidesOnLeft(entity, other) {
+	if util.EntityCollidesOnLeft(entity, other) {
 		// Align the left side of the entity with the right side of the other entity
 		entityPosition.X = otherPosition.X + otherSize.Width
 		entity.SetPosition(entityPosition)
@@ -194,7 +195,7 @@ func (m *Movement) handleRightCollision(entity, other *entity.Entity) {
 		return
 	}
 
-	if entityCollidesOnRight(entity, other) {
+	if util.EntityCollidesOnRight(entity, other) {
 		// Align the right side of the entity with the left side of the other entity
 		entityPosition.X = otherPosition.X - entitySize.Width
 		entity.SetPosition(entityPosition)

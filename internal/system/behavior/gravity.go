@@ -1,7 +1,8 @@
-package system
+package behavior
 
 import (
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/system/util"
 )
 
 const (
@@ -32,7 +33,7 @@ func (p *Gravity) update(e *entity.Entity, entities *entity.Entities) {
 		return
 	}
 
-	if isEntityGrounded(e, entities) {
+	if util.IsEntityGrounded(e, entities) {
 		if !action.Jump {
 			velocity.VY = 0
 		}

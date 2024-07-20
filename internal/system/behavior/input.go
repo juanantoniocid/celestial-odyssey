@@ -1,4 +1,4 @@
-package system
+package behavior
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
