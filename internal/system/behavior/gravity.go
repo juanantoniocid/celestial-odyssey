@@ -5,24 +5,23 @@ import (
 	"celestial-odyssey/internal/system/util"
 )
 
-const (
-	gravity = 0.5
-)
-
 type Gravity struct {
+	gravity float64
 }
 
-func NewGravity() *Gravity {
-	return &Gravity{}
-}
-
-func (p *Gravity) Update(entities *entity.Entities) {
-	for _, e := range *entities {
-		p.update(e, entities)
+func NewGravity(gravity float64) *Gravity {
+	return &Gravity{
+		gravity: gravity,
 	}
 }
 
-func (p *Gravity) update(e *entity.Entity, entities *entity.Entities) {
+func (g *Gravity) Update(entities *entity.Entities) {
+	for _, e := range *entities {
+		g.update(e, entities)
+	}
+}
+
+func (g *Gravity) update(e *entity.Entity, entities *entity.Entities) {
 	action, found := e.Action()
 	if !found {
 		return
@@ -38,7 +37,7 @@ func (p *Gravity) update(e *entity.Entity, entities *entity.Entities) {
 			velocity.VY = 0
 		}
 	} else {
-		velocity.VY += gravity
+		velocity.VY += g.gravity
 	}
 
 	e.SetVelocity(velocity)
