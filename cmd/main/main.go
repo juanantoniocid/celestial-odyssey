@@ -10,8 +10,6 @@ import (
 	"celestial-odyssey/internal/factory"
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/internal/system/behavior"
-	"celestial-odyssey/internal/system/graphics"
 )
 
 func main() {
@@ -21,16 +19,10 @@ func main() {
 	sharedEntities := entity.NewEntities()
 	sharedEntities.AddEntity(factory.CreatePlayer())
 
-	inputSystem := behavior.NewInput()
-	actionSystem := behavior.NewAction()
-	gravitySystem := behavior.NewGravity()
-	movementSystem := behavior.NewMovement()
-	updateSystemManager := behavior.NewUpdateSystemManager(inputSystem, actionSystem, gravitySystem, movementSystem)
+	updateSystem := factory.CreateUpdateSystem()
+	renderer := factory.CreateRenderer()
 
-	simpleRenderer := graphics.NewSimpleRenderer()
-	rendererManager := graphics.NewRendererManager(simpleRenderer)
-
-	levels := factory.LoadLevel1(sharedEntities, updateSystemManager, rendererManager)
+	levels := factory.CreateLevel1(sharedEntities, updateSystem, renderer)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
