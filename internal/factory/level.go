@@ -4,9 +4,10 @@ import (
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/system"
+	"celestial-odyssey/internal/system/graphics"
 )
 
-func LoadLevel1(sharedEntities *entity.Entities, systems system.System, drawSystems system.DrawSystem) screen.Level {
+func LoadLevel1(sharedEntities *entity.Entities, systems system.System, drawSystems graphics.Renderer) screen.Level {
 	level1 := screen.NewLevel()
 
 	level1.AddScenario(LoadLevel1Scenario1(sharedEntities, systems, drawSystems))
@@ -15,7 +16,7 @@ func LoadLevel1(sharedEntities *entity.Entities, systems system.System, drawSyst
 	return level1
 }
 
-func LoadLevel1Scenario1(sharedEntities *entity.Entities, systems system.System, drawSystems system.DrawSystem) screen.Scenario {
+func LoadLevel1Scenario1(sharedEntities *entity.Entities, systems system.System, drawSystems graphics.Renderer) screen.Scenario {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -31,7 +32,7 @@ func LoadLevel1Scenario1(sharedEntities *entity.Entities, systems system.System,
 	return screen.NewScenario(entities, systems, drawSystems)
 }
 
-func LoadLevel1Scenario2(sharedEntities *entity.Entities, systems system.System, drawSystems system.DrawSystem) screen.Scenario {
+func LoadLevel1Scenario2(sharedEntities *entity.Entities, systems system.System, drawSystems graphics.Renderer) screen.Scenario {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 

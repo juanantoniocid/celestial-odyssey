@@ -5,6 +5,7 @@ import (
 
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/system"
+	"celestial-odyssey/internal/system/graphics"
 )
 
 const (
@@ -12,16 +13,16 @@ const (
 )
 
 type ScenarioImpl struct {
-	entities    *entity.Entities
-	systems     system.System
-	drawSystems system.DrawSystem
+	entities *entity.Entities
+	systems  system.System
+	renderer graphics.Renderer
 }
 
-func NewScenario(entities *entity.Entities, systems system.System, drawSystems system.DrawSystem) *ScenarioImpl {
+func NewScenario(entities *entity.Entities, systems system.System, renderer graphics.Renderer) *ScenarioImpl {
 	return &ScenarioImpl{
-		entities:    entities,
-		systems:     systems,
-		drawSystems: drawSystems,
+		entities: entities,
+		systems:  systems,
+		renderer: renderer,
 	}
 }
 
@@ -32,7 +33,7 @@ func (s *ScenarioImpl) Update() error {
 }
 
 func (s *ScenarioImpl) Draw(screen *ebiten.Image) {
-	s.drawSystems.Draw(screen, s.entities)
+	s.renderer.Draw(screen, s.entities)
 }
 
 func (s *ScenarioImpl) ShouldTransitionRight() bool {

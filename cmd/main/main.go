@@ -11,6 +11,7 @@ import (
 	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/screen"
 	"celestial-odyssey/internal/system"
+	"celestial-odyssey/internal/system/graphics"
 )
 
 func main() {
@@ -26,10 +27,10 @@ func main() {
 	movementSystem := system.NewMovement()
 	systems := system.NewSystems(inputSystem, actionSystem, gravitySystem, movementSystem)
 
-	simpleDraw := system.NewSimpleDraw()
-	drawSystems := system.NewDrawSystems(simpleDraw)
+	simpleRenderer := graphics.NewSimpleRenderer()
+	rendererManager := graphics.NewRendererManager(simpleRenderer)
 
-	levels := factory.LoadLevel1(sharedEntities, systems, drawSystems)
+	levels := factory.LoadLevel1(sharedEntities, systems, rendererManager)
 	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
 
 	g := createGame(screenManager)
