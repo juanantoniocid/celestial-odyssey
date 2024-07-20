@@ -1,13 +1,10 @@
 package system
 
 import (
-	"log"
-
 	"celestial-odyssey/internal/entity"
 )
 
-type Movement struct {
-}
+type Movement struct{}
 
 func NewMovement() *Movement {
 	return &Movement{}
@@ -37,19 +34,6 @@ func (m *Movement) updateVerticalMovement(entity *entity.Entity, entities *entit
 	m.handleHorizontalCollisions(entity, entities)
 }
 
-func (m *Movement) updateHorizontalMovement(entity *entity.Entity, entities *entity.Entities) {
-	position, velocity, found := entityPositionAndVelocity(entity)
-	if !found {
-		return
-	}
-
-	position.X += velocity.VX
-	entity.SetPosition(position)
-
-	m.handleHorizontalCollisions(entity, entities)
-	m.handleVerticalCollisions(entity, entities)
-}
-
 func (m *Movement) handleVerticalCollisions(entity *entity.Entity, entities *entity.Entities) {
 	for _, other := range *entities {
 		if entity == other {
@@ -60,23 +44,50 @@ func (m *Movement) handleVerticalCollisions(entity *entity.Entity, entities *ent
 	}
 }
 
-func (m *Movement) handleHorizontalCollisions(entity *entity.Entity, entities *entity.Entities) {
-	for _, other := range *entities {
-		if entity == other {
-			continue
-		}
-
-		m.handleHorizontalCollision(entity, other)
-	}
+func (m *Movement) handleVerticalCollision(entity, other *entity.Entity) {
+	m.handleBottomCollision(entity, other)
+	m.handleTopCollision(entity, other)
 }
 
-func (m *Movement) handleVerticalCollision(entity, other *entity.Entity) {
+func (m *Movement) handleBottomCollision(entity, other *entity.Entity) {
 	entityPosition, found := entity.Position()
 	if !found {
 		return
 	}
 
 	entitySize, found := entity.Size()
+	if !found {
+		return
+	}
+
+	entityVelocity, found := entity.Velocity()
+	if !found {
+		return
+	}
+
+	otherPosition, found := other.Position()
+	if !found {
+		return
+	}
+
+	if entityCollidesOnBottom(entity, other) {
+		// Align the bottom of the entity with the top of the other entity
+		entityPosition.Y = otherPosition.Y - entitySize.Height
+		entity.SetPosition(entityPosition)
+
+		// Stop the entity from moving vertically
+		entityVelocity.VY = 0
+		entity.SetVelocity(entityVelocity)
+	}
+}
+
+func (m *Movement) handleTopCollision(entity, other *entity.Entity) {
+	entityPosition, found := entity.Position()
+	if !found {
+		return
+	}
+
+	entityVelocity, found := entity.Velocity()
 	if !found {
 		return
 	}
@@ -91,37 +102,52 @@ func (m *Movement) handleVerticalCollision(entity, other *entity.Entity) {
 		return
 	}
 
-	entityVelocity, found := entity.Velocity()
+	if entityCollidesOnTop(entity, other) {
+		// Align the top of the entity with the bottom of the other entity
+		entityPosition.Y = otherPosition.Y + otherSize.Height
+		entity.SetPosition(entityPosition)
+
+		// Stop the entity from moving vertically
+		entityVelocity.VY = 0
+		entity.SetVelocity(entityVelocity)
+	}
+}
+
+func (m *Movement) updateHorizontalMovement(entity *entity.Entity, entities *entity.Entities) {
+	position, velocity, found := entityPositionAndVelocity(entity)
 	if !found {
 		return
 	}
 
-	if entityCollidesOnBottom(entity, other) {
-		log.Println("Collides on its ground", entityPosition, entitySize, otherPosition, otherSize)
-		entityPosition.Y = otherPosition.Y - entitySize.Height
-		entity.SetPosition(entityPosition)
-		entityVelocity.VY = 0
-		entity.SetVelocity(entityVelocity)
-		log.Println("Ground collision fixed", entityPosition, entitySize, otherPosition, otherSize)
-	}
+	position.X += velocity.VX
+	entity.SetPosition(position)
 
-	if entityCollidesOnTop(entity, other) {
-		log.Println("Collides on its top", entityPosition, entitySize, otherPosition, otherSize)
-		entityPosition.Y = otherPosition.Y + otherSize.Height
-		entity.SetPosition(entityPosition)
-		entityVelocity.VY = 0
-		entity.SetVelocity(entityVelocity)
-		log.Println("Top collision fixed", entityPosition, entitySize, otherPosition, otherSize)
+	m.handleHorizontalCollisions(entity, entities)
+	m.handleVerticalCollisions(entity, entities)
+}
+
+func (m *Movement) handleHorizontalCollisions(entity *entity.Entity, entities *entity.Entities) {
+	for _, other := range *entities {
+		if entity == other {
+			continue
+		}
+
+		m.handleHorizontalCollision(entity, other)
 	}
 }
 
 func (m *Movement) handleHorizontalCollision(entity, other *entity.Entity) {
+	m.handleLeftCollision(entity, other)
+	m.handleRightCollision(entity, other)
+}
+
+func (m *Movement) handleLeftCollision(entity, other *entity.Entity) {
 	entityPosition, found := entity.Position()
 	if !found {
 		return
 	}
 
-	entitySize, found := entity.Size()
+	entityVelocity, found := entity.Velocity()
 	if !found {
 		return
 	}
@@ -137,16 +163,44 @@ func (m *Movement) handleHorizontalCollision(entity, other *entity.Entity) {
 	}
 
 	if entityCollidesOnLeft(entity, other) {
-		log.Println("Collides on its left", entityPosition, entitySize, otherPosition, otherSize)
+		// Align the left side of the entity with the right side of the other entity
 		entityPosition.X = otherPosition.X + otherSize.Width
 		entity.SetPosition(entityPosition)
-		log.Println("Left collision fixed", entityPosition, entitySize, otherPosition, otherSize)
+
+		// Stop the entity from moving horizontally
+		entityVelocity.VX = 0
+		entity.SetVelocity(entityVelocity)
+	}
+}
+
+func (m *Movement) handleRightCollision(entity, other *entity.Entity) {
+	entityPosition, found := entity.Position()
+	if !found {
+		return
+	}
+
+	entitySize, found := entity.Size()
+	if !found {
+		return
+	}
+
+	entityVelocity, found := entity.Velocity()
+	if !found {
+		return
+	}
+
+	otherPosition, found := other.Position()
+	if !found {
+		return
 	}
 
 	if entityCollidesOnRight(entity, other) {
-		log.Println("Collides on its right", entityPosition, entitySize, otherPosition, otherSize)
+		// Align the right side of the entity with the left side of the other entity
 		entityPosition.X = otherPosition.X - entitySize.Width
 		entity.SetPosition(entityPosition)
-		log.Println("Right collision fixed", entityPosition, entitySize, otherPosition, otherSize)
+
+		// Stop the entity from moving horizontally
+		entityVelocity.VX = 0
+		entity.SetVelocity(entityVelocity)
 	}
 }
