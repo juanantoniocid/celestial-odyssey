@@ -2,12 +2,12 @@ package behavior
 
 import "celestial-odyssey/internal/entity"
 
-// UpdateSystemManager is a struct that holds a slice of UpdateSystem.
+// UpdateSystemManager manages a collection of update systems.
 type UpdateSystemManager struct {
 	updateSystems []UpdateSystem
 }
 
-// NewUpdateSystemManager creates a new UpdateSystemManager struct.
+// NewUpdateSystemManager creates a new instance of UpdateSystemManager.
 func NewUpdateSystemManager(ss ...UpdateSystem) *UpdateSystemManager {
 	updateSystems := make([]UpdateSystem, 0)
 	updateSystems = append(updateSystems, ss...)
@@ -17,7 +17,7 @@ func NewUpdateSystemManager(ss ...UpdateSystem) *UpdateSystemManager {
 	}
 }
 
-// Update calls the Update method on each UpdateSystem in the UpdateSystemManager struct.
+// Update calls the Update method on each update system in the manager.
 func (us *UpdateSystemManager) Update(entities *entity.Entities) {
 	for _, u := range us.updateSystems {
 		u.Update(entities)

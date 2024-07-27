@@ -11,8 +11,8 @@ type Entity struct {
 	components map[component.Type]component.Component
 }
 
-// NewGameEntity creates a new game entity.
-func NewGameEntity() *Entity {
+// NewEntity creates a new game entity.
+func NewEntity() *Entity {
 	return &Entity{
 		components: make(map[component.Type]component.Component),
 	}

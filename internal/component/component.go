@@ -6,10 +6,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// Component represents a component of an entity.
+// Component is an interface representing an entity component.
 type Component interface{}
 
-// Type represents the kind of given component.
+// Type represents the type of a component.
 type Type int
 
 const (
@@ -23,7 +23,7 @@ const (
 	EntityTypeComponent
 	// ActionComponent indicates that the component handles the input state for an entity.
 	ActionComponent
-	// InputComponent indicates that the component defines a mapping from keys to actions
+	// InputComponent indicates that the component defines a mapping from keys to actions.
 	InputComponent
 	// ColorComponent indicates that the component defines the color of an entity.
 	ColorComponent
@@ -49,7 +49,7 @@ type Velocity struct {
 // EntityType represents the type of entity (e.g., player, enemy, box).
 type EntityType int
 
-// Action represents the actions that an entity can perform (e.g., move left, move right, jump).s
+// Action represents the actions that an entity can perform (e.g., move left, move right, jump).
 type Action struct {
 	Left, Right, Jump bool
 }

@@ -5,12 +5,15 @@ import (
 	"celestial-odyssey/internal/system/util"
 )
 
+// Movement defines a system for handling entity movement and collisions.
 type Movement struct{}
 
+// NewMovement creates a new instance of the Movement system.
 func NewMovement() *Movement {
 	return &Movement{}
 }
 
+// Update updates the position of each entity in the system based on their velocity.
 func (m *Movement) Update(entities *entity.Entities) {
 	for _, e := range *entities {
 		m.update(e, entities)

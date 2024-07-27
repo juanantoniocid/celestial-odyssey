@@ -6,12 +6,12 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-// RenderManager is a struct that holds a slice of Renderer.
+// RenderManager manages a collection of renderers.
 type RenderManager struct {
 	renderers []Renderer
 }
 
-// NewRendererManager creates a new RenderManager struct.
+// NewRendererManager creates a new instance of RenderManager.
 func NewRendererManager(rs ...Renderer) *RenderManager {
 	renderers := make([]Renderer, 0)
 	renderers = append(renderers, rs...)
@@ -21,7 +21,7 @@ func NewRendererManager(rs ...Renderer) *RenderManager {
 	}
 }
 
-// Draw calls the Renderer method on each Renderer in the RenderManager struct.
+// Draw calls the Draw method on each renderer in the manager.
 func (rm *RenderManager) Draw(screen *ebiten.Image, entities *entity.Entities) {
 	for _, r := range rm.renderers {
 		r.Draw(screen, entities)

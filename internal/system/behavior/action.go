@@ -5,11 +5,13 @@ import (
 	"celestial-odyssey/internal/system/util"
 )
 
+// Action defines a behavior system that handles horizontal and vertical movement for entities.
 type Action struct {
 	moveSpeed float64
 	jumpSpeed float64
 }
 
+// NewAction creates a new instance of the Action system.
 func NewAction(moveSpeed, jumpSpeed float64) *Action {
 	return &Action{
 		moveSpeed: moveSpeed,
@@ -17,6 +19,7 @@ func NewAction(moveSpeed, jumpSpeed float64) *Action {
 	}
 }
 
+// Update updates the state of the entities to apply movements based on actions.
 func (a *Action) Update(entities *entity.Entities) {
 	for _, e := range *entities {
 		a.update(e, entities)
@@ -61,10 +64,8 @@ func (a *Action) applyVerticalMovement(e *entity.Entity, entities *entity.Entiti
 		return
 	}
 
-	if action.Jump {
-		if util.IsEntityGrounded(e, entities) {
-			velocity.VY = a.jumpSpeed
-		}
+	if action.Jump && util.IsEntityGrounded(e, entities) {
+		velocity.VY = a.jumpSpeed
 	}
 
 	e.SetVelocity(velocity)

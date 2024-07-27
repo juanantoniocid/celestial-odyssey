@@ -5,16 +5,19 @@ import (
 	"celestial-odyssey/internal/system/util"
 )
 
+// Gravity defines a behavior system that applies gravity to entities.
 type Gravity struct {
 	gravity float64
 }
 
+// NewGravity creates a new instance of the Gravity system.
 func NewGravity(gravity float64) *Gravity {
 	return &Gravity{
 		gravity: gravity,
 	}
 }
 
+// Update applies gravity to each entity in the system.
 func (g *Gravity) Update(entities *entity.Entities) {
 	for _, e := range *entities {
 		g.update(e, entities)

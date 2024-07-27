@@ -7,13 +7,15 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-type Input struct {
-}
+// Input defines a system that maps user inputs to entity actions.
+type Input struct{}
 
+// NewInput creates a new instance of the Input system.
 func NewInput() *Input {
 	return &Input{}
 }
 
+// Update maps user inputs to actions for each entity in the system.
 func (i *Input) Update(entities *entity.Entities) {
 	for _, e := range *entities {
 		input, found := e.Input()
