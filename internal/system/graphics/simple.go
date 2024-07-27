@@ -1,10 +1,9 @@
 package graphics
 
 import (
-	"image"
-	"image/color"
-
+	"celestial-odyssey/internal/component"
 	"github.com/hajimehoshi/ebiten/v2"
+	"image"
 
 	"celestial-odyssey/internal/entity"
 )
@@ -37,20 +36,31 @@ func (sd *SimpleRenderer) drawEntity(screen *ebiten.Image, e *entity.Entity) {
 		return
 	}
 
-	entityColor, found := e.Color()
-	if !found {
+	sprite, found := e.Sprite()
+	if found {
+		sd.drawSprite(screen, bounds, sprite)
 		return
 	}
 
-	sd.drawSolidColor(screen, bounds, entityColor.Color)
+	color, found := e.Color()
+	if found {
+		sd.drawSolidColor(screen, bounds, color)
+	}
 }
 
-func (sd *SimpleRenderer) drawSolidColor(screen *ebiten.Image, bounds image.Rectangle, c color.RGBA) {
+func (sd *SimpleRenderer) drawSolidColor(screen *ebiten.Image, bounds image.Rectangle, c component.Color) {
 	sd.op.GeoM.Reset()
 	sd.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
 
 	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
-	img.Fill(c)
+	img.Fill(c.Color)
 
 	screen.DrawImage(img, sd.op)
+}
+
+func (sd *SimpleRenderer) drawSprite(screen *ebiten.Image, bounds image.Rectangle, sprite component.Sprite) {
+	sd.op.GeoM.Reset()
+	sd.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
+
+	screen.DrawImage(sprite.Image, sd.op)
 }

@@ -159,3 +159,18 @@ func (e *Entity) Color() (component.Color, bool) {
 func (e *Entity) SetColor(color component.Color) {
 	e.components[component.ColorComponent] = color
 }
+
+// Sprite returns the sprite of the entity.
+func (e *Entity) Sprite() (component.Sprite, bool) {
+	sprite, found := e.components[component.SpriteComponent]
+	if !found {
+		return component.Sprite{}, false
+	}
+
+	return sprite.(component.Sprite), true
+}
+
+// SetSprite sets the sprite of the entity.
+func (e *Entity) SetSprite(sprite component.Sprite) {
+	e.components[component.SpriteComponent] = sprite
+}

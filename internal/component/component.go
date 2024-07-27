@@ -1,8 +1,9 @@
 package component
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Component represents a component of an entity.
@@ -26,6 +27,8 @@ const (
 	InputComponent
 	// ColorComponent indicates that the component defines the color of an entity.
 	ColorComponent
+	// SpriteComponent indicates that the component defines the sprite of an entity.
+	SpriteComponent
 )
 
 // Position represents a 2D position with X and Y coordinates.
@@ -59,4 +62,9 @@ type Input struct {
 // Color represents the color of an entity.
 type Color struct {
 	Color color.RGBA
+}
+
+// Sprite represents the sprite of an entity.
+type Sprite struct {
+	Image *ebiten.Image
 }
