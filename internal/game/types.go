@@ -1,4 +1,4 @@
-package screen
+package game
 
 import (
 	"celestial-odyssey/internal/legacy"

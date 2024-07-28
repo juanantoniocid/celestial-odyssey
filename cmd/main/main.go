@@ -9,7 +9,6 @@ import (
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/factory"
 	"celestial-odyssey/internal/game"
-	"celestial-odyssey/internal/screen"
 )
 
 func main() {
@@ -23,7 +22,7 @@ func main() {
 	renderer := factory.CreateRenderer()
 
 	levels := factory.CreateLevel1(sharedEntities, updateSystem, renderer)
-	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
+	screenManager := createScreenManager(cfg.Screen, []game.Level{levels})
 
 	g := createGame(screenManager)
 	if err := ebiten.RunGame(g); err != nil {
@@ -37,9 +36,9 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createScreenManager(cfg config.Screen, levels []screen.Level) *screen.Manager {
+func createScreenManager(cfg config.Screen, levels []game.Level) *game.Manager {
 	applyScreenSettings(cfg)
-	manager := screen.NewManager(cfg)
+	manager := game.NewManager(cfg)
 
 	for _, l := range levels {
 		manager.AddLevel(l)

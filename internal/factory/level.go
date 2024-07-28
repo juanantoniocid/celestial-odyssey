@@ -2,13 +2,13 @@ package factory
 
 import (
 	"celestial-odyssey/internal/entity"
-	"celestial-odyssey/internal/screen"
+	"celestial-odyssey/internal/game"
 	"celestial-odyssey/internal/system/behavior"
 	"celestial-odyssey/internal/system/graphics"
 )
 
-func CreateLevel1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) screen.Level {
-	level1 := screen.NewLevel()
+func CreateLevel1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Level {
+	level1 := game.NewLevel()
 
 	level1.AddScenario(CreateLevel1Scenario1(sharedEntities, updateSystem, renderer))
 	level1.AddScenario(CreateLevel1Scenario2(sharedEntities, updateSystem, renderer))
@@ -16,7 +16,7 @@ func CreateLevel1(sharedEntities *entity.Entities, updateSystem behavior.UpdateS
 	return level1
 }
 
-func CreateLevel1Scenario1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) screen.Scenario {
+func CreateLevel1Scenario1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Scenario {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -29,10 +29,10 @@ func CreateLevel1Scenario1(sharedEntities *entity.Entities, updateSystem behavio
 	box2 := CreateBox(120, 50)
 	entities.AddEntity(box2)
 
-	return screen.NewScenario(entities, updateSystem, renderer)
+	return game.NewScenario(entities, updateSystem, renderer)
 }
 
-func CreateLevel1Scenario2(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) screen.Scenario {
+func CreateLevel1Scenario2(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Scenario {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -48,5 +48,5 @@ func CreateLevel1Scenario2(sharedEntities *entity.Entities, updateSystem behavio
 	box3 := CreateBox(180, 50)
 	entities.AddEntity(box3)
 
-	return screen.NewScenario(entities, updateSystem, renderer)
+	return game.NewScenario(entities, updateSystem, renderer)
 }

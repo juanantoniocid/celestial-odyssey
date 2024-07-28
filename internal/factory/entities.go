@@ -1,12 +1,13 @@
 package factory
 
 import (
-	"celestial-odyssey/internal/entity"
-	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
 
 	"celestial-odyssey/internal/component"
 	"celestial-odyssey/internal/config"
+	"celestial-odyssey/internal/entity"
 )
 
 const (
@@ -22,7 +23,7 @@ const (
 
 // CreatePlayer creates a player entity.
 func CreatePlayer() *entity.Entity {
-	player := entity.NewGameEntity()
+	player := entity.NewEntity()
 
 	player.SetType(entity.TypePlayer)
 	player.SetPosition(component.Position{X: 8, Y: 140})
@@ -37,7 +38,7 @@ func CreatePlayer() *entity.Entity {
 
 // CreateBox creates a box entity.
 func CreateBox(x, y float64) *entity.Entity {
-	box := entity.NewGameEntity()
+	box := entity.NewEntity()
 
 	box.SetType(entity.TypeBox)
 	box.SetPosition(component.Position{X: x, Y: y})
@@ -49,7 +50,7 @@ func CreateBox(x, y float64) *entity.Entity {
 
 // CreateGround creates a ground entity.
 func CreateGround() *entity.Entity {
-	ground := entity.NewGameEntity()
+	ground := entity.NewEntity()
 
 	ground.SetType(entity.TypeGround)
 	ground.SetPosition(component.Position{X: groundPositionX, Y: groundPositionY})
