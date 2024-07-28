@@ -8,15 +8,15 @@ import (
 )
 
 func CreateLevel1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Level {
-	level1 := game.NewLevel()
+	level1 := game.NewLevel(updateSystem, renderer)
 
-	level1.AddScenario(CreateLevel1Scenario1(sharedEntities, updateSystem, renderer))
-	level1.AddScenario(CreateLevel1Scenario2(sharedEntities, updateSystem, renderer))
+	level1.AddSection(CreateLevel1Section1(sharedEntities))
+	level1.AddSection(CreateLevel1Section2(sharedEntities))
 
 	return level1
 }
 
-func CreateLevel1Scenario1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Scenario {
+func CreateLevel1Section1(sharedEntities *entity.Entities) game.Section {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -29,10 +29,10 @@ func CreateLevel1Scenario1(sharedEntities *entity.Entities, updateSystem behavio
 	box2 := CreateBox(120, 50)
 	entities.AddEntity(box2)
 
-	return game.NewScenario(entities, updateSystem, renderer)
+	return game.NewBasicSection(entities)
 }
 
-func CreateLevel1Scenario2(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Scenario {
+func CreateLevel1Section2(sharedEntities *entity.Entities) game.Section {
 	entities := entity.NewEntities()
 	entities.AddEntities(sharedEntities)
 
@@ -48,5 +48,5 @@ func CreateLevel1Scenario2(sharedEntities *entity.Entities, updateSystem behavio
 	box3 := CreateBox(180, 50)
 	entities.AddEntity(box3)
 
-	return game.NewScenario(entities, updateSystem, renderer)
+	return game.NewBasicSection(entities)
 }

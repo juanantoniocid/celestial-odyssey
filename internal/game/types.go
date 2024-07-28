@@ -7,16 +7,15 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-// Level represents a game level, which can contain multiple scenarios.
-// Each level is responsible for initializing itself, managing its scenarios,
+// Level represents a game level, which can contain multiple sections.
+// Each level is responsible for initializing itself, managing its sections,
 // updating its state, and drawing itself on the screen.
 type Level interface {
 	// Init initializes the level with the given parameters.
 	Init()
 
-	// AddScenario adds a scenario to the level.
-	// This allows the level to manage multiple scenarios within it.
-	AddScenario(scenario Scenario)
+	// AddSection adds a section to the level.
+	AddSection(section Section)
 
 	// Update updates the level state.
 	Update() error
@@ -25,15 +24,12 @@ type Level interface {
 	Draw(screen *ebiten.Image)
 }
 
-// Scenario represents a single scenario within a level.
+// Section represents a single scenario within a level.
 // Each scenario is responsible for updating its state, drawing itself on the screen,
 // and handling transitions within the level.
-type Scenario interface {
-	// Update updates the scenario state.
-	Update() error
-
-	// Draw draws the scenario on the screen.
-	Draw(screen *ebiten.Image)
+type Section interface {
+	// Entities returns the entities in the scenario.
+	Entities() *entity.Entities
 
 	// ShouldTransitionRight returns true if the scenario should transition to the next scenario on the right.
 	ShouldTransitionRight() bool

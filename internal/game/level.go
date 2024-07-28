@@ -2,43 +2,49 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"celestial-odyssey/internal/system/behavior"
+	"celestial-odyssey/internal/system/graphics"
 )
 
 type LevelImpl struct {
-	scenarios       []Scenario
-	currentScenario int
+	sections       []Section
+	currentSection int
+
+	updateSystem behavior.UpdateSystem
+	renderer     graphics.Renderer
 }
 
-func NewLevel() *LevelImpl {
+func NewLevel(updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *LevelImpl {
 	return &LevelImpl{
-		scenarios:       make([]Scenario, 0),
-		currentScenario: 0,
+		sections:       make([]Section, 0),
+		currentSection: 0,
+		updateSystem:   updateSystem,
+		renderer:       renderer,
 	}
 }
 
-func (l *LevelImpl) AddScenario(scenario Scenario) {
-	l.scenarios = append(l.scenarios, scenario)
+func (l *LevelImpl) AddSection(section Section) {
+	l.sections = append(l.sections, section)
 }
 
 func (l *LevelImpl) Init() {
-	currentScenario := l.scenarios[l.currentScenario]
-	currentScenario.SetPlayerPositionAtLeft()
+	currentSection := l.sections[l.currentSection]
+	currentSection.SetPlayerPositionAtLeft()
 }
 
 func (l *LevelImpl) Update() error {
-	currentScenario := l.scenarios[l.currentScenario]
-	err := currentScenario.Update()
-	if err != nil {
-		return err
-	}
+	currentSection := l.sections[l.currentSection]
+	entities := currentSection.Entities()
+	l.updateSystem.Update(entities)
 
-	if currentScenario.ShouldTransitionRight() && l.currentScenario < len(l.scenarios)-1 {
-		l.currentScenario++
-		nextScenario := l.scenarios[l.currentScenario]
+	if currentSection.ShouldTransitionRight() && l.currentSection < len(l.sections)-1 {
+		l.currentSection++
+		nextScenario := l.sections[l.currentSection]
 		nextScenario.SetPlayerPositionAtLeft()
-	} else if currentScenario.ShouldTransitionLeft() && l.currentScenario > 0 {
-		l.currentScenario--
-		prevScenario := l.scenarios[l.currentScenario]
+	} else if currentSection.ShouldTransitionLeft() && l.currentSection > 0 {
+		l.currentSection--
+		prevScenario := l.sections[l.currentSection]
 		prevScenario.SetPlayerPositionAtRight()
 	}
 
@@ -46,6 +52,7 @@ func (l *LevelImpl) Update() error {
 }
 
 func (l *LevelImpl) Draw(screen *ebiten.Image) {
-	currentScenario := l.scenarios[l.currentScenario]
-	currentScenario.Draw(screen)
+	currentSection := l.sections[l.currentSection]
+	entities := currentSection.Entities()
+	l.renderer.Draw(screen, entities)
 }
