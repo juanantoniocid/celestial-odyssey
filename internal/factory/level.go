@@ -3,12 +3,10 @@ package factory
 import (
 	"celestial-odyssey/internal/entity"
 	"celestial-odyssey/internal/game"
-	"celestial-odyssey/internal/system/behavior"
-	"celestial-odyssey/internal/system/graphics"
 )
 
-func CreateLevel1(sharedEntities *entity.Entities, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) game.Level {
-	level1 := game.NewLevel(updateSystem, renderer)
+func CreateLevel1(sharedEntities *entity.Entities) game.Level {
+	level1 := game.NewLevel()
 
 	level1.AddSection(CreateLevel1Section1(sharedEntities))
 	level1.AddSection(CreateLevel1Section2(sharedEntities))
