@@ -24,9 +24,7 @@ func main() {
 	renderer := factory.CreateRenderer()
 
 	levels := factory.CreateLevel1(sharedEntities)
-	screenManager := createScreenManager(cfg.Screen, []game.Level{levels}, updateSystem, renderer)
-
-	g := createGame(screenManager)
+	g := createGame(cfg.Screen, []game.Level{levels}, updateSystem, renderer)
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
@@ -38,23 +36,14 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createScreenManager(cfg config.Screen, levels []game.Level, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *game.Manager {
-	applyScreenSettings(cfg)
-	manager := game.NewManager(cfg, updateSystem, renderer)
-
-	for _, l := range levels {
-		manager.AddLevel(l)
-	}
-
-	return manager
-}
-
 func applyScreenSettings(cfg config.Screen) {
 	ebiten.SetScreenClearedEveryFrame(cfg.ClearedEveryFrame)
 }
 
-func createGame(screenManager game.ScreenManager) *game.Game {
-	g := game.NewGame(screenManager)
+func createGame(cfg config.Screen, levels []game.Level, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *game.Game {
+	applyScreenSettings(cfg)
+
+	g := game.NewGame(cfg, updateSystem, renderer)
 	g.Init()
 
 	return g
