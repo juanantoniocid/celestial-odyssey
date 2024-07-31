@@ -2,8 +2,6 @@ package config
 
 import (
 	"image/color"
-
-	"celestial-odyssey/internal/util"
 )
 
 const (
@@ -13,14 +11,14 @@ const (
 
 type Screen struct {
 	ClearedEveryFrame bool
-	Dimensions        util.Dimensions
+	Dimensions        Dimensions
 	BackgroundColor   color.RGBA
 }
 
 func setupScreen() Screen {
 	return Screen{
 		ClearedEveryFrame: true,
-		Dimensions:        util.Dimensions{Width: ScreenWidth, Height: ScreenHeight},
+		Dimensions:        Dimensions{Width: ScreenWidth, Height: ScreenHeight},
 		BackgroundColor:   color.RGBA{R: 24, G: 8, B: 50, A: 1},
 	}
 }

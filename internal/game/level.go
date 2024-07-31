@@ -35,6 +35,8 @@ func (l *BasicLevel) Update() {
 			if transition.condition(entities) {
 				transition.action(entities)
 				l.SetCurrentSection(transition.toSection)
+
+				break
 			}
 		}
 	}
@@ -57,9 +59,15 @@ func (l *BasicLevel) AddTransition(t *Transition) {
 
 // CurrentSection returns the current section.
 func (l *BasicLevel) CurrentSection() Section {
-	return l.sections[l.currentSectionID]
+	section, found := l.sections[l.currentSectionID]
+	if !found {
+		panic("current section not found")
+	}
+
+	return section
 }
 
+// SetCurrentSection sets the current section.
 func (l *BasicLevel) SetCurrentSection(id SectionID) {
 	l.currentSectionID = id
 }
