@@ -4,38 +4,22 @@ import (
 	"celestial-odyssey/internal/entity"
 )
 
-const (
-	sideMargin = 8
-)
+// SectionID represents the ID of a section.
+type SectionID string
 
+// BasicSection represents a basic section in the game.
 type BasicSection struct {
 	entities *entity.Entities
 }
 
+// NewBasicSection creates a new basic section.
 func NewBasicSection(entities *entity.Entities) *BasicSection {
 	return &BasicSection{
 		entities: entities,
 	}
 }
 
+// Entities returns the entities in the section.
 func (s *BasicSection) Entities() *entity.Entities {
 	return s.entities
-}
-
-func (s *BasicSection) ShouldTransitionRight() bool {
-	//return s.player.Position().X+s.player.Width() >= config.ScreenWidth
-	return false
-}
-
-func (s *BasicSection) ShouldTransitionLeft() bool {
-	// return s.player.Position().X <= 0
-	return false
-}
-
-func (s *BasicSection) SetPlayerPositionAtLeft() {
-	// s.player.SetPositionX(sideMargin)
-}
-
-func (s *BasicSection) SetPlayerPositionAtRight() {
-	// s.player.SetPositionX(config.ScreenWidth - sideMargin - s.player.Width())
 }

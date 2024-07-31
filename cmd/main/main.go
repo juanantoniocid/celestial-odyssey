@@ -23,8 +23,11 @@ func main() {
 	updateSystem := factory.CreateUpdateSystem()
 	renderer := factory.CreateRenderer()
 
-	levels := factory.CreateLevel1(sharedEntities)
-	g := createGame(cfg.Screen, []game.Level{levels}, updateSystem, renderer)
+	g := createGame(cfg.Screen, updateSystem, renderer)
+
+	level1 := factory.CreateLevel1(sharedEntities)
+	g.AddLevel(level1)
+
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
@@ -40,11 +43,10 @@ func applyScreenSettings(cfg config.Screen) {
 	ebiten.SetScreenClearedEveryFrame(cfg.ClearedEveryFrame)
 }
 
-func createGame(cfg config.Screen, levels []game.Level, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *game.Game {
+func createGame(cfg config.Screen, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *game.Game {
 	applyScreenSettings(cfg)
 
 	g := game.NewGame(cfg, updateSystem, renderer)
-	g.Init()
 
 	return g
 }

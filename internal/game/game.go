@@ -21,25 +21,13 @@ type Game struct {
 	dimensions util.Dimensions
 }
 
-// Level represents a game level, which can contain multiple sections.
+// Level represents a game level.
 type Level interface {
-	// Init initializes the level with the given parameters.
-	Init()
+	// Update updates the level.
+	Update()
 
-	// AddSection adds a section to the level.
-	AddSection(section Section)
-
-	// CurrentSection returns the current section.
-	CurrentSection() Section
-}
-
-// Section represents a single scenario within a level.
-type Section interface {
-	// Entities returns the entities in the scenario.
+	// Entities returns the entities in the level.
 	Entities() *entity.Entities
-
-	// SetPlayerPositionAtLeft sets the player position on the left side of the screen.
-	SetPlayerPositionAtLeft()
 }
 
 func NewGame(cfg config.Screen, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *Game {
@@ -53,30 +41,27 @@ func NewGame(cfg config.Screen, updateSystem behavior.UpdateSystem, renderer gra
 	}
 }
 
-func (g *Game) Init() {
-	currentLevel := g.levels[g.currentLevel]
-	currentLevel.Init()
-}
-
-func (g *Game) AddLevel(level Level) {
-	g.levels = append(g.levels, level)
-}
-
 func (g *Game) Update() error {
-	g.updateSystem.Update(g.sectionEntities())
+	currentLevel := g.levels[g.currentLevel]
+	currentEntities := currentLevel.Entities()
+
+	g.updateSystem.Update(currentEntities)
+	currentLevel.Update()
+
 	return nil
 }
 
-func (g *Game) sectionEntities() *entity.Entities {
-	currentLevel := g.levels[g.currentLevel]
-	currentSection := currentLevel.CurrentSection()
-	return currentSection.Entities()
-}
-
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.renderer.Draw(screen, g.sectionEntities())
+	currentLevel := g.levels[g.currentLevel]
+	currentEntities := currentLevel.Entities()
+
+	g.renderer.Draw(screen, currentEntities)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return g.dimensions.Width, g.dimensions.Height
+}
+
+func (g *Game) AddLevel(level Level) {
+	g.levels = append(g.levels, level)
 }
