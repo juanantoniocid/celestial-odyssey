@@ -1,16 +1,13 @@
 package entity
 
-type HorizontalDirection int
+import "celestial-odyssey/internal/component"
+
+// Type represents an entity type.
+type Type int
 
 const (
-	DirectionLeft HorizontalDirection = iota
-	DirectionRight
-)
-
-type CharacterAction int
-
-const (
-	ActionIdle CharacterAction = iota
-	ActionWalking
-	ActionJumping
+	TypeUnknown component.EntityType = iota
+	TypeGround
+	TypeBox
+	TypePlayer
 )

@@ -7,27 +7,27 @@ import (
 
 	"celestial-odyssey/internal/config"
 	"celestial-odyssey/internal/entity"
+	"celestial-odyssey/internal/factory"
 	"celestial-odyssey/internal/game"
-	"celestial-odyssey/internal/graphics"
-	"celestial-odyssey/internal/input"
-	"celestial-odyssey/internal/level"
-	"celestial-odyssey/internal/screen"
-	"celestial-odyssey/internal/systems"
+	"celestial-odyssey/internal/system/behavior"
+	"celestial-odyssey/internal/system/graphics"
 )
 
 func main() {
 	cfg := config.LoadConfig()
 	applyWindowSettings(cfg.Window)
 
-	player := createPlayer(cfg.Player)
-	renderer := createRenderer(cfg.Player, cfg.Screen, cfg.Ground)
-	inputHandler := input.NewKeyboardHandler()
-	collisionHandler := systems.NewCollisionHandler()
+	sharedEntities := entity.NewEntities()
+	sharedEntities.AddEntity(factory.CreatePlayer())
 
-	levels := level.LoadLevel1(player, renderer, inputHandler, collisionHandler)
-	screenManager := createScreenManager(cfg.Screen, []screen.Level{levels})
+	updateSystem := factory.CreateUpdateSystem()
+	renderer := factory.CreateRenderer()
 
-	g := createGame(screenManager)
+	g := createGame(cfg.Screen, updateSystem, renderer)
+
+	level1 := factory.CreateLevel1(sharedEntities)
+	g.AddLevel(level1)
+
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
@@ -39,36 +39,14 @@ func applyWindowSettings(cfg config.Window) {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 }
 
-func createPlayer(cfg config.Player) (player *entity.Player) {
-	player = entity.NewPlayer(cfg)
-
-	return player
-}
-
-func createRenderer(cfgPlayer config.Player, cfgScreen config.Screen, cfgGround config.Ground) *graphics.Renderer {
-	renderer := graphics.NewRenderer(cfgPlayer, cfgScreen, cfgGround)
-
-	return renderer
-}
-
-func createScreenManager(cfg config.Screen, levels []screen.Level) *screen.Manager {
-	applyScreenSettings(cfg)
-	manager := screen.NewManager(cfg)
-
-	for _, l := range levels {
-		manager.AddLevel(l)
-	}
-
-	return manager
-}
-
 func applyScreenSettings(cfg config.Screen) {
 	ebiten.SetScreenClearedEveryFrame(cfg.ClearedEveryFrame)
 }
 
-func createGame(screenManager game.ScreenManager) *game.Game {
-	g := game.NewGame(screenManager)
-	g.Init()
+func createGame(cfg config.Screen, updateSystem behavior.UpdateSystem, renderer graphics.Renderer) *game.Game {
+	applyScreenSettings(cfg)
+
+	g := game.NewGame(cfg, updateSystem, renderer)
 
 	return g
 }

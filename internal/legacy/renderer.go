@@ -1,8 +1,7 @@
-package graphics
+package legacy
 
 import (
 	"image"
-	"image/color"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -99,13 +98,12 @@ func createBackgroundImage(cfg config.Screen) *ebiten.Image {
 	return background
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image, player *entity.Player, entities []*entity.GameEntity) {
+func (r *Renderer) Draw(screen *ebiten.Image, player *Player, entities *entity.Entities) {
 	r.drawBackground(screen)
-	r.drawEntities(screen, entities)
 	r.drawPlayer(screen, player)
 }
 
-func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
+func (r *Renderer) drawPlayer(screen *ebiten.Image, player *Player) {
 	r.op.GeoM.Reset()
 	sprite := r.getSprite(player)
 
@@ -113,7 +111,7 @@ func (r *Renderer) drawPlayer(screen *ebiten.Image, player *entity.Player) {
 	screen.DrawImage(r.playerImages[sprite], r.op)
 }
 
-func (r *Renderer) getSprite(player *entity.Player) (spriteType SpriteType) {
+func (r *Renderer) getSprite(player *Player) (spriteType SpriteType) {
 	switch player.Action() {
 	case entity.ActionIdle:
 		spriteType = r.getIdleSprite(player)
@@ -128,14 +126,14 @@ func (r *Renderer) getSprite(player *entity.Player) (spriteType SpriteType) {
 	return spriteType
 }
 
-func (r *Renderer) getIdleSprite(player *entity.Player) SpriteType {
+func (r *Renderer) getIdleSprite(player *Player) SpriteType {
 	if player.Direction() == entity.DirectionLeft {
 		return PlayerIdleLeft
 	}
 	return PlayerIdleRight
 }
 
-func (r *Renderer) getWalkingSprite(player *entity.Player) SpriteType {
+func (r *Renderer) getWalkingSprite(player *Player) SpriteType {
 	var frame SpriteType
 	frameIndex := player.CurrentStateDuration() / framesPerAnimationFrame % totalWalkingFrames
 
@@ -163,7 +161,7 @@ func (r *Renderer) getWalkingSprite(player *entity.Player) SpriteType {
 	return frame
 }
 
-func (r *Renderer) getJumpingSprite(player *entity.Player) SpriteType {
+func (r *Renderer) getJumpingSprite(player *Player) SpriteType {
 	if player.Direction() == entity.DirectionLeft {
 		return PlayerJumpingLeft
 	}
@@ -173,40 +171,4 @@ func (r *Renderer) getJumpingSprite(player *entity.Player) SpriteType {
 func (r *Renderer) drawBackground(screen *ebiten.Image) {
 	r.op.GeoM.Reset()
 	screen.DrawImage(r.backgroundImage, r.op)
-}
-
-func (r *Renderer) drawEntities(screen *ebiten.Image, entities []*entity.GameEntity) {
-	for _, e := range entities {
-		switch e.Type() {
-		case entity.TypeBox:
-			r.drawBox(screen, e)
-		case entity.TypeGround:
-			r.drawGround(screen, e)
-		default:
-			panic("unhandled default case")
-		}
-	}
-}
-
-func (r *Renderer) drawBox(screen *ebiten.Image, box *entity.GameEntity) {
-	r.op.GeoM.Reset()
-
-	bounds := box.Bounds()
-	r.op.GeoM.Translate(float64(bounds.Min.X), float64(bounds.Min.Y))
-
-	img := ebiten.NewImage(bounds.Dx(), bounds.Dy())
-	brown := color.RGBA{R: 139, G: 69, B: 19, A: 255}
-	img.Fill(brown)
-
-	screen.DrawImage(img, r.op)
-}
-
-func (r *Renderer) drawGround(screen *ebiten.Image, ground *entity.GameEntity) {
-	bounds := ground.Bounds()
-
-	for x := bounds.Min.X; x < bounds.Dx(); x += r.groundDimensions.Dx() {
-		r.op.GeoM.Reset()
-		r.op.GeoM.Translate(float64(x), float64(bounds.Min.Y))
-		screen.DrawImage(r.groundImage, r.op)
-	}
 }
